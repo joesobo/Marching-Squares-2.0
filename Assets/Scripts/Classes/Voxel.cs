@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class Voxel {
     // The index of the element type to spawn in this voxel
-    public int state;
+    public int state = 1;
 
     // The position of the voxel in the chunk
     public Vector2 position;

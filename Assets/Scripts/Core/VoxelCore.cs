@@ -18,7 +18,14 @@ public class VoxelCore : MonoBehaviour {
     // List of chunks
     private List<VoxelChunk> chunks;
 
+    // Generators for building
+    private VoxelChunkGenerator chunkGenerator;
+    private VoxelMeshGenerator meshGenerator;
+
     void Awake() {
+        chunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
+        meshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+
         FreshGeneration();
     }
 
@@ -29,8 +36,10 @@ public class VoxelCore : MonoBehaviour {
     }
 
     private void GenerateTerrain() {
-        chunks = VoxelChunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints, voxelReferencePointsPrefab);
+        chunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints);
+        chunkGenerator.CreateChunks(chunks);
 
-        VoxelChunkGenerator.CreateChunks(chunks);
+        meshGenerator.Setup(voxelResolution, chunkResolution);
+        meshGenerator.GenerateMesh(chunks);
     }
 }
