@@ -53,6 +53,7 @@
         "temp/":true,
         "Temp/":true,
 
+        ".idea/":true,
         "**/*.sln":true,
         "**/*.csproj":true,
         "Logs/":true,
