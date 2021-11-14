@@ -58,5 +58,6 @@
         "**/*.csproj":true,
         "Logs/":true,
         "UserSettings/":true,
-    }
+    },
+    "editor.foldingStrategy": "indentation"
 }
