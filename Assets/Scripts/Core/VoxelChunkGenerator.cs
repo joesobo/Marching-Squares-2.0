@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The size of the chunk
     private int voxelResolution;
 
-    public void CreateChunks(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+    public static void CreateChunks(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
         foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
             chunk.Value.FillChunk();
         }
@@ -40,13 +39,13 @@ public class VoxelChunkGenerator : MonoBehaviour {
         return existingChunks;
     }
 
-    private void SetupAllNeighbors(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+    private void SetupAllNeighbors(IReadOnlyDictionary<Vector2Int, VoxelChunk> existingChunks) {
         foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
             SetupChunkNeighbors(chunk.Value, existingChunks);
         }
     }
 
-    private void SetupChunkNeighbors(VoxelChunk chunk, Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+    private void SetupChunkNeighbors(VoxelChunk chunk, IReadOnlyDictionary<Vector2Int, VoxelChunk> existingChunks) {
         Vector2Int setupCoord = GetWholePosition(chunk);
 
         Vector2Int pxCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
@@ -67,7 +66,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         }
     }
 
-    private Vector2Int GetWholePosition(VoxelChunk chunk) {
+    private static Vector2Int GetWholePosition(VoxelChunk chunk) {
         Vector2 position = chunk.transform.position;
         return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
     }

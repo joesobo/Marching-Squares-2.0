@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [SelectionBase]
@@ -46,13 +44,9 @@ public class VoxelChunk : MonoBehaviour {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
             voxelRef.transform.localScale = Vector2.one * 0.1f;
-            SpriteRenderer renderer = voxelRef.GetComponent<SpriteRenderer>();
+            SpriteRenderer voxelRenderer = voxelRef.GetComponent<SpriteRenderer>();
 
-            if (voxels[i].state == 1) {
-                renderer.color = Color.clear;
-            } else {
-                renderer.color = Color.black;
-            }
+            voxelRenderer.color = voxels[i].state == 1 ? Color.clear : Color.black;
         }
     }
 

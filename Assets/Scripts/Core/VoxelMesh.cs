@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core {
@@ -18,7 +16,7 @@ namespace Core {
 
         private MarchingShader marchingShader;
 
-        void Awake() {
+        private void Awake() {
             marchingShader = FindObjectOfType<MarchingShader>();
         }
 
@@ -31,16 +29,13 @@ namespace Core {
         }
 
         public void TriangulateChunkMesh(VoxelChunk chunk) {
-            Mesh mesh = new Mesh();
-            mesh.name = "VoxelChunk Mesh";
+            Mesh mesh = new Mesh {name = "VoxelChunk Mesh"};
 
             marchingShader.ShaderTriangulate(chunk, out vertices, out triangles, out colors);
-
-            GetUVs(chunk);
-
+            
             mesh.vertices = vertices;
             mesh.triangles = triangles;
-            mesh.uv = uvs;
+            mesh.uv = GetUVs();
             mesh.colors32 = colors;
             mesh.RecalculateNormals();
 
@@ -48,13 +43,15 @@ namespace Core {
             chunk.GetComponent<MeshRenderer>().sharedMaterial = material;
         }
 
-        private void GetUVs(VoxelChunk chunk) {
-            uvs = new Vector2[vertices.Length];
+        private Vector2[] GetUVs() {
+            Vector2[] temp = new Vector2[vertices.Length];
             for (int i = 0; i < vertices.Length; i++) {
                 float percentX = Mathf.InverseLerp(0, chunkResolution * voxelResolution, vertices[i].x) * textureTileAmount;
                 float percentY = Mathf.InverseLerp(0, chunkResolution * voxelResolution, vertices[i].y) * textureTileAmount;
-                uvs[i] = new Vector2(percentX, percentY);
+                temp[i] = new Vector2(percentX, percentY);
             }
+
+            return temp;
         }
     }
 }

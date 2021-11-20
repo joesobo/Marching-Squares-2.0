@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,20 +5,15 @@ namespace Core {
     public class VoxelMeshGenerator : MonoBehaviour {
         public Material material;
 
-        private int voxelResolution, chunkResolution;
-        
         private MarchingShader marchingShader;
         private VoxelMesh voxelMesh;
 
-        void Awake() {
+        private void Awake() {
             marchingShader = FindObjectOfType<MarchingShader>();
             voxelMesh = FindObjectOfType<VoxelMesh>();
         }
 
         public void Setup(int voxelResolution, int chunkResolution) {
-            this.voxelResolution = voxelResolution;
-            this.chunkResolution = chunkResolution;
-
             marchingShader.Setup(voxelResolution, chunkResolution);
             voxelMesh.Setup(voxelResolution, chunkResolution, material);
         }

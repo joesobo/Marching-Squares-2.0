@@ -23,7 +23,7 @@ namespace Core {
         private VoxelChunkGenerator chunkGenerator;
         private VoxelMeshGenerator meshGenerator;
 
-        void Awake() {
+        private void Awake() {
             chunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
             meshGenerator = FindObjectOfType<VoxelMeshGenerator>();
 
@@ -36,7 +36,7 @@ namespace Core {
 
         private void GenerateTerrain() {
             existingChunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints);
-            chunkGenerator.CreateChunks(existingChunks);
+            VoxelChunkGenerator.CreateChunks(existingChunks);
 
             meshGenerator.Setup(voxelResolution, chunkResolution);
             meshGenerator.GenerateWholeMesh(existingChunks);

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -102,7 +101,7 @@ namespace Core {
             }
         }
 
-        public void CreateBuffers() {
+        private void CreateBuffers() {
             int numPoints = (voxelResolution + 1) * (voxelResolution + 1);
             int numVoxelsPerResolution = voxelResolution - 1;
             int numVoxels = numVoxelsPerResolution * numVoxelsPerResolution;
