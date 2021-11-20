@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Core {
     public class VoxelMeshGenerator : MonoBehaviour {
         public ComputeShader marchingSquareShader;
+        public Material material;
 
         private const int SHADER_THREADS = 8;
 
@@ -46,7 +47,7 @@ namespace Core {
             CreateBuffers();
         }
 
-        public void GenerateMesh(List<VoxelChunk> chunks) {
+        public void GenerateWholeMesh(List<VoxelChunk> chunks) {
             foreach (VoxelChunk chunk in chunks) {
                 TriangulateChunkMesh(chunk);
             }
@@ -69,6 +70,7 @@ namespace Core {
             mesh.RecalculateNormals();
 
             chunk.GetComponent<MeshFilter>().mesh = mesh;
+            chunk.GetComponent<MeshRenderer>().sharedMaterial = material;
         }
 
         private void ShaderTriangulate(VoxelChunk chunk, out Vector3[] vertices, out int[] triangles, out Color32[] colors) {

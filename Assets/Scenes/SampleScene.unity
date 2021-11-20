@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae2cbe420a81ff49bf15155ab0cfde5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  marchingSquareShader: {fileID: 0}
+  marchingSquareShader: {fileID: 7200000, guid: 09716d5295fd131418fdbf96167b30ae, type: 3}
 --- !u!114 &779051271
 MonoBehaviour:
   m_ObjectHideFlags: 0

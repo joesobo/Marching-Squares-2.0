@@ -41,7 +41,7 @@ namespace Core {
             chunkGenerator.CreateChunks(chunks);
 
             meshGenerator.Setup(voxelResolution, chunkResolution);
-            meshGenerator.GenerateMesh(chunks);
+            meshGenerator.GenerateWholeMesh(chunks);
         }
     }
 }
