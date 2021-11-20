@@ -16,8 +16,8 @@ namespace Core {
         // Center point for chunk generation
         private Vector2 playerPosition = Vector2.zero;
 
-        // List of chunks
-        private List<VoxelChunk> chunks;
+        // Dictionary of current chunks
+        private Dictionary<Vector2Int, VoxelChunk> existingChunks;
 
         // Generators for building
         private VoxelChunkGenerator chunkGenerator;
@@ -31,17 +31,15 @@ namespace Core {
         }
 
         private void FreshGeneration() {
-            chunks = new List<VoxelChunk>();
-
             GenerateTerrain();
         }
 
         private void GenerateTerrain() {
-            chunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints);
-            chunkGenerator.CreateChunks(chunks);
+            existingChunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints);
+            chunkGenerator.CreateChunks(existingChunks);
 
             meshGenerator.Setup(voxelResolution, chunkResolution);
-            meshGenerator.GenerateWholeMesh(chunks);
+            meshGenerator.GenerateWholeMesh(existingChunks);
         }
     }
 }

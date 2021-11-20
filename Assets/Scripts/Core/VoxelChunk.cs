@@ -5,7 +5,7 @@ using UnityEngine;
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
     // Reference to neighbor chunks for edge voxel information
-    public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
+    [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
     [HideInInspector] public Voxel[] voxels;
 

@@ -47,9 +47,9 @@ namespace Core {
             CreateBuffers();
         }
 
-        public void GenerateWholeMesh(List<VoxelChunk> chunks) {
-            foreach (VoxelChunk chunk in chunks) {
-                TriangulateChunkMesh(chunk);
+        public void GenerateWholeMesh(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+                TriangulateChunkMesh(chunk.Value);
             }
         }
 

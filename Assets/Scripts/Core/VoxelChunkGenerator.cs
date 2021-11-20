@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,13 +8,18 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
 
-    // Place to store current chunks
-    private Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
+    // The size of the chunk
     private int voxelResolution;
 
-    public List<VoxelChunk> SetupChunks(int chunkResolution, int voxelResolution, bool showVoxelReferencePoints) {
+    public void CreateChunks(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+            chunk.Value.FillChunk();
+        }
+    }
+
+    public Dictionary<Vector2Int, VoxelChunk> SetupChunks(int chunkResolution, int voxelResolution, bool showVoxelReferencePoints) {
         this.voxelResolution = voxelResolution;
-        List<VoxelChunk> chunks = new List<VoxelChunk>();
+        Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
 
         for (int x = -chunkResolution; x < chunkResolution; x++) {
             for (int y = -chunkResolution; y < chunkResolution; y++) {
@@ -28,72 +32,38 @@ public class VoxelChunkGenerator : MonoBehaviour {
                 chunk.name = "Chunk (" + xPoint + ", " + yPoint + ")";
                 chunk.SetupChunk(voxelResolution, showVoxelReferencePoints, voxelReferencePointsPrefab);
 
-                chunks.Add(chunk);
-                AddChunkToExisting(chunk);
+                existingChunks.Add(GetWholePosition(chunk), chunk);
             }
         }
-        
-        SetupAllNeighbors(chunks);
-        return chunks;
+
+        SetupAllNeighbors(existingChunks);
+        return existingChunks;
     }
 
-    public void CreateChunks(List<VoxelChunk> chunks) {
-        foreach (VoxelChunk chunk in chunks) {
-            chunk.FillChunk();
+    private void SetupAllNeighbors(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+            SetupChunkNeighbors(chunk.Value, existingChunks);
         }
     }
 
-    private void AddChunkToExisting(VoxelChunk chunk) {
-        existingChunks.Add(GetWholePosition(chunk), chunk);
-    }
-
-    private void SetupAllNeighbors(List<VoxelChunk> chunks) {
-        foreach (VoxelChunk chunk in chunks) {
-            SetupChunkNeighbors(chunk);
-        }
-    }
-
-
-    private void SetupChunkNeighbors(VoxelChunk chunk) {
+    private void SetupChunkNeighbors(VoxelChunk chunk, Dictionary<Vector2Int, VoxelChunk> existingChunks) {
         Vector2Int setupCoord = GetWholePosition(chunk);
 
-        Vector2Int nxcoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y);
-        Vector2Int nycoord = new Vector2Int(setupCoord.x, setupCoord.y - voxelResolution);
-        Vector2Int nxycoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y - voxelResolution);
-        Vector2Int pxcoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
-        Vector2Int pycoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
-        Vector2Int pxycoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
-        VoxelChunk tempChunk;
+        Vector2Int pxCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
+        Vector2Int pyCoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
+        Vector2Int pxyCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
 
         if (!existingChunks.ContainsKey(setupCoord)) return;
-        if (existingChunks.ContainsKey(nxcoord)) {
-            tempChunk = existingChunks[nxcoord];
-            tempChunk.xNeighbor = chunk;
+        if (existingChunks.ContainsKey(pxCoord)) {
+            chunk.xNeighbor = existingChunks[pxCoord];
         }
 
-        if (existingChunks.ContainsKey(nycoord)) {
-            tempChunk = existingChunks[nycoord];
-            tempChunk.yNeighbor = chunk;
+        if (existingChunks.ContainsKey(pyCoord)) {
+            chunk.yNeighbor = existingChunks[pyCoord];
         }
 
-        if (existingChunks.ContainsKey(nxycoord)) {
-            tempChunk = existingChunks[nxycoord];
-            tempChunk.xyNeighbor = chunk;
-        }
-
-        if (existingChunks.ContainsKey(pxcoord)) {
-            tempChunk = existingChunks[pxcoord];
-            chunk.xNeighbor = tempChunk;
-        }
-
-        if (existingChunks.ContainsKey(pycoord)) {
-            tempChunk = existingChunks[pycoord];
-            chunk.yNeighbor = tempChunk;
-        }
-
-        if (existingChunks.ContainsKey(pxycoord)) {
-            tempChunk = existingChunks[pxycoord];
-            chunk.xyNeighbor = tempChunk;
+        if (existingChunks.ContainsKey(pxyCoord)) {
+            chunk.xyNeighbor = existingChunks[pxyCoord];
         }
     }
 
