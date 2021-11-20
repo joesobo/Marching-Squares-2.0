@@ -37,13 +37,23 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
+        voxels[i] = new Voxel(x, y, 1f);
+        CreateReferencePoint(i, x, y);
+    }
+
+    private void CreateReferencePoint(int i, int x, int y) {
         if (spawnReferencePoints) {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
             voxelRef.transform.localScale = Vector2.one * 0.1f;
-        }
+            SpriteRenderer renderer = voxelRef.GetComponent<SpriteRenderer>();
 
-        voxels[i] = new Voxel(x, y, 1f);
+            if (voxels[i].state == 1) {
+                renderer.color = Color.clear;
+            } else {
+                renderer.color = Color.black;
+            }
+        }
     }
 
     private void OnDrawGizmos() {
