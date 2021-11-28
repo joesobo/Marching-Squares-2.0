@@ -12,9 +12,8 @@ namespace Core {
         public bool showVoxelReferencePoints = true;
         // The element to spawn at each reference position along the chunk
         public GameObject voxelReferencePointsPrefab;
-
         // Center point for chunk generation
-        private Vector2 playerPosition = Vector2.zero;
+        public Vector2 playerPosition = Vector2.zero;
 
         // Dictionary of current chunks
         private Dictionary<Vector2Int, VoxelChunk> existingChunks;
@@ -26,7 +25,9 @@ namespace Core {
         private void Awake() {
             chunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
             meshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+        }
 
+        void Start() {
             FreshGeneration();
         }
 
@@ -35,7 +36,7 @@ namespace Core {
         }
 
         private void GenerateTerrain() {
-            existingChunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints);
+            existingChunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints, playerPosition);
             VoxelChunkGenerator.CreateChunks(existingChunks);
 
             meshGenerator.Setup(voxelResolution, chunkResolution);

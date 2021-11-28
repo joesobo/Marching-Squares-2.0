@@ -256,6 +256,7 @@ MonoBehaviour:
   chunkResolution: 2
   showVoxelReferencePoints: 1
   voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
+  playerPosition: {x: 16, y: 16}
 --- !u!4 &779051272
 Transform:
   m_ObjectHideFlags: 0

@@ -10,13 +10,8 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The size of the chunk
     private int voxelResolution;
 
-    public static void CreateChunks(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
-        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
-            chunk.Value.FillChunk();
-        }
-    }
-
-    public Dictionary<Vector2Int, VoxelChunk> SetupChunks(int chunkResolution, int voxelResolution, bool showVoxelReferencePoints) {
+    // Creates the chunks within a radius around the player
+    public Dictionary<Vector2Int, VoxelChunk> SetupChunks(int chunkResolution, int voxelResolution, bool showVoxelReferencePoints, Vector2 playerPosition) {
         this.voxelResolution = voxelResolution;
         Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
 
@@ -25,10 +20,14 @@ public class VoxelChunkGenerator : MonoBehaviour {
                 int xPoint = x * voxelResolution;
                 int yPoint = y * voxelResolution;
 
-                Vector2 chunkPosition = new Vector2(xPoint, yPoint);
+                Vector2 p = playerPosition / voxelResolution;
+                Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
 
-                VoxelChunk chunk = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity).GetComponent<VoxelChunk>();
-                chunk.name = "Chunk (" + xPoint + ", " + yPoint + ")";
+                Vector2 worldPosition = new Vector2(xPoint, yPoint) + playerChunkCoord * voxelResolution;
+                Vector2 chunkPosition = new Vector2(x + playerChunkCoord.x, y + playerChunkCoord.y);
+
+                VoxelChunk chunk = Instantiate(voxelChunkPrefab, worldPosition, Quaternion.identity).GetComponent<VoxelChunk>();
+                chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
                 chunk.SetupChunk(voxelResolution, showVoxelReferencePoints, voxelReferencePointsPrefab);
 
                 existingChunks.Add(GetWholePosition(chunk), chunk);
@@ -37,6 +36,12 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
         SetupAllNeighbors(existingChunks);
         return existingChunks;
+    }
+
+    public static void CreateChunks(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
+        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+            chunk.Value.FillChunk();
+        }
     }
 
     private void SetupAllNeighbors(IReadOnlyDictionary<Vector2Int, VoxelChunk> existingChunks) {
