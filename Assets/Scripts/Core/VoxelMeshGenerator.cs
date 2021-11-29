@@ -3,23 +3,24 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelMeshGenerator : MonoBehaviour {
-        public Material material;
+        private CoreScriptableObject coreScriptableObject;
 
         private MarchingShader marchingShader;
         private VoxelMesh voxelMesh;
 
         private void Awake() {
+            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
             marchingShader = FindObjectOfType<MarchingShader>();
             voxelMesh = FindObjectOfType<VoxelMesh>();
         }
 
-        public void Setup(int voxelResolution, int chunkResolution) {
-            marchingShader.Setup(voxelResolution, chunkResolution);
-            voxelMesh.Setup(voxelResolution, chunkResolution, material);
+        public void Setup() {
+            marchingShader.Setup();
+            voxelMesh.Setup();
         }
 
-        public void GenerateWholeMesh(Dictionary<Vector2Int, VoxelChunk> existingChunks) {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+        public void GenerateWholeMesh() {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in coreScriptableObject.existingChunks) {
                 voxelMesh.TriangulateChunkMesh(chunk.Value);
             }
         }

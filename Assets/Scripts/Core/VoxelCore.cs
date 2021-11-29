@@ -4,19 +4,7 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelCore : MonoBehaviour {
-        // Number of voxels per a chunk 
-        public int voxelResolution = 8;
-        // Radius of chunks around the player
-        public int chunkResolution = 2;
-        // Whether or not to display the points where voxels are generated
-        public bool showVoxelReferencePoints = true;
-        // The element to spawn at each reference position along the chunk
-        public GameObject voxelReferencePointsPrefab;
-        // Center point for chunk generation
-        public Vector2 playerPosition = Vector2.zero;
-
-        // Dictionary of current chunks
-        private Dictionary<Vector2Int, VoxelChunk> existingChunks;
+        public CoreScriptableObject coreScriptableObject;
 
         // Generators for building
         private VoxelChunkGenerator chunkGenerator;
@@ -36,11 +24,15 @@ namespace Core {
         }
 
         private void GenerateTerrain() {
-            existingChunks = chunkGenerator.SetupChunks(chunkResolution, voxelResolution, showVoxelReferencePoints, playerPosition);
-            VoxelChunkGenerator.CreateChunks(existingChunks);
+            chunkGenerator.SetupChunks();
+            chunkGenerator.CreateChunks();
 
-            meshGenerator.Setup(voxelResolution, chunkResolution);
-            meshGenerator.GenerateWholeMesh(existingChunks);
+            meshGenerator.Setup();
+            meshGenerator.GenerateWholeMesh();
+        }
+
+        public CoreScriptableObject GetCoreScriptableObject() {
+            return coreScriptableObject;
         }
     }
 }

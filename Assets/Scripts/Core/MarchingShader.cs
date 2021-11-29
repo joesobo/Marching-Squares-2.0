@@ -6,6 +6,7 @@ namespace Core {
         public ComputeShader marchingSquareShader;
 
         private const int SHADER_THREADS = 8;
+        private CoreScriptableObject coreScriptableObject;
 
         private int voxelResolution, chunkResolution;
         // Compute shader buffer storage
@@ -14,9 +15,13 @@ namespace Core {
         // voxel state values for calculating type of voxel
         private int[] stateValues;
 
-        public void Setup(int voxelResolution, int chunkResolution) {
-            this.voxelResolution = voxelResolution;
-            this.chunkResolution = chunkResolution;
+        private void Awake() {
+            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        }
+
+        public void Setup() {
+            this.voxelResolution = coreScriptableObject.voxelResolution;
+            this.chunkResolution = coreScriptableObject.chunkResolution;
 
             stateValues = new int[(voxelResolution + 1) * (voxelResolution + 1)];
 

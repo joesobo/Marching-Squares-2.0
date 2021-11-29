@@ -56,9 +56,9 @@ namespace Core {
 
         // TODO: test this after getting references
         private void TriangulateNewChunks() {
-            voxelChunkGenerator.SetupAllNeighbors(existingChunks);
+            voxelChunkGenerator.SetupAllNeighbors();
 
-            voxelMeshGenerator.GenerateWholeMesh(existingChunks);
+            voxelMeshGenerator.GenerateWholeMesh();
         }
 
         private bool IsOutOfBounds(Vector2 chunkPosition) {
