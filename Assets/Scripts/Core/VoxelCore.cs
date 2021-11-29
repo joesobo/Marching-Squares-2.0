@@ -9,10 +9,14 @@ namespace Core {
         // Generators for building
         private VoxelChunkGenerator chunkGenerator;
         private VoxelMeshGenerator meshGenerator;
+        private MarchingShader marchingShader;
+        private VoxelMesh voxelMesh;
 
         private void Awake() {
             chunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
             meshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+            marchingShader = FindObjectOfType<MarchingShader>();
+            voxelMesh = FindObjectOfType<VoxelMesh>();
         }
 
         void Start() {
@@ -25,9 +29,9 @@ namespace Core {
 
         private void GenerateTerrain() {
             chunkGenerator.SetupChunks();
-            chunkGenerator.CreateChunks();
+            marchingShader.Setup();
+            voxelMesh.Setup();
 
-            meshGenerator.Setup();
             meshGenerator.GenerateWholeMesh();
         }
 

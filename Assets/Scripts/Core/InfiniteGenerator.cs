@@ -77,10 +77,10 @@ namespace Core {
         // TODO: create CreateChunk function
         private VoxelChunk GetObjectPoolChunk() {
             VoxelChunk currentChunk;
-            // if (recycleableChunks.Count > 0) {
+            // if (CORE.recycleableChunks.Count > 0) {
                 currentChunk = CORE.recycleableChunks.Dequeue();
             // } else {
-            //     currentChunk = voxelMeshGenerator.CreateChunk();
+            //     currentChunk = voxelChunkGenerator.CreateChunk();
             // }
             currentChunk.FillChunk();
 

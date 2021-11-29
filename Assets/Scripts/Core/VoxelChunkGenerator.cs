@@ -42,13 +42,16 @@ namespace Core {
             }
 
             SetupAllNeighbors();
+            CreateChunks();
         }
 
-        public void CreateChunks() {
+        private void CreateChunks() {
             foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
                 chunk.Value.FillChunk();
             }
         }
+
+        public void CreateChunk() {}
 
         public void SetupAllNeighbors() {
             foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
