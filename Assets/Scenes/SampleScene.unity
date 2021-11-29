@@ -220,6 +220,7 @@ GameObject:
   - component: {fileID: 779051270}
   - component: {fileID: 779051275}
   - component: {fileID: 779051274}
+  - component: {fileID: 779051276}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -256,7 +257,7 @@ MonoBehaviour:
   chunkResolution: 2
   showVoxelReferencePoints: 1
   voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
-  playerPosition: {x: 16, y: 16}
+  playerPosition: {x: 0, y: 0}
 --- !u!4 &779051272
 Transform:
   m_ObjectHideFlags: 0
@@ -308,6 +309,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f944dbbfc37cd449b00b951b137aeae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &779051276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779051269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcecda891fc36834f8c9699d59436399, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1985594427

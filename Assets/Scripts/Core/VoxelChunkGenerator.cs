@@ -44,7 +44,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         }
     }
 
-    private void SetupAllNeighbors(IReadOnlyDictionary<Vector2Int, VoxelChunk> existingChunks) {
+    public void SetupAllNeighbors(IReadOnlyDictionary<Vector2Int, VoxelChunk> existingChunks) {
         foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
             SetupChunkNeighbors(chunk.Value, existingChunks);
         }

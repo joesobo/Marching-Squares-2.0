@@ -23,5 +23,7 @@ namespace Core {
                 voxelMesh.TriangulateChunkMesh(chunk.Value);
             }
         }
+
+        public void CreateChunk() {}
     }
 }
