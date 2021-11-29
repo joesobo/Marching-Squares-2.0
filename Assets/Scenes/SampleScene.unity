@@ -240,7 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bae2cbe420a81ff49bf15155ab0cfde5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 19cc66041e870fc4b96febec26084692, type: 2}
 --- !u!114 &779051271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,11 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dff97a968756e1a458de0278fe0a8c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  voxelResolution: 8
-  chunkResolution: 2
-  showVoxelReferencePoints: 1
-  voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
-  playerPosition: {x: 0, y: 0}
+  CoreData: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
 --- !u!4 &779051272
 Transform:
   m_ObjectHideFlags: 0
@@ -284,6 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 716d80be26777424eb9f4df1f2cdb3c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPosition: {x: 0, y: 0}
   voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
   voxelChunkPrefab: {fileID: 1240171735389309353, guid: effd48641428ce14aa22921b57d52876, type: 3}
 --- !u!114 &779051274
@@ -311,6 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f944dbbfc37cd449b00b951b137aeae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 19cc66041e870fc4b96febec26084692, type: 2}
 --- !u!114 &779051276
 MonoBehaviour:
   m_ObjectHideFlags: 0
