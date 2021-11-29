@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace Core {
     public class MarchingShader : MonoBehaviour {
-        public ComputeShader marchingSquareShader;
+        private CoreScriptableObject CORE;
 
+        public ComputeShader marchingSquareShader;
+        
         private const int SHADER_THREADS = 8;
-        private CoreScriptableObject coreScriptableObject;
 
         private int voxelResolution, chunkResolution;
         // Compute shader buffer storage
@@ -16,12 +17,12 @@ namespace Core {
         private int[] stateValues;
 
         private void Awake() {
-            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         }
 
         public void Setup() {
-            this.voxelResolution = coreScriptableObject.voxelResolution;
-            this.chunkResolution = coreScriptableObject.chunkResolution;
+            this.voxelResolution = CORE.voxelResolution;
+            this.chunkResolution = CORE.chunkResolution;
 
             stateValues = new int[(voxelResolution + 1) * (voxelResolution + 1)];
 

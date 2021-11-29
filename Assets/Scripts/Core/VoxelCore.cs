@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelCore : MonoBehaviour {
-        public CoreScriptableObject coreScriptableObject;
+        public CoreScriptableObject CORE;
 
         // Generators for building
         private VoxelChunkGenerator chunkGenerator;
@@ -32,7 +32,7 @@ namespace Core {
         }
 
         public CoreScriptableObject GetCoreScriptableObject() {
-            return coreScriptableObject;
+            return CORE;
         }
     }
 }

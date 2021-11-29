@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelMesh : MonoBehaviour {
-        private CoreScriptableObject coreScriptableObject;
+        private CoreScriptableObject CORE;
         private int voxelResolution, chunkResolution;
 
         // Mesh information storage
@@ -19,13 +19,13 @@ namespace Core {
         public Material material;
 
         private void Awake() {
-            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
             marchingShader = FindObjectOfType<MarchingShader>();
         }
 
         public void Setup() {
-            this.voxelResolution = coreScriptableObject.voxelResolution;
-            this.chunkResolution = coreScriptableObject.chunkResolution;
+            this.voxelResolution = CORE.voxelResolution;
+            this.chunkResolution = CORE.chunkResolution;
 
             textureTileAmount = (voxelResolution * chunkResolution) / 2;
         }

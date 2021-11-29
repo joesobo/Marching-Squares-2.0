@@ -5,18 +5,15 @@ using UnityEngine;
 
 namespace Core {
     public class InfiniteGenerator : MonoBehaviour {
-        // TODO: setup these variables with info (Setup)
+        private CoreScriptableObject CORE;
+
         private Vector2 playerPosition;
-        private Dictionary<Vector2Int, VoxelChunk> existingChunks;
-        private Queue<VoxelChunk> recycleableChunks;
-        private int chunkResolution = 2;
-        private int voxelResolution;
 
         private VoxelChunkGenerator voxelChunkGenerator;
         private VoxelMeshGenerator voxelMeshGenerator;
 
-        public void Setup() {
-
+        private void Awake() {
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         }
 
         private void UpdateAroundPlayer() {
@@ -28,7 +25,7 @@ namespace Core {
         }
 
         public void RemoveOutOfBoundsChunks() {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in existingChunks) {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
                 if (chunk.Value != null) {
                     if (IsOutOfBounds(chunk.Value.transform.position)) {
                         RemoveChunk(chunk.Value);
@@ -38,6 +35,8 @@ namespace Core {
         }
 
         private void CreateInBoundsChunks() {
+            int chunkResolution = CORE.chunkResolution;
+            int voxelResolution = CORE.voxelResolution;
             Vector2 p = playerPosition / voxelResolution;
             Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
 
@@ -45,10 +44,10 @@ namespace Core {
                 for (int y = -chunkResolution; y <= chunkResolution; y++) {
                     Vector2Int chunkCoord = new Vector2Int((int)(playerChunkCoord.x + x), (int)(playerChunkCoord.y + y));
 
-                    if (!existingChunks.ContainsKey(chunkCoord)) {
+                    if (!CORE.existingChunks.ContainsKey(chunkCoord)) {
                         VoxelChunk currentChunk = GetObjectPoolChunk();
 
-                        existingChunks.Add(chunkCoord, currentChunk);
+                        CORE.existingChunks.Add(chunkCoord, currentChunk);
                     }
                 }
             }
@@ -62,16 +61,16 @@ namespace Core {
         }
 
         private bool IsOutOfBounds(Vector2 chunkPosition) {
-            Vector2 p = playerPosition / voxelResolution;
+            Vector2 p = playerPosition / CORE.voxelResolution;
             Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
 
-            return Vector2.Distance(chunkPosition, playerChunkCoord) > chunkResolution;
+            return Vector2.Distance(chunkPosition, playerChunkCoord) > CORE.chunkResolution;
         }
 
         private void RemoveChunk(VoxelChunk chunk) {
             Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(chunk.transform.position.x), Mathf.RoundToInt(chunk.transform.position.y));
-            existingChunks.Remove(chunkCoord);
-            recycleableChunks.Enqueue(chunk);
+            CORE.existingChunks.Remove(chunkCoord);
+            CORE.recycleableChunks.Enqueue(chunk);
         }
 
         // TODO: setup create / fill in of values for chunks
@@ -79,7 +78,7 @@ namespace Core {
         private VoxelChunk GetObjectPoolChunk() {
             VoxelChunk currentChunk;
             // if (recycleableChunks.Count > 0) {
-                currentChunk = recycleableChunks.Dequeue();
+                currentChunk = CORE.recycleableChunks.Dequeue();
             // } else {
             //     currentChunk = voxelMeshGenerator.CreateChunk();
             // }

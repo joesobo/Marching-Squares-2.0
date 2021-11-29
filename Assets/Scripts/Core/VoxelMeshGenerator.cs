@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelMeshGenerator : MonoBehaviour {
-        private CoreScriptableObject coreScriptableObject;
+        private CoreScriptableObject CORE;
 
         private MarchingShader marchingShader;
         private VoxelMesh voxelMesh;
 
         private void Awake() {
-            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
             marchingShader = FindObjectOfType<MarchingShader>();
             voxelMesh = FindObjectOfType<VoxelMesh>();
         }
@@ -20,7 +20,7 @@ namespace Core {
         }
 
         public void GenerateWholeMesh() {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in coreScriptableObject.existingChunks) {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
                 voxelMesh.TriangulateChunkMesh(chunk.Value);
             }
         }

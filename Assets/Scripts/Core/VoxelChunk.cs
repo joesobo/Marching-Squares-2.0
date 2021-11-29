@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Core {
     [SelectionBase]
     public class VoxelChunk : MonoBehaviour {
-        private CoreScriptableObject coreScriptableObject;
+        private CoreScriptableObject CORE;
 
         // Reference to neighbor chunks for edge voxel information
         [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
@@ -19,12 +19,12 @@ namespace Core {
         private float halfSize;
 
         private void Awake() {
-            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         }
 
         public void SetupChunk(GameObject voxelReferencePointsPrefab) {
             voxelRefPointsPrefab = voxelReferencePointsPrefab;
-            voxelResolution = coreScriptableObject.voxelResolution;
+            voxelResolution = CORE.voxelResolution;
             voxels = new Voxel[voxelResolution * voxelResolution];
             halfSize = 0.5f * voxelResolution;
         }
@@ -43,7 +43,7 @@ namespace Core {
         }
 
         private void CreateReferencePoint(int i, int x, int y) {
-            if (coreScriptableObject.showVoxelReferencePoints) {
+            if (CORE.showVoxelReferencePoints) {
                 GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
                 voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
                 voxelRef.transform.localScale = Vector2.one * 0.1f;

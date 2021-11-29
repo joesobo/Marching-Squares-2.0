@@ -14,5 +14,12 @@ namespace Core {
 
         // Dictionary of current chunks
         public Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
+        // Queue of chunks to be recycled
+        public Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
+
+        private void OnEnable() {
+            existingChunks.Clear();
+            recycleableChunks.Clear();
+        }
     }
 }

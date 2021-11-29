@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Core {
     public class VoxelChunkGenerator : MonoBehaviour {
-        private CoreScriptableObject coreScriptableObject;
+        private CoreScriptableObject CORE;
 
         // Center point for chunk generation
         public Vector2 playerPosition = Vector2.zero;
@@ -14,14 +14,13 @@ namespace Core {
         public GameObject voxelChunkPrefab;
 
         private void Awake() {
-            coreScriptableObject = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         }
 
         // Creates the chunks within a radius around the player
         public void SetupChunks() {
-            int chunkResolution = coreScriptableObject.chunkResolution;
-            int voxelResolution = coreScriptableObject.voxelResolution;
-            coreScriptableObject.existingChunks.Clear();
+            int chunkResolution = CORE.chunkResolution;
+            int voxelResolution = CORE.voxelResolution;
 
             for (int x = -chunkResolution; x < chunkResolution; x++) {
                 for (int y = -chunkResolution; y < chunkResolution; y++) {
@@ -38,7 +37,7 @@ namespace Core {
                     chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
                     chunk.SetupChunk(voxelReferencePointsPrefab);
 
-                    coreScriptableObject.existingChunks.Add(GetWholePosition(chunk), chunk);
+                    CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
                 }
             }
 
@@ -46,36 +45,36 @@ namespace Core {
         }
 
         public void CreateChunks() {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in coreScriptableObject.existingChunks) {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
                 chunk.Value.FillChunk();
             }
         }
 
         public void SetupAllNeighbors() {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in coreScriptableObject.existingChunks) {
+            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
                 SetupChunkNeighbors(chunk.Value);
             }
         }
 
         private void SetupChunkNeighbors(VoxelChunk chunk) {
-            int voxelResolution = coreScriptableObject.voxelResolution;
+            int voxelResolution = CORE.voxelResolution;
             Vector2Int setupCoord = GetWholePosition(chunk);
 
             Vector2Int pxCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
             Vector2Int pyCoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
             Vector2Int pxyCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
 
-            if (!coreScriptableObject.existingChunks.ContainsKey(setupCoord)) return;
-            if (coreScriptableObject.existingChunks.ContainsKey(pxCoord)) {
-                chunk.xNeighbor = coreScriptableObject.existingChunks[pxCoord];
+            if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
+            if (CORE.existingChunks.ContainsKey(pxCoord)) {
+                chunk.xNeighbor = CORE.existingChunks[pxCoord];
             }
 
-            if (coreScriptableObject.existingChunks.ContainsKey(pyCoord)) {
-                chunk.yNeighbor = coreScriptableObject.existingChunks[pyCoord];
+            if (CORE.existingChunks.ContainsKey(pyCoord)) {
+                chunk.yNeighbor = CORE.existingChunks[pyCoord];
             }
 
-            if (coreScriptableObject.existingChunks.ContainsKey(pxyCoord)) {
-                chunk.xyNeighbor = coreScriptableObject.existingChunks[pxyCoord];
+            if (CORE.existingChunks.ContainsKey(pxyCoord)) {
+                chunk.xyNeighbor = CORE.existingChunks[pxyCoord];
             }
         }
 
