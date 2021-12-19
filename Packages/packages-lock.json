@@ -159,6 +159,12 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "poleski.extensions": {
+      "version": "file:C:/Users/sobol/Desktop/Projects/Unity/UnityExtensionLibrary/Assets",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

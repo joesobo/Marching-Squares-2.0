@@ -6,52 +6,43 @@ namespace Core {
         private CoreScriptableObject CORE;
 
         // Center point for chunk generation
-        public Vector2 playerPosition = Vector2.zero;
+        private Vector2 playerPosition;
 
         // The element to spawn at each reference position along the chunk
         public GameObject voxelReferencePointsPrefab;
         // The chunk to spawn
         public GameObject voxelChunkPrefab;
 
+        private int chunkResolution;
+        private int voxelResolution;
+
         private void Awake() {
             CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+            chunkResolution = CORE.chunkResolution;
+            voxelResolution = CORE.voxelResolution;
+            playerPosition = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
         }
 
-        // Creates the chunks within a radius around the player
-        public void SetupChunks() {
-            int chunkResolution = CORE.chunkResolution;
-            int voxelResolution = CORE.voxelResolution;
+        public VoxelChunk CreateChunk(Vector2 chunkPosition) {
+            VoxelChunk chunk = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity).GetComponent<VoxelChunk>();
+            chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
+            chunk.SetupChunk(voxelReferencePointsPrefab);
 
-            for (int x = -chunkResolution; x < chunkResolution; x++) {
-                for (int y = -chunkResolution; y < chunkResolution; y++) {
-                    int xPoint = x * voxelResolution;
-                    int yPoint = y * voxelResolution;
+            CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
+            return chunk;
+        }
 
-                    Vector2 p = playerPosition / voxelResolution;
-                    Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
+        public VoxelChunk CreatePoolChunk(VoxelChunk chunk, Vector2Int chunkPosition) {
+            chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
+            chunk.gameObject.SetActive(true);
+            chunk.transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
+            chunk.ResetReferencePoints();
 
-                    Vector2 worldPosition = new Vector2(xPoint, yPoint) + playerChunkCoord * voxelResolution;
-                    Vector2 chunkPosition = new Vector2(x + playerChunkCoord.x, y + playerChunkCoord.y);
-
-                    VoxelChunk chunk = Instantiate(voxelChunkPrefab, worldPosition, Quaternion.identity).GetComponent<VoxelChunk>();
-                    chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
-                    chunk.SetupChunk(voxelReferencePointsPrefab);
-
-                    CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
-                }
+            if (!CORE.existingChunks.ContainsKey(chunkPosition)) {
+                CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
             }
-
-            SetupAllNeighbors();
-            CreateChunks();
+            return chunk;
         }
-
-        private void CreateChunks() {
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
-                chunk.Value.FillChunk();
-            }
-        }
-
-        public void CreateChunk() {}
 
         public void SetupAllNeighbors() {
             foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
