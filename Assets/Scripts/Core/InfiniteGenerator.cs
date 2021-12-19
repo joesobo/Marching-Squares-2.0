@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Core {
@@ -42,18 +43,15 @@ namespace Core {
             TriangulateNewChunks();
         }
 
-        public void RemoveOutOfBoundsChunks() {
+        private void RemoveOutOfBoundsChunks() {
             // Find chunks to remove
-            List<Vector2Int> removeChunkPositionList = new List<Vector2Int>();
-            foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
-                int index = 0;
-                if (chunk.Value != null) {
-                    if (IsOutOfBounds(chunk.Value.transform.position)) {
-                        removeChunkPositionList.Add(chunk.Key);
-                    }
-                }
-                index++;
-            }
+            List<Vector2Int> removeChunkPositionList = (
+                from chunk
+                in CORE.existingChunks
+                where chunk.Value != null
+                where IsOutOfBounds(chunk.Value.transform.position)
+                select chunk.Key
+            ).ToList();
 
             // Remove chunks
             foreach (Vector2Int position in removeChunkPositionList) {
@@ -72,17 +70,18 @@ namespace Core {
                     Vector2Int chunkCoord = new Vector2Int((int)(playerChunkCoord.x + x), (int)(playerChunkCoord.y + y));
                     Vector2Int chunkPosition = new Vector2Int(chunkCoord.x * voxelResolution, chunkCoord.y * voxelResolution);
 
-                    if (!CORE.existingChunks.ContainsKey(chunkPosition)) {
-                        VoxelChunk currentChunk = GetObjectPoolChunk(chunkPosition);
-                        voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition);
-                    }
+                    if (CORE.existingChunks.ContainsKey(chunkPosition)) continue;
+                    VoxelChunk currentChunk = GetObjectPoolChunk(chunkPosition);
+                    voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition);
                 }
             }
         }
 
         private void TriangulateNewChunks() {
+            // TODO: Setup new neighbors only
             voxelChunkGenerator.SetupAllNeighbors();
 
+            // TODO: Generate only for new chunks or relative neighbor chunks
             voxelMeshGenerator.GenerateWholeMesh();
         }
 
@@ -94,19 +93,15 @@ namespace Core {
         }
 
         private void RemoveChunk(VoxelChunk chunk) {
-            Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(chunk.transform.position.x), Mathf.RoundToInt(chunk.transform.position.y));
+            Vector3 position = chunk.transform.position;
+            Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
             CORE.existingChunks.Remove(chunkCoord);
             CORE.recycleableChunks.Enqueue(chunk);
             chunk.gameObject.SetActive(false);
         }
 
         private VoxelChunk GetObjectPoolChunk(Vector2 chunkCoord) {
-            VoxelChunk currentChunk;
-            if (CORE.recycleableChunks.Count > 0) {
-                currentChunk = CORE.recycleableChunks.Dequeue();
-            } else {
-                currentChunk = voxelChunkGenerator.CreateChunk(chunkCoord);
-            }
+            VoxelChunk currentChunk = CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
             currentChunk.FillChunk();
 
             return currentChunk;

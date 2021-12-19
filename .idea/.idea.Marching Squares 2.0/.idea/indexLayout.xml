@@ -20,6 +20,7 @@
       <Path>Library/PackageCache/com.unity.timeline@1.4.6</Path>
       <Path>Packages</Path>
       <Path>ProjectSettings</Path>
+      <Path>../UnityExtensionLibrary/Assets</Path>
     </explicitIncludes>
     <explicitExcludes>
       <Path>.git</Path>

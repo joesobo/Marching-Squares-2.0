@@ -5,26 +5,18 @@ namespace Core {
     public class VoxelChunkGenerator : MonoBehaviour {
         private CoreScriptableObject CORE;
 
-        // Center point for chunk generation
-        private Vector2 playerPosition;
-
         // The element to spawn at each reference position along the chunk
         public GameObject voxelReferencePointsPrefab;
         // The chunk to spawn
         public GameObject voxelChunkPrefab;
 
-        private int chunkResolution;
-        private int voxelResolution;
-
         private void Awake() {
             CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-            chunkResolution = CORE.chunkResolution;
-            voxelResolution = CORE.voxelResolution;
-            playerPosition = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
         }
 
         public VoxelChunk CreateChunk(Vector2 chunkPosition) {
-            VoxelChunk chunk = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity).GetComponent<VoxelChunk>();
+            GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
+            VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
             chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
             chunk.SetupChunk(voxelReferencePointsPrefab);
 

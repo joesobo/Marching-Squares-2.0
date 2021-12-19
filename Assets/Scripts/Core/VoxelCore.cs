@@ -17,7 +17,7 @@ namespace Core {
             infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
         }
 
-        void Start() {
+        private void Start() {
             FreshGeneration();
         }
 

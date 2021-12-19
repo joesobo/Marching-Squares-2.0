@@ -31,10 +31,10 @@ namespace Core {
         }
 
         public void TriangulateChunkMesh(VoxelChunk chunk) {
-            Mesh mesh = new Mesh {name = "VoxelChunk Mesh"};
+            Mesh mesh = new Mesh { name = "VoxelChunk Mesh" };
 
             marchingShader.ShaderTriangulate(chunk, out vertices, out triangles, out colors);
-            
+
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.uv = GetUVs();
