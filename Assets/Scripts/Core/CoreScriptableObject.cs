@@ -11,6 +11,8 @@ namespace Core {
         public int chunkResolution = 2;
         // Whether or not to display the points where voxels are generated
         public bool showVoxelReferencePoints = true;
+        // Whether or not to generate new chunks after runtime
+        public bool doInfiniteGeneration = true;
 
         // Dictionary of current chunks
         public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();

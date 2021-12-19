@@ -24,13 +24,14 @@ namespace Core {
         }
 
         private void Update() {
-            if (startGeneration) {
+            if (startGeneration && CORE.doInfiniteGeneration) {
                 UpdateAroundPlayer();
             }
         }
 
         public void StartGeneration() {
             startGeneration = true;
+            UpdateAroundPlayer();
         }
 
         private void UpdateAroundPlayer() {
