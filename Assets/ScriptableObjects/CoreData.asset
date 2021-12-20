@@ -56,5 +56,5 @@ MonoBehaviour:
       Data: 
   voxelResolution: 8
   chunkResolution: 2
-  showVoxelReferencePoints: 1
+  showVoxelReferencePoints: 0
   doInfiniteGeneration: 1
