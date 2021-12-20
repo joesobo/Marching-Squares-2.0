@@ -132,6 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 70601835}
+  - component: {fileID: 70601836}
   m_Layer: 0
   m_Name: PlayerDummy
   m_TagString: Player
@@ -147,13 +148,29 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 70601834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.73, y: 1.04, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 519420032}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &70601836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70601834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: -3795152337350425143, guid: 0000000000000000d000000000000000, type: 0}
+  position: 0
+  direction: 0
+  tooltip: Temporary Position to generate terrain around
 --- !u!1 &187492301
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,10 +300,10 @@ RectTransform:
   m_Father: {fileID: 1555325803}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 179.31201, y: -8}
+  m_SizeDelta: {x: 342.62402, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &519420028
 GameObject:
@@ -386,8 +403,9 @@ GameObject:
   - component: {fileID: 779051275}
   - component: {fileID: 779051274}
   - component: {fileID: 779051276}
+  - component: {fileID: 779051277}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Marching Squares Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -484,6 +502,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcecda891fc36834f8c9699d59436399, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &779051277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779051269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 2244882685325231567, guid: 0000000000000000d000000000000000, type: 0}
+  position: 0
+  direction: 0
+  tooltip: Main Core of Marching Square terrain generator
 --- !u!1 &1555325802
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +536,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1555325803
 RectTransform:
   m_ObjectHideFlags: 0
@@ -544,7 +578,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_Spacing: 8
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -769,6 +803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugPanel: {fileID: 1555325802}
   mousePositionText: {fileID: 187492302}
+  chunkPositionText: {fileID: 1921914784}
 --- !u!1 &1921914782
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,10 +836,10 @@ RectTransform:
   m_Father: {fileID: 1555325803}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 179.31201, y: -46}
+  m_SizeDelta: {x: 342.62402, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1921914784
 MonoBehaviour:
