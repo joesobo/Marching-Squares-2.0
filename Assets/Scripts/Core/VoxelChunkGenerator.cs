@@ -17,7 +17,7 @@ namespace Core {
         public VoxelChunk CreateChunk(Vector2 chunkPosition) {
             GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
             VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
-            chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
+            chunk.name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
             chunk.SetupChunk(voxelReferencePointsPrefab);
 
             CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
@@ -25,7 +25,7 @@ namespace Core {
         }
 
         public VoxelChunk CreatePoolChunk(VoxelChunk chunk, Vector2Int chunkPosition) {
-            chunk.name = "Chunk (" + chunkPosition.x + ", " + chunkPosition.y + ")";
+            chunk.name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
             chunk.gameObject.SetActive(true);
             chunk.transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
             chunk.ResetReferencePoints();
