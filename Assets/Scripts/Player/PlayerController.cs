@@ -9,13 +9,18 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody2D rb;
     private Vector2 movement;
     private bool sprinting = false;
+    private float zoom;
+    private Camera playerCam;
 
     public int speed = 15;
     public int sprint = 25;
+    public int minZoom = 3;
+    public int maxZoom = 20;
 
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
+        playerCam = FindObjectOfType<Camera>();
     }
 
     private void Update() {
@@ -28,21 +33,31 @@ public class PlayerController : MonoBehaviour {
         } else {
             rb.velocity = Vector2.zero;
         }
+
+        if (zoom > 0) {
+            playerCam.orthographicSize = Mathf.Clamp(playerCam.orthographicSize - 2, minZoom, maxZoom);
+        } else if (zoom < 0) {
+            playerCam.orthographicSize = Mathf.Clamp(playerCam.orthographicSize + 2, minZoom, maxZoom);
+        }
+        zoom = 0;
     }
 
     public void MovementPerformed(InputAction.CallbackContext context) {
-        if (playerInput) {
-            movement = playerInput.actions["Move"].ReadValue<Vector2>();
-        }
+        movement = playerInput.actions["Move"].ReadValue<Vector2>();
     }
 
     public void SprintPerformed(InputAction.CallbackContext context) {
-        if (playerInput) {
-            if (context.performed) {
-                sprinting = true;
-            } else {
-                sprinting = false;
-            }
+        if (context.performed) {
+            sprinting = true;
+        } else {
+            sprinting = false;
+        }
+    }
+
+    public void ZoomPerformed(InputAction.CallbackContext context) {
+        if (context.performed) {
+            zoom = playerInput.actions["Zoom"].ReadValue<Vector2>().y;
+            Debug.Log(zoom);
         }
     }
 }
