@@ -1,5 +1,5 @@
 {
-    "name": "Player",
+    "name": "InputActions",
     "maps": [
         {
             "name": "Player",
@@ -10,6 +10,14 @@
                     "type": "Value",
                     "id": "96b61e36-6c0b-47ff-aae9-20f4e64a5d8b",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "1ecc6254-0053-4921-af07-0c6c7ce04b69",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 }
@@ -144,6 +152,17 @@
                     "processors": "",
                     "groups": "Joystick",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "33bf5793-9313-4cb1-9606-f4bf6a3626c9",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

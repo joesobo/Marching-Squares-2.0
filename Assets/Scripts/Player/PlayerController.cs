@@ -6,39 +6,43 @@ using UnityEngine.InputSystem;
 [SelectionBase]
 public class PlayerController : MonoBehaviour {
     private PlayerInput playerInput;
-    private InputActions playerInputAction;
     private Rigidbody2D rb;
-    private Vector2 velocity = Vector2.zero;
+    private Vector2 movement;
+    private bool sprinting = false;
 
-    public int speed = 10;
-    public int acceleration = 1;
+    public int speed = 15;
+    public int sprint = 25;
 
     private void Awake() {
         playerInput = GetComponent<PlayerInput>();
-        playerInputAction = new InputActions();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnEnable() {
-        playerInputAction.Enable();
+    private void Update() {
+        if (movement.x != 0 || movement.y != 0) {
+            var tempSpeed = speed;
+            if (sprinting) {
+                tempSpeed = sprint;
+            }
+            rb.velocity = new Vector2(movement.x * tempSpeed, movement.y * tempSpeed);
+        } else {
+            rb.velocity = Vector2.zero;
+        }
     }
 
-    private void Start() {
-        playerInputAction.Player.Move.performed += MovementPerformed;
-    }
-
-    void OnDisable() {
-        playerInputAction.Player.Move.performed -= MovementPerformed;
-        playerInputAction.Disable();
-    }
-
-    private void MovementPerformed(InputAction.CallbackContext context) {
+    public void MovementPerformed(InputAction.CallbackContext context) {
         if (playerInput) {
-            Vector3 movement = playerInput.actions["Move"].ReadValue<Vector2>();
+            movement = playerInput.actions["Move"].ReadValue<Vector2>();
+        }
+    }
 
-            velocity.x = Mathf.MoveTowards(velocity.x, (speed / 100) * movement.x, acceleration * Time.deltaTime);
-            velocity.y = Mathf.MoveTowards(velocity.y, (speed / 100) * movement.y, acceleration * Time.deltaTime);
-            rb.velocity = velocity;
+    public void SprintPerformed(InputAction.CallbackContext context) {
+        if (playerInput) {
+            if (context.performed) {
+                sprinting = true;
+            } else {
+                sprinting = false;
+            }
         }
     }
 }
