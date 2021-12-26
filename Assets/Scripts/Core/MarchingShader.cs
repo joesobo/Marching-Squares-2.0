@@ -18,9 +18,7 @@ public class MarchingShader : MonoBehaviour {
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-    }
 
-    public void Setup() {
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;
 
