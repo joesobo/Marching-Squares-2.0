@@ -12,7 +12,9 @@ public class InfiniteGenerator : MonoBehaviour {
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
 
-    private bool startGeneration = false;
+    private bool startGeneration;
+    private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
+    private readonly Dictionary<Vector2Int, VoxelChunk> neighborChunksToUpdate = new Dictionary<Vector2Int, VoxelChunk>();
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -70,18 +72,43 @@ public class InfiniteGenerator : MonoBehaviour {
                 Vector2Int chunkPosition = new Vector2Int(chunkCoord.x * voxelResolution, chunkCoord.y * voxelResolution);
 
                 if (CORE.existingChunks.ContainsKey(chunkPosition)) continue;
+
                 VoxelChunk currentChunk = GetObjectPoolChunk(chunkPosition);
-                voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition);
+                chunksToUpdate.Add(voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition));
             }
         }
     }
 
     private void TriangulateNewChunks() {
-        // TODO: Setup new neighbors only
-        voxelChunkGenerator.SetupAllNeighbors();
+        TriangulateList(chunksToUpdate);
 
-        // TODO: Generate only for new chunks or relative neighbor chunks
-        voxelMeshGenerator.GenerateWholeMesh();
+        FindImportantNeighbors(chunksToUpdate);
+
+        TriangulateList(neighborChunksToUpdate.Values);
+
+        chunksToUpdate.Clear();
+        neighborChunksToUpdate.Clear();
+    }
+
+    private void TriangulateList(IEnumerable<VoxelChunk> chunks) {
+        foreach (VoxelChunk chunk in chunks) {
+            voxelChunkGenerator.SetupChunkNeighbors(chunk);
+            voxelMeshGenerator.GenerateChunkMesh(chunk);
+        }
+    }
+
+    private void FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
+        foreach (Vector2Int setupCoord in chunks.Select(VoxelChunkGenerator.GetWholePosition)) {
+            for (int i = -1; i < 1; i++) {
+                for (int j = -1; j < 1; j++) {
+                    Vector2Int coord = new Vector2Int(setupCoord.x + (CORE.voxelResolution * i), setupCoord.y + (CORE.voxelResolution * j));
+
+                    if (!neighborChunksToUpdate.ContainsKey(coord) && CORE.existingChunks.ContainsKey(coord)) {
+                        neighborChunksToUpdate.Add(coord, CORE.existingChunks[coord]);
+                    }
+                }
+            }
+        }
     }
 
     private bool IsOutOfBounds(Vector2 chunkPosition) {

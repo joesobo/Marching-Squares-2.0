@@ -20,9 +20,7 @@ public class VoxelMesh : MonoBehaviour {
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         marchingShader = FindObjectOfType<MarchingShader>();
-    }
 
-    public void Setup() {
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;
 

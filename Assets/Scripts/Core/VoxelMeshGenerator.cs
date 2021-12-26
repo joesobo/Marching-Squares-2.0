@@ -11,13 +11,7 @@ public class VoxelMeshGenerator : MonoBehaviour {
         voxelMesh = FindObjectOfType<VoxelMesh>();
     }
 
-    private void Start() {
-        voxelMesh.Setup();
-    }
-
-    public void GenerateWholeMesh() {
-        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
-            voxelMesh.TriangulateChunkMesh(chunk.Value);
-        }
+    public void GenerateChunkMesh(VoxelChunk chunk) {
+        voxelMesh.TriangulateChunkMesh(chunk);
     }
 }

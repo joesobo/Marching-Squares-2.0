@@ -36,13 +36,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         return chunk;
     }
 
-    public void SetupAllNeighbors() {
-        foreach (KeyValuePair<Vector2Int, VoxelChunk> chunk in CORE.existingChunks) {
-            SetupChunkNeighbors(chunk.Value);
-        }
-    }
-
-    private void SetupChunkNeighbors(VoxelChunk chunk) {
+    public void SetupChunkNeighbors(VoxelChunk chunk) {
         int voxelResolution = CORE.voxelResolution;
         Vector2Int setupCoord = GetWholePosition(chunk);
 
@@ -64,7 +58,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         }
     }
 
-    private static Vector2Int GetWholePosition(VoxelChunk chunk) {
+    public static Vector2Int GetWholePosition(VoxelChunk chunk) {
         Vector2 position = chunk.transform.position;
         return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
     }
