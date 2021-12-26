@@ -1,41 +1,34 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core {
-    public class VoxelCore : MonoBehaviour {
-        public CoreScriptableObject CoreData;
+public class VoxelCore : MonoBehaviour {
+    public CoreScriptableObject CoreData;
 
-        // Generators for building
-        private MarchingShader marchingShader;
-        private VoxelMesh voxelMesh;
-        private InfiniteGenerator infiniteGenerator;
+    // Generators for building
+    private MarchingShader marchingShader;
+    private InfiniteGenerator infiniteGenerator;
 
-        private void Awake() {
-            marchingShader = FindObjectOfType<MarchingShader>();
-            voxelMesh = FindObjectOfType<VoxelMesh>();
-            infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
-        }
+    private void Awake() {
+        marchingShader = FindObjectOfType<MarchingShader>();
+        infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
+    }
 
-        private void Start() {
-            FreshGeneration();
-        }
+    private void Start() {
+        FreshGeneration();
+    }
 
-        private void FreshGeneration() {
-            GenerateTerrain();
-        }
+    private void FreshGeneration() {
+        GenerateTerrain();
+    }
 
-        private void GenerateTerrain() {
-            // Setup
-            marchingShader.Setup();
-            voxelMesh.Setup();
+    private void GenerateTerrain() {
+        // Setup
+        marchingShader.Setup();
 
-            // Update
-            infiniteGenerator.StartGeneration();
-        }
+        // Update
+        infiniteGenerator.StartGeneration();
+    }
 
-        public CoreScriptableObject GetCoreScriptableObject() {
-            return CoreData;
-        }
+    public CoreScriptableObject GetCoreScriptableObject() {
+        return CoreData;
     }
 }
