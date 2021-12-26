@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
-using Core;
+using static ChunkHelper;
 
 public class VoxelChunkGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
@@ -56,10 +55,5 @@ public class VoxelChunkGenerator : MonoBehaviour {
         if (CORE.existingChunks.ContainsKey(pxyCoord)) {
             chunk.xyNeighbor = CORE.existingChunks[pxyCoord];
         }
-    }
-
-    public static Vector2Int GetWholePosition(VoxelChunk chunk) {
-        Vector2 position = chunk.transform.position;
-        return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
     }
 }

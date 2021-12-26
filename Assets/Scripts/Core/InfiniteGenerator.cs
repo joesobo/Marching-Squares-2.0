@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Core;
+using static ChunkHelper;
 
 public class InfiniteGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
@@ -50,7 +50,7 @@ public class InfiniteGenerator : MonoBehaviour {
             from chunk
             in CORE.existingChunks
             where chunk.Value != null
-            where IsOutOfBounds(chunk.Value.transform.position)
+            where IsOutOfBounds(playerPosition, chunk.Value.transform.position, CORE.voxelResolution, CORE.chunkResolution)
             select chunk.Key
         ).ToList();
 
@@ -98,7 +98,7 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private void FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
-        foreach (Vector2Int setupCoord in chunks.Select(VoxelChunkGenerator.GetWholePosition)) {
+        foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {
             for (int i = -1; i < 1; i++) {
                 for (int j = -1; j < 1; j++) {
                     Vector2Int coord = new Vector2Int(setupCoord.x + (CORE.voxelResolution * i), setupCoord.y + (CORE.voxelResolution * j));
@@ -109,13 +109,6 @@ public class InfiniteGenerator : MonoBehaviour {
                 }
             }
         }
-    }
-
-    private bool IsOutOfBounds(Vector2 chunkPosition) {
-        Vector2 p = playerPosition / CORE.voxelResolution;
-        Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
-
-        return Vector2.Distance(chunkPosition / CORE.voxelResolution, playerChunkCoord) > CORE.chunkResolution + 1;
     }
 
     private void RemoveChunk(VoxelChunk chunk) {
