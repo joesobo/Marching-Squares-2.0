@@ -9,7 +9,9 @@ public class VoxelMeshGenerator : MonoBehaviour {
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         voxelMesh = FindObjectOfType<VoxelMesh>();
+    }
 
+    private void Start() {
         voxelMesh.Setup();
     }
 
