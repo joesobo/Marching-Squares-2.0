@@ -438,7 +438,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1 &187492301
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,11 +666,12 @@ GameObject:
   m_Component:
   - component: {fileID: 779051272}
   - component: {fileID: 779051271}
+  - component: {fileID: 779051276}
   - component: {fileID: 779051273}
   - component: {fileID: 779051270}
+  - component: {fileID: 779051278}
   - component: {fileID: 779051275}
   - component: {fileID: 779051274}
-  - component: {fileID: 779051276}
   - component: {fileID: 779051277}
   m_Layer: 0
   m_Name: Marching Squares Terrain
@@ -786,6 +787,18 @@ MonoBehaviour:
   position: 0
   direction: 0
   tooltip: Main Core of Marching Square terrain generator
+--- !u!114 &779051278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779051269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d6711c1413692141a3de4a24ecf4c4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1165099377 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}

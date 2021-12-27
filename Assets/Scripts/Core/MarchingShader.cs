@@ -27,7 +27,7 @@ public class MarchingShader : MonoBehaviour {
         CreateBuffers();
     }
 
-    public void ShaderTriangulate(VoxelChunk chunk, out Vector3[] vertices, out int[] triangles, out Color32[] colors) {
+    public void ShaderTriangulate(VoxelChunk chunk, Vector3[] vertices, out int[] triangles, out Color32[] colors) {
         int numThreadsPerResolution = Mathf.CeilToInt(voxelResolution / SHADER_THREADS);
 
         triangleBuffer.SetCounterValue(0);
@@ -50,26 +50,29 @@ public class MarchingShader : MonoBehaviour {
         Triangle[] tris = new Triangle[numTris];
         triangleBuffer.GetData(tris, 0, 0, numTris);
 
-        vertices = new Vector3[numTris * 3];
+        chunk.vertices = new Vector3[numTris * 3];
         triangles = new int[numTris * 3];
         colors = new Color32[numTris * 3];
 
-        GetShaderData(numTris, tris, vertices, triangles, colors, chunk);
+        GetShaderData(numTris, tris, triangles, colors, chunk);
     }
 
-    private void GetShaderData(int numTris, IList<Triangle> tris, IList<Vector3> vertices, IList<int> triangles, IList<Color32> colors, VoxelChunk chunk) {
+    private void GetShaderData(int numTris, IList<Triangle> tris, IList<int> triangles, IList<Color32> colors, VoxelChunk chunk) {
         for (int i = 0; i < numTris; i++) {
             for (int j = 0; j < 3; j++) {
-                colors[i * 3 + j] = new Color32((byte)(tris[i].red * 255), (byte)(tris[i].green * 255),
+                int index = i * 3 + j;
+                colors[index] = new Color32((byte)(tris[i].red * 255), (byte)(tris[i].green * 255),
                     (byte)(tris[i].blue * 255), 255);
 
-                triangles[i * 3 + j] = i * 3 + j;
+                triangles[index] = index;
 
                 Vector2 vertex = tris[i][j];
                 vertex.x *= chunkResolution * voxelResolution;
                 vertex.y *= chunkResolution * voxelResolution;
 
-                vertices[i * 3 + j] = vertex;
+                chunk.vertices[index] = vertex;
+
+                AddTriangleToDictionary(index, tris[i], chunk);
             }
         }
     }
@@ -102,6 +105,15 @@ public class MarchingShader : MonoBehaviour {
             stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = chunk.xyNeighbor.voxels[0].state;
         } else {
             stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = -1;
+        }
+    }
+
+    private static void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle, VoxelChunk chunk) {
+        if (chunk.triangleDictionary.ContainsKey(chunk.vertices[vertexIndexKey])) {
+            chunk.triangleDictionary[chunk.vertices[vertexIndexKey]].Add(triangle);
+        } else {
+            List<Triangle> triangleList = new List<Triangle> { triangle };
+            chunk.triangleDictionary.Add(chunk.vertices[vertexIndexKey], triangleList);
         }
     }
 

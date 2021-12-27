@@ -11,6 +11,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
+    private ColliderGenerator colliderGenerator;
 
     private bool startGeneration;
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
@@ -21,6 +22,7 @@ public class InfiniteGenerator : MonoBehaviour {
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
         voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+        colliderGenerator = FindObjectOfType<ColliderGenerator>();
     }
 
     private void Update() {
@@ -94,6 +96,7 @@ public class InfiniteGenerator : MonoBehaviour {
         foreach (VoxelChunk chunk in chunks) {
             voxelChunkGenerator.SetupChunkNeighbors(chunk);
             voxelMeshGenerator.GenerateChunkMesh(chunk);
+            colliderGenerator.GenerateChunkColliders(chunk);
         }
     }
 
@@ -120,9 +123,22 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private VoxelChunk GetObjectPoolChunk(Vector2 chunkCoord) {
-        VoxelChunk currentChunk = CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
+        VoxelChunk currentChunk;
+
+        if (CORE.recycleableChunks.Count > 0) {
+            currentChunk = CORE.recycleableChunks.Dequeue();
+            RemoveChunkColliders(currentChunk);
+        } else {
+            currentChunk = voxelChunkGenerator.CreateChunk(chunkCoord);
+        }
         currentChunk.FillChunk();
 
         return currentChunk;
+    }
+
+    private void RemoveChunkColliders(VoxelChunk chunk) {
+        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
+            Destroy(collider);
+        }
     }
 }

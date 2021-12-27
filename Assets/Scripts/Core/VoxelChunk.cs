@@ -10,6 +10,12 @@ public class VoxelChunk : MonoBehaviour {
     [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
     [HideInInspector] public Voxel[] voxels;
+    // Storage of chunks vertices
+    [HideInInspector] public Vector3[] vertices;
+    // Storage of relationship between triangles and vertices
+    // TODO: attempt to remove the need for this
+    public Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
+    // Storage of chunks vertice reference points
     private List<GameObject> voxelReferencePoints;
 
     // The element to spawn at each reference position along the chunk
@@ -33,11 +39,21 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     public void FillChunk() {
+        ResetChunk();
+
         for (int i = 0, y = 0; y < voxelResolution; y++) {
             for (int x = 0; x < voxelResolution; x++, i++) {
                 CreateVoxelPoint(i, x, y);
             }
         }
+    }
+
+    private void ResetChunk() {
+        vertices = null;
+        triangleDictionary.Clear();
+        xNeighbor = null;
+        yNeighbor = null;
+        xyNeighbor = null;
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {

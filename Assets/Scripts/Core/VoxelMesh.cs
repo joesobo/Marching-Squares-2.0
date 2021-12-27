@@ -6,7 +6,6 @@ public class VoxelMesh : MonoBehaviour {
 
     // Mesh information storage
     private Vector2[] uvs;
-    private Vector3[] vertices;
     private int[] triangles;
     private Color32[] colors;
 
@@ -30,11 +29,11 @@ public class VoxelMesh : MonoBehaviour {
     public void TriangulateChunkMesh(VoxelChunk chunk) {
         Mesh mesh = new Mesh { name = "VoxelChunk Mesh" };
 
-        marchingShader.ShaderTriangulate(chunk, out vertices, out triangles, out colors);
+        marchingShader.ShaderTriangulate(chunk, chunk.vertices, out triangles, out colors);
 
-        mesh.vertices = vertices;
+        mesh.vertices = chunk.vertices;
         mesh.triangles = triangles;
-        mesh.uv = GetUVs();
+        mesh.uv = GetUVs(chunk.vertices);
         mesh.colors32 = colors;
         mesh.RecalculateNormals();
 
@@ -42,7 +41,7 @@ public class VoxelMesh : MonoBehaviour {
         chunk.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
 
-    private Vector2[] GetUVs() {
+    private Vector2[] GetUVs(Vector3[] vertices) {
         Vector2[] temp = new Vector2[vertices.Length];
         for (int i = 0; i < vertices.Length; i++) {
             float percentX = Mathf.InverseLerp(0, chunkResolution * voxelResolution, vertices[i].x) * textureTileAmount;
