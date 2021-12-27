@@ -41,7 +41,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
         CreateInBoundsChunks();
 
-        TriangulateNewChunks();
+        GenerateNewChunks();
     }
 
     private void RemoveOutOfBoundsChunks() {
@@ -79,18 +79,18 @@ public class InfiniteGenerator : MonoBehaviour {
         }
     }
 
-    private void TriangulateNewChunks() {
-        TriangulateList(chunksToUpdate);
+    private void GenerateNewChunks() {
+        GenerateChunkList(chunksToUpdate);
 
         FindImportantNeighbors(chunksToUpdate);
 
-        TriangulateList(neighborChunksToUpdate.Values);
+        GenerateChunkList(neighborChunksToUpdate.Values);
 
         chunksToUpdate.Clear();
         neighborChunksToUpdate.Clear();
     }
 
-    private void TriangulateList(IEnumerable<VoxelChunk> chunks) {
+    private void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             voxelChunkGenerator.SetupChunkNeighbors(chunk);
             voxelMeshGenerator.GenerateChunkMesh(chunk);
