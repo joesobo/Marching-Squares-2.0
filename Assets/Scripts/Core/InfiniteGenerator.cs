@@ -136,7 +136,7 @@ public class InfiniteGenerator : MonoBehaviour {
         return currentChunk;
     }
 
-    private void RemoveChunkColliders(VoxelChunk chunk) {
+    private static void RemoveChunkColliders(VoxelChunk chunk) {
         foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
             Destroy(collider);
         }

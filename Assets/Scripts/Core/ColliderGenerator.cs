@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Core;
 
@@ -7,9 +8,9 @@ public class ColliderGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
 
     // Stores indices of checked vertices in a chunk
-    private HashSet<int> checkedVertices = new HashSet<int>();
+    private readonly HashSet<int> checkedVertices = new HashSet<int>();
     // Stores a list of outlines made up of a list of vertice indices
-    private List<List<int>> outlines = new List<List<int>>();
+    private readonly List<List<int>> outlines = new List<List<int>>();
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -31,8 +32,8 @@ public class ColliderGenerator : MonoBehaviour {
     }
 
     private void RemoveChunkColliders(VoxelChunk chunk) {
-        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
-            Destroy(collider);
+        foreach (EdgeCollider2D edgeCollider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
+            Destroy(edgeCollider);
         }
     }
 
@@ -54,14 +55,9 @@ public class ColliderGenerator : MonoBehaviour {
 
     private void CreateColliders(VoxelChunk chunk) {
         foreach (List<int> outline in outlines) {
-            EdgeCollider2D collider = chunk.gameObject.AddComponent<EdgeCollider2D>();
-            List<Vector2> edgePoints = new List<Vector2>();
+            EdgeCollider2D edgeCollider = chunk.gameObject.AddComponent<EdgeCollider2D>();
 
-            foreach (int point in outline) {
-                edgePoints.Add(chunk.vertices[point]);
-            }
-
-            collider.points = edgePoints.ToArray();
+            edgeCollider.points = outline.Select(point => chunk.vertices[point]).Select(dummy => (Vector2)dummy).ToArray();
         }
     }
 
@@ -71,8 +67,8 @@ public class ColliderGenerator : MonoBehaviour {
         foreach (Triangle triangle in chunk.triangleDictionary[currentVertice]) {
             // Loop through all vertices of the triangle
             for (int i = 0; i < 3; i++) {
-                if (VectorsEqual(triangle[i] * CORE.voxelResolution * CORE.chunkResolution, currentVertice)) {
-                    Vector3 searchForVertex = triangle[(i + 1) % 3] * CORE.voxelResolution * CORE.chunkResolution;
+                if (VectorsEqual(triangle[i] * (CORE.voxelResolution * CORE.chunkResolution), currentVertice)) {
+                    Vector3 searchForVertex = triangle[(i + 1) % 3] * (CORE.voxelResolution * CORE.chunkResolution);
 
                     // TODO: potential refactor with dictionary
                     int foundIndex = System.Array.IndexOf(chunk.vertices, searchForVertex);
@@ -107,17 +103,14 @@ public class ColliderGenerator : MonoBehaviour {
 
         List<Triangle> startIndexTriangles = chunk.triangleDictionary[startVertice];
 
-        foreach (Triangle triangle in startIndexTriangles) {
-            // Loop through all vertices of the triangle
-            if ((VectorsEqual(triangle[0] * CORE.voxelResolution * CORE.chunkResolution, endVertice)) ||
-                (VectorsEqual(triangle[1] * CORE.voxelResolution * CORE.chunkResolution, endVertice)) ||
-                (VectorsEqual(triangle[2] * CORE.voxelResolution * CORE.chunkResolution, endVertice))
-            ) {
-                sharedTriangleCount++;
+        foreach (Triangle unused in startIndexTriangles.Where(triangle =>
+            (VectorsEqual(triangle[0] * CORE.voxelResolution * CORE.chunkResolution, endVertice)) ||
+            (VectorsEqual(triangle[1] * CORE.voxelResolution * CORE.chunkResolution, endVertice)) ||
+            (VectorsEqual(triangle[2] * CORE.voxelResolution * CORE.chunkResolution, endVertice)))) {
+            sharedTriangleCount++;
 
-                if (sharedTriangleCount > 1) {
-                    break;
-                }
+            if (sharedTriangleCount > 1) {
+                break;
             }
         }
 
