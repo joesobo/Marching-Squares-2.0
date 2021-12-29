@@ -82,14 +82,16 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private void GenerateNewChunks() {
-        GenerateChunkList(chunksToUpdate);
+        if (chunksToUpdate.Count > 0) {
+            GenerateChunkList(chunksToUpdate);
 
-        FindImportantNeighbors(chunksToUpdate);
+            FindImportantNeighbors(chunksToUpdate);
 
-        GenerateChunkList(neighborChunksToUpdate.Values);
+            // GenerateChunkList(neighborChunksToUpdate.Values);
 
-        chunksToUpdate.Clear();
-        neighborChunksToUpdate.Clear();
+            chunksToUpdate.Clear();
+            neighborChunksToUpdate.Clear();
+        }
     }
 
     private void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
@@ -102,12 +104,16 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private void FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
         foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {
-            for (int i = -1; i < 1; i++) {
-                for (int j = -1; j < 1; j++) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i == 0 && j == 0) continue;
                     Vector2Int coord = new Vector2Int(setupCoord.x + (CORE.voxelResolution * i), setupCoord.y + (CORE.voxelResolution * j));
 
                     if (!neighborChunksToUpdate.ContainsKey(coord) && CORE.existingChunks.ContainsKey(coord)) {
-                        neighborChunksToUpdate.Add(coord, CORE.existingChunks[coord]);
+                        VoxelChunk neighborChunk = CORE.existingChunks[coord];
+                        if (chunksToUpdate.Contains(neighborChunk)) continue;
+
+                        neighborChunksToUpdate.Add(coord, neighborChunk);
                     }
                 }
             }
@@ -127,7 +133,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
         if (CORE.recycleableChunks.Count > 0) {
             currentChunk = CORE.recycleableChunks.Dequeue();
-            RemoveChunkColliders(currentChunk);
+            // RemoveChunkColliders(currentChunk);
         } else {
             currentChunk = voxelChunkGenerator.CreateChunk(chunkCoord);
         }
@@ -136,9 +142,9 @@ public class InfiniteGenerator : MonoBehaviour {
         return currentChunk;
     }
 
-    private static void RemoveChunkColliders(VoxelChunk chunk) {
-        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
-            Destroy(collider);
-        }
-    }
+    // private static void RemoveChunkColliders(VoxelChunk chunk) {
+    //     foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
+    //         Destroy(collider);
+    //     }
+    // }
 }

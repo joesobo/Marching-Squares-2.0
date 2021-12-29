@@ -49,6 +49,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void ResetChunk() {
+        voxels = new Voxel[voxelResolution * voxelResolution];
         vertices = null;
         triangleDictionary.Clear();
         xNeighbor = null;
