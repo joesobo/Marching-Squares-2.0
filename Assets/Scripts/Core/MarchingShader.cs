@@ -27,7 +27,7 @@ public class MarchingShader : MonoBehaviour {
         CreateBuffers();
     }
 
-    public void ShaderTriangulate(VoxelChunk chunk, Vector3[] vertices, out int[] triangles, out Color32[] colors) {
+    public void ShaderTriangulate(VoxelChunk chunk, out int[] triangles, out Color32[] colors) {
         int numThreadsPerResolution = Mathf.CeilToInt(voxelResolution / SHADER_THREADS);
 
         triangleBuffer.SetCounterValue(0);
@@ -109,11 +109,14 @@ public class MarchingShader : MonoBehaviour {
     }
 
     private static void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle, VoxelChunk chunk) {
-        if (chunk.triangleDictionary.ContainsKey(chunk.vertices[vertexIndexKey])) {
-            chunk.triangleDictionary[chunk.vertices[vertexIndexKey]].Add(triangle);
+        Vector3 vertice = chunk.vertices[vertexIndexKey];
+
+        if (chunk.triangleDictionary.ContainsKey(vertice)) {
+            if (chunk.triangleDictionary[vertice].Contains(triangle)) return;
+            chunk.triangleDictionary[vertice].Add(triangle);
         } else {
             List<Triangle> triangleList = new List<Triangle> { triangle };
-            chunk.triangleDictionary.Add(chunk.vertices[vertexIndexKey], triangleList);
+            chunk.triangleDictionary.Add(vertice, triangleList);
         }
     }
 

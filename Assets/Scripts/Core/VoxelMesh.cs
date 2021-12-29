@@ -29,7 +29,7 @@ public class VoxelMesh : MonoBehaviour {
     public void TriangulateChunkMesh(VoxelChunk chunk) {
         Mesh mesh = new Mesh { name = "VoxelChunk Mesh" };
 
-        marchingShader.ShaderTriangulate(chunk, chunk.vertices, out triangles, out colors);
+        marchingShader.ShaderTriangulate(chunk, out triangles, out colors);
 
         mesh.vertices = chunk.vertices;
         mesh.triangles = triangles;

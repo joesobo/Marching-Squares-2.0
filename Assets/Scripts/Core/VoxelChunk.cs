@@ -11,7 +11,7 @@ public class VoxelChunk : MonoBehaviour {
     // Storage of chunks voxels
     [HideInInspector] public Voxel[] voxels;
     // Storage of chunks vertices
-    [HideInInspector] public Vector3[] vertices;
+    [HideInInspector] public Vector3[] vertices = null;
     // Storage of relationship between triangles and vertices
     // TODO: attempt to remove the need for this
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();

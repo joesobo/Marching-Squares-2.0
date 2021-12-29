@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core {
     public struct Triangle {
-    #pragma warning disable 649 // disable unassigned variable warning
+#pragma warning disable 649 // disable unassigned variable warning
         private Vector2 a;
         private Vector2 b;
         private Vector2 c;
