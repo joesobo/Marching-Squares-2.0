@@ -39,21 +39,42 @@ public class VoxelChunkGenerator : MonoBehaviour {
         int voxelResolution = CORE.voxelResolution;
         Vector2Int setupCoord = GetWholePosition(chunk);
 
-        Vector2Int pxCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
-        Vector2Int pyCoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
-        Vector2Int pxyCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
+        Vector2Int xCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
+        Vector2Int yCoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
+        Vector2Int xyCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
+
+        Vector2Int bxCoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y);
+        Vector2Int byCoord = new Vector2Int(setupCoord.x, setupCoord.y - voxelResolution);
+        Vector2Int bxyCoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y - voxelResolution);
+
+        VoxelChunk tempChunk;
 
         if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
-        if (CORE.existingChunks.ContainsKey(pxCoord)) {
-            chunk.xNeighbor = CORE.existingChunks[pxCoord];
+        if (CORE.existingChunks.ContainsKey(xCoord)) {
+            chunk.xNeighbor = CORE.existingChunks[xCoord];
         }
 
-        if (CORE.existingChunks.ContainsKey(pyCoord)) {
-            chunk.yNeighbor = CORE.existingChunks[pyCoord];
+        if (CORE.existingChunks.ContainsKey(yCoord)) {
+            chunk.yNeighbor = CORE.existingChunks[yCoord];
         }
 
-        if (CORE.existingChunks.ContainsKey(pxyCoord)) {
-            chunk.xyNeighbor = CORE.existingChunks[pxyCoord];
+        if (CORE.existingChunks.ContainsKey(xyCoord)) {
+            chunk.xyNeighbor = CORE.existingChunks[xyCoord];
+        }
+
+        if (CORE.existingChunks.ContainsKey(bxCoord)) {
+            tempChunk = CORE.existingChunks[bxCoord];
+            tempChunk.xNeighbor = chunk;
+        }
+
+        if (CORE.existingChunks.ContainsKey(byCoord)) {
+            tempChunk = CORE.existingChunks[byCoord];
+            tempChunk.yNeighbor = chunk;
+        }
+
+        if (CORE.existingChunks.ContainsKey(bxyCoord)) {
+            tempChunk = CORE.existingChunks[bxyCoord];
+            tempChunk.xyNeighbor = chunk;
         }
     }
 }
