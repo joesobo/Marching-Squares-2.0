@@ -72,9 +72,11 @@ public class MarchingShader : MonoBehaviour {
 
                 chunk.vertices[index] = vertex;
 
-                AddTriangleToDictionary(index, tris[i], chunk);
+                AddTrianglesToDictionary(index, tris[i], chunk);
             }
         }
+
+        AddVerticesToDictionary(chunk);
     }
 
     private void SetupStates(VoxelChunk chunk) {
@@ -108,7 +110,15 @@ public class MarchingShader : MonoBehaviour {
         }
     }
 
-    private static void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle, VoxelChunk chunk) {
+    private static void AddVerticesToDictionary(VoxelChunk chunk) {
+        for (int i = 0; i < chunk.vertices.Length; i++) {
+            if (!chunk.verticeDictionary.ContainsKey(chunk.vertices[i])) {
+                chunk.verticeDictionary.Add(chunk.vertices[i], i);
+            }
+        }
+    }
+
+    private static void AddTrianglesToDictionary(int vertexIndexKey, Triangle triangle, VoxelChunk chunk) {
         Vector3 vertice = chunk.vertices[vertexIndexKey];
 
         if (chunk.triangleDictionary.ContainsKey(vertice)) {
@@ -119,6 +129,7 @@ public class MarchingShader : MonoBehaviour {
             chunk.triangleDictionary.Add(vertice, triangleList);
         }
     }
+
 
     private void CreateBuffers() {
         int numPoints = (voxelResolution + 1) * (voxelResolution + 1);

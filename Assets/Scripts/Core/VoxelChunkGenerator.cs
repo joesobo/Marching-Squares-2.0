@@ -39,17 +39,20 @@ public class VoxelChunkGenerator : MonoBehaviour {
         int voxelResolution = CORE.voxelResolution;
         Vector2Int setupCoord = GetWholePosition(chunk);
 
+        if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
+
+        // Setup the chunk's neighbors
         Vector2Int xCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
         Vector2Int yCoord = new Vector2Int(setupCoord.x, setupCoord.y + voxelResolution);
         Vector2Int xyCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y + voxelResolution);
 
+        // Setup the neighbors neighbor value with this chunk
         Vector2Int bxCoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y);
         Vector2Int byCoord = new Vector2Int(setupCoord.x, setupCoord.y - voxelResolution);
         Vector2Int bxyCoord = new Vector2Int(setupCoord.x - voxelResolution, setupCoord.y - voxelResolution);
 
         VoxelChunk tempChunk;
 
-        if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
         if (CORE.existingChunks.ContainsKey(xCoord)) {
             chunk.xNeighbor = CORE.existingChunks[xCoord];
         }

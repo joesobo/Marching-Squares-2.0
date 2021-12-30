@@ -75,10 +75,7 @@ public class ColliderGenerator : MonoBehaviour {
             for (int i = 0; i < 3; i++) {
                 if (VectorsEqual(triangle[i] * scaleResolution, currentVertice)) {
                     Vector3 searchForVertex = triangle[(i + 1) % 3] * scaleResolution;
-
-                    // TODO: potential refactor with dictionary
-                    int foundIndex = System.Array.IndexOf(chunk.vertices, searchForVertex);
-                    if (foundIndex == -1) continue;
+                    int foundIndex = chunk.verticeDictionary[searchForVertex];
 
                     if (!checkedVertices.Contains(foundIndex) && IsOutlineEdge(index, foundIndex, chunk)) {
                         return foundIndex;
