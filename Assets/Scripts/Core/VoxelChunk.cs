@@ -15,7 +15,7 @@ public class VoxelChunk : MonoBehaviour {
     // Storage of relationship between triangles and vertices
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
     // Storage of relationship between vertices and indices
-    public Dictionary<Vector3, int> verticeDictionary = new Dictionary<Vector3, int>();
+    public readonly Dictionary<Vector3, int> verticeDictionary = new Dictionary<Vector3, int>();
     // Storage of chunks vertice reference points
     private List<GameObject> voxelReferencePoints;
 

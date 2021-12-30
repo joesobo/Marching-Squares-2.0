@@ -129,22 +129,9 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private VoxelChunk GetObjectPoolChunk(Vector2 chunkCoord) {
-        VoxelChunk currentChunk;
-
-        if (CORE.recycleableChunks.Count > 0) {
-            currentChunk = CORE.recycleableChunks.Dequeue();
-            // RemoveChunkColliders(currentChunk);
-        } else {
-            currentChunk = voxelChunkGenerator.CreateChunk(chunkCoord);
-        }
+        VoxelChunk currentChunk = CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
         currentChunk.FillChunk();
 
         return currentChunk;
     }
-
-    // private static void RemoveChunkColliders(VoxelChunk chunk) {
-    //     foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
-    //         Destroy(collider);
-    //     }
-    // }
 }

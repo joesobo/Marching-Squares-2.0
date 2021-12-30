@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -37,7 +36,7 @@ public class ColliderGenerator : MonoBehaviour {
         outlines.Clear();
     }
 
-    private void RemoveChunkColliders(VoxelChunk chunk) {
+    private static void RemoveChunkColliders(VoxelChunk chunk) {
         foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
             Destroy(collider);
         }

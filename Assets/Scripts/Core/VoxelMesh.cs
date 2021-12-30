@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelMesh : MonoBehaviour {
@@ -41,9 +42,9 @@ public class VoxelMesh : MonoBehaviour {
         chunk.GetComponent<MeshRenderer>().sharedMaterial = material;
     }
 
-    private Vector2[] GetUVs(Vector3[] vertices) {
-        Vector2[] temp = new Vector2[vertices.Length];
-        for (int i = 0; i < vertices.Length; i++) {
+    private Vector2[] GetUVs(IList<Vector3> vertices) {
+        Vector2[] temp = new Vector2[vertices.Count];
+        for (int i = 0; i < vertices.Count; i++) {
             float percentX = Mathf.InverseLerp(0, chunkResolution * voxelResolution, vertices[i].x) * textureTileAmount;
             float percentY = Mathf.InverseLerp(0, chunkResolution * voxelResolution, vertices[i].y) * textureTileAmount;
             temp[i] = new Vector2(percentX, percentY);
