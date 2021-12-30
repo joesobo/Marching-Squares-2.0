@@ -77,6 +77,8 @@ public class ColliderGenerator : MonoBehaviour {
                     Vector3 searchForVertex = triangle[(i + 1) % 3] * scaleResolution;
                     int foundIndex = chunk.verticeDictionary[searchForVertex];
 
+                    if (foundIndex == -1) continue;
+
                     if (!checkedVertices.Contains(foundIndex) && IsOutlineEdge(index, foundIndex, chunk)) {
                         return foundIndex;
                     }
