@@ -6,10 +6,10 @@ using Core;
 public class ColliderGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
 
-    // Stores indices of checked vertices in a chunk
-    private readonly HashSet<int> checkedVertices = new HashSet<int>();
-    // Stores a list of outlines made up of a list of vertice indices
-    private readonly List<List<int>> outlines = new List<List<int>>();
+    // Stores the checked vertices in a chunk
+    private readonly HashSet<Vector3> checkedVertices = new HashSet<Vector3>();
+    // Stores a list of outlines made up of a list of vertices
+    private readonly List<List<Vector3>> outlines = new List<List<Vector3>>();
     // Resolution to scale triangles to chunkSpace
     private int scaleResolution;
 
@@ -43,74 +43,66 @@ public class ColliderGenerator : MonoBehaviour {
     }
 
     private void CalculateChunkOutlines(VoxelChunk chunk) {
-        for (int index = 0; index < chunk.vertices.Length; index++) {
-            if (checkedVertices.Contains(index)) continue;
+        foreach (Vector3 vertex in chunk.vertices) {
+            if (checkedVertices.Contains(vertex)) continue;
 
-            int newOutlineIndex = GetNextVertexIndex(chunk, index);
-            if (newOutlineIndex == -1) continue;
+            Vector3? newOutlineVertex = GetNextVertex(chunk, vertex);
+            if (newOutlineVertex == null) continue;
 
-            checkedVertices.Add(index);
+            checkedVertices.Add(vertex);
 
-            List<int> newOutline = new List<int> { index };
+            List<Vector3> newOutline = new List<Vector3> { vertex };
             outlines.Add(newOutline);
-            FollowOutline(chunk, newOutlineIndex);
-            outlines[outlines.Count - 1].Add(index);
+            FollowOutline(chunk, (Vector3)newOutlineVertex);
+            outlines[outlines.Count - 1].Add(vertex);
         }
     }
 
     private void CreateColliders(VoxelChunk chunk) {
-        foreach (List<int> outline in outlines) {
+        foreach (List<Vector3> outline in outlines) {
             EdgeCollider2D edgeCollider = chunk.gameObject.AddComponent<EdgeCollider2D>();
 
-            edgeCollider.points = outline.Select(point => chunk.vertices[point]).Select(dir => (Vector2)dir).ToArray();
+            edgeCollider.points = outline.Select(dir => (Vector2)dir).ToArray();
         }
     }
 
-    private int GetNextVertexIndex(VoxelChunk chunk, int index) {
-        Vector2 currentVertice = chunk.vertices[index];
-
-        foreach (Triangle triangle in chunk.triangleDictionary[currentVertice]) {
+    private Vector3? GetNextVertex(VoxelChunk chunk, Vector3 vertex) {
+        foreach (Triangle triangle in chunk.triangleDictionary[vertex]) {
             // Loop through all vertices of the triangle
             for (int i = 0; i < 3; i++) {
-                if (VectorsEqual(triangle[i] * scaleResolution, currentVertice)) {
-                    Vector3 searchForVertex = triangle[(i + 1) % 3] * scaleResolution;
-                    int foundIndex = chunk.verticeDictionary[searchForVertex];
+                if (VectorsEqual(triangle[i] * scaleResolution, vertex)) {
+                    Vector3 searchForVertex = triangle[(i + 1) % 3];
+                    Vector3 scaledVertex = searchForVertex * scaleResolution;
 
-                    if (foundIndex == -1) continue;
-
-                    if (!checkedVertices.Contains(foundIndex) && IsOutlineEdge(index, foundIndex, chunk)) {
-                        return foundIndex;
+                    if (!checkedVertices.Contains(scaledVertex) && IsOutlineEdge(vertex, searchForVertex, chunk)) {
+                        return scaledVertex;
                     }
                 }
             }
         }
 
-        return -1;
+        return null;
     }
 
-    private void FollowOutline(VoxelChunk chunk, int index) {
-        outlines[outlines.Count - 1].Add(index);
-        checkedVertices.Add(index);
+    private void FollowOutline(VoxelChunk chunk, Vector3 newVertex) {
+        outlines[outlines.Count - 1].Add(newVertex);
+        checkedVertices.Add(newVertex);
 
-        int nextIndex = GetNextVertexIndex(chunk, index);
-
-        if (nextIndex != -1) {
-            FollowOutline(chunk, nextIndex);
+        Vector3? nextVertex = GetNextVertex(chunk, newVertex);
+        if (nextVertex != null) {
+            FollowOutline(chunk, (Vector3)nextVertex);
         }
     }
 
-    private bool IsOutlineEdge(int startIndex, int endIndex, VoxelChunk chunk) {
+    private static bool IsOutlineEdge(Vector3 startVertice, Vector3 endVertice, VoxelChunk chunk) {
         int sharedTriangleCount = 0;
-
-        Vector2 startVertice = chunk.vertices[startIndex];
-        Vector2 endVertice = chunk.vertices[endIndex];
 
         List<Triangle> startIndexTriangles = chunk.triangleDictionary[startVertice];
 
         foreach (Triangle unused in startIndexTriangles.Where(triangle =>
-            (VectorsEqual(triangle[0] * scaleResolution, endVertice)) ||
-            (VectorsEqual(triangle[1] * scaleResolution, endVertice)) ||
-            (VectorsEqual(triangle[2] * scaleResolution, endVertice)))) {
+            (VectorsEqual(triangle[0], endVertice)) ||
+            (VectorsEqual(triangle[1], endVertice)) ||
+            (VectorsEqual(triangle[2], endVertice)))) {
             sharedTriangleCount++;
 
             if (sharedTriangleCount > 1) {
