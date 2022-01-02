@@ -102,9 +102,9 @@ public class InfiniteGenerator : MonoBehaviour {
         List<VoxelChunk> neighborChunksToUpdate = new List<VoxelChunk>();
 
         foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {
-            // Check all 8 neighbors existing and add to list if not already in list
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
+            // Checks if bottom-left 3 neighbors are existing and adds to list if not already in list
+            for (int i = -1; i < 1; i++) {
+                for (int j = -1; j < 1; j++) {
                     if (i == 0 && j == 0) continue;
 
                     Vector2Int neighborCoord = new Vector2Int(setupCoord.x + (voxelResolution * i), setupCoord.y + (voxelResolution * j));
