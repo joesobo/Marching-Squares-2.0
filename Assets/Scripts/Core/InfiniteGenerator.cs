@@ -5,6 +5,7 @@ using static ChunkHelper;
 
 public class InfiniteGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
+    private int voxelResolution, chunkResolution;
 
     private GameObject player;
     private Vector2 playerPosition;
@@ -15,7 +16,6 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private bool startGeneration;
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
-    private readonly Dictionary<Vector2Int, VoxelChunk> neighborChunksToUpdate = new Dictionary<Vector2Int, VoxelChunk>();
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -23,10 +23,13 @@ public class InfiniteGenerator : MonoBehaviour {
         voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
         voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
         colliderGenerator = FindObjectOfType<ColliderGenerator>();
+        this.voxelResolution = CORE.voxelResolution;
+        this.chunkResolution = CORE.chunkResolution;
     }
 
     private void Update() {
         if (startGeneration && CORE.doInfiniteGeneration) {
+            playerPosition = player.transform.position;
             UpdateAroundPlayer();
         }
     }
@@ -37,11 +40,9 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private void UpdateAroundPlayer() {
-        playerPosition = player.transform.position;
-
         RemoveOutOfBoundsChunks();
 
-        CreateInBoundsChunks();
+        GetInBoundsChunks();
 
         GenerateNewChunks();
     }
@@ -52,19 +53,17 @@ public class InfiniteGenerator : MonoBehaviour {
             from chunk
             in CORE.existingChunks
             where chunk.Value != null
-            where IsOutOfBounds(playerPosition, chunk.Value.transform.position, CORE.voxelResolution, CORE.chunkResolution)
+            where IsOutOfBounds(playerPosition, chunk.Value.transform.position, voxelResolution, chunkResolution)
             select chunk.Key
         ).ToList();
 
         // Remove chunks
         foreach (Vector2Int position in removeChunkPositionList) {
-            RemoveChunk(CORE.existingChunks[position]);
+            CORE.RemoveChunk(CORE.existingChunks[position]);
         }
     }
 
-    private void CreateInBoundsChunks() {
-        int chunkResolution = CORE.chunkResolution;
-        int voxelResolution = CORE.voxelResolution;
+    private void GetInBoundsChunks() {
         Vector2 p = playerPosition / voxelResolution;
         Vector2 playerChunkCoord = new Vector2Int(Mathf.RoundToInt(p.x), Mathf.RoundToInt(p.y));
 
@@ -83,13 +82,9 @@ public class InfiniteGenerator : MonoBehaviour {
     private void GenerateNewChunks() {
         if (chunksToUpdate.Count > 0) {
             GenerateChunkList(chunksToUpdate);
-
-            FindImportantNeighbors(chunksToUpdate);
-
-            GenerateChunkList(neighborChunksToUpdate.Values);
+            GenerateChunkList(FindImportantNeighbors(chunksToUpdate));
 
             chunksToUpdate.Clear();
-            neighborChunksToUpdate.Clear();
         }
     }
 
@@ -103,30 +98,26 @@ public class InfiniteGenerator : MonoBehaviour {
         }
     }
 
-    private void FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
+    private IEnumerable<VoxelChunk> FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
+        List<VoxelChunk> neighborChunksToUpdate = new List<VoxelChunk>();
+
         foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {
+            // Check all 8 neighbors existing and add to list if not already in list
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
                     if (i == 0 && j == 0) continue;
-                    Vector2Int coord = new Vector2Int(setupCoord.x + (CORE.voxelResolution * i), setupCoord.y + (CORE.voxelResolution * j));
 
-                    if (neighborChunksToUpdate.ContainsKey(coord) || !CORE.existingChunks.ContainsKey(coord)) continue;
-                    VoxelChunk neighborChunk = CORE.existingChunks[coord];
-                    if (chunksToUpdate.Contains(neighborChunk)) continue;
+                    Vector2Int neighborCoord = new Vector2Int(setupCoord.x + (voxelResolution * i), setupCoord.y + (voxelResolution * j));
+                    if (!CORE.existingChunks.ContainsKey(neighborCoord)) continue;
 
-                    neighborChunksToUpdate.Add(coord, neighborChunk);
+                    VoxelChunk neighborChunk = CORE.existingChunks[neighborCoord];
+                    if (chunksToUpdate.Contains(neighborChunk) || neighborChunksToUpdate.Contains(neighborChunk)) continue;
+
+                    neighborChunksToUpdate.Add(neighborChunk);
                 }
             }
         }
-    }
 
-    private void RemoveChunk(VoxelChunk chunk) {
-        Vector3 position = chunk.transform.position;
-        Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
-        CORE.existingChunks.Remove(chunkCoord);
-        chunk.ResetChunk();
-        chunk.RemoveChunkColliders();
-        CORE.recycleableChunks.Enqueue(chunk);
-        chunk.gameObject.SetActive(false);
+        return neighborChunksToUpdate;
     }
 }
