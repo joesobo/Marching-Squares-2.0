@@ -86,9 +86,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
             FindImportantNeighbors(chunksToUpdate);
 
-            if (neighborChunksToUpdate.Count > 0) {
-                GenerateChunkList(neighborChunksToUpdate.Values);
-            }
+            GenerateChunkList(neighborChunksToUpdate.Values);
 
             chunksToUpdate.Clear();
             neighborChunksToUpdate.Clear();
@@ -99,6 +97,8 @@ public class InfiniteGenerator : MonoBehaviour {
         foreach (VoxelChunk chunk in chunks) {
             voxelChunkGenerator.SetupChunkNeighbors(chunk);
             voxelMeshGenerator.GenerateChunkMesh(chunk);
+            // Remove colliders from chunk if regenerating its colliders
+            chunk.RemoveChunkColliders();
             colliderGenerator.GenerateChunkColliders(chunk);
         }
     }
@@ -110,12 +110,11 @@ public class InfiniteGenerator : MonoBehaviour {
                     if (i == 0 && j == 0) continue;
                     Vector2Int coord = new Vector2Int(setupCoord.x + (CORE.voxelResolution * i), setupCoord.y + (CORE.voxelResolution * j));
 
-                    if (!neighborChunksToUpdate.ContainsKey(coord) && CORE.existingChunks.ContainsKey(coord)) {
-                        VoxelChunk neighborChunk = CORE.existingChunks[coord];
-                        if (chunksToUpdate.Contains(neighborChunk)) continue;
+                    if (neighborChunksToUpdate.ContainsKey(coord) || !CORE.existingChunks.ContainsKey(coord)) continue;
+                    VoxelChunk neighborChunk = CORE.existingChunks[coord];
+                    if (chunksToUpdate.Contains(neighborChunk)) continue;
 
-                        neighborChunksToUpdate.Add(coord, neighborChunk);
-                    }
+                    neighborChunksToUpdate.Add(coord, neighborChunk);
                 }
             }
         }
