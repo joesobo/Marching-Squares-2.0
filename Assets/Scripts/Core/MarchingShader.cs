@@ -85,23 +85,22 @@ public class MarchingShader : MonoBehaviour {
         }
 
         for (int y = 0; y < voxelResolution; y++) {
-            if (chunk.xNeighbor) {
-                stateValues[y * voxelResolution + voxelResolution + y] =
-                    chunk.xNeighbor.voxels[y * voxelResolution].state;
+            if (chunk.xNeighbor && chunk.xNeighbor.voxels != null) {
+                stateValues[y * voxelResolution + voxelResolution + y] = chunk.xNeighbor.voxels[y * voxelResolution].state;
             } else {
                 stateValues[y * voxelResolution + voxelResolution + y] = -1;
             }
         }
 
         for (int x = 0; x < voxelResolution; x++) {
-            if (chunk.yNeighbor) {
+            if (chunk.yNeighbor && chunk.yNeighbor.voxels != null) {
                 stateValues[(voxelResolution + 1) * voxelResolution + x] = chunk.yNeighbor.voxels[x].state;
             } else {
                 stateValues[(voxelResolution + 1) * voxelResolution + x] = -1;
             }
         }
 
-        if (chunk.xyNeighbor) {
+        if (chunk.xyNeighbor && chunk.xyNeighbor.voxels != null) {
             stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = chunk.xyNeighbor.voxels[0].state;
         } else {
             stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = -1;

@@ -7,11 +7,11 @@ public class VoxelChunk : MonoBehaviour {
     private CoreScriptableObject CORE;
 
     // Reference to neighbor chunks for edge voxel information
-    [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
+    public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
-    [HideInInspector] public Voxel[] voxels;
+    public Voxel[] voxels;
     // Storage of chunks vertices
-    [HideInInspector] public Vector3[] vertices = null;
+    public Vector3[] vertices = null;
     // Storage of relationship between triangles and vertices
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
     // Storage of chunks vertice reference points
@@ -38,7 +38,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     public void FillChunk() {
-        ResetChunk();
+        voxels = new Voxel[voxelResolution * voxelResolution];
 
         for (int i = 0, y = 0; y < voxelResolution; y++) {
             for (int x = 0; x < voxelResolution; x++, i++) {
@@ -47,8 +47,8 @@ public class VoxelChunk : MonoBehaviour {
         }
     }
 
-    private void ResetChunk() {
-        voxels = new Voxel[voxelResolution * voxelResolution];
+    public void ResetChunk() {
+        voxels = null;
         vertices = null;
         triangleDictionary.Clear();
         xNeighbor = null;

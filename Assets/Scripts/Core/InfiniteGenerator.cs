@@ -75,7 +75,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
                 if (CORE.existingChunks.ContainsKey(chunkPosition)) continue;
 
-                VoxelChunk currentChunk = GetObjectPoolChunk(chunkPosition);
+                VoxelChunk currentChunk = GetNextChunk(chunkPosition);
                 chunksToUpdate.Add(voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition));
             }
         }
@@ -124,14 +124,19 @@ public class InfiniteGenerator : MonoBehaviour {
         Vector3 position = chunk.transform.position;
         Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
         CORE.existingChunks.Remove(chunkCoord);
+        chunk.ResetChunk();
+        RemoveChunkColliders(chunk);
         CORE.recycleableChunks.Enqueue(chunk);
         chunk.gameObject.SetActive(false);
     }
 
-    private VoxelChunk GetObjectPoolChunk(Vector2 chunkCoord) {
-        VoxelChunk currentChunk = CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
-        currentChunk.FillChunk();
+    private static void RemoveChunkColliders(VoxelChunk chunk) {
+        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
+            Destroy(collider);
+        }
+    }
 
-        return currentChunk;
+    private VoxelChunk GetNextChunk(Vector2 chunkCoord) {
+        return CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
     }
 }
