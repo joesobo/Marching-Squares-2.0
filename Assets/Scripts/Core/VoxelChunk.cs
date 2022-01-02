@@ -7,11 +7,11 @@ public class VoxelChunk : MonoBehaviour {
     private CoreScriptableObject CORE;
 
     // Reference to neighbor chunks for edge voxel information
-    public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
+    [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
-    public Voxel[] voxels;
+    [HideInInspector] public Voxel[] voxels;
     // Storage of chunks vertices
-    public Vector3[] vertices = null;
+    [HideInInspector] public Vector3[] vertices = null;
     // Storage of relationship between triangles and vertices
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
     // Storage of chunks vertice reference points
@@ -35,7 +35,7 @@ public class VoxelChunk : MonoBehaviour {
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
-        
+
         name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
         transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
         FillChunk();
@@ -50,7 +50,7 @@ public class VoxelChunk : MonoBehaviour {
         yNeighbor = null;
         xyNeighbor = null;
     }
-    
+
     private void FillChunk() {
         voxels = new Voxel[voxelResolution * voxelResolution];
 
@@ -97,5 +97,11 @@ public class VoxelChunk : MonoBehaviour {
         Gizmos.color = Color.red;
         Vector3 position = transform.position;
         Gizmos.DrawWireCube(new Vector3(position.x + halfSize, position.y + halfSize), Vector3.one * voxelResolution);
+    }
+
+    public void RemoveChunkColliders() {
+        foreach (EdgeCollider2D collider in this.gameObject.GetComponents<EdgeCollider2D>()) {
+            Destroy(collider);
+        }
     }
 }

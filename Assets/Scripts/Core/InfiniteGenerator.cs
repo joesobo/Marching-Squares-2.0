@@ -124,14 +124,8 @@ public class InfiniteGenerator : MonoBehaviour {
         Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
         CORE.existingChunks.Remove(chunkCoord);
         chunk.ResetChunk();
-        RemoveChunkColliders(chunk);
+        chunk.RemoveChunkColliders();
         CORE.recycleableChunks.Enqueue(chunk);
         chunk.gameObject.SetActive(false);
-    }
-
-    private static void RemoveChunkColliders(VoxelChunk chunk) {
-        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
-            Destroy(collider);
-        }
     }
 }

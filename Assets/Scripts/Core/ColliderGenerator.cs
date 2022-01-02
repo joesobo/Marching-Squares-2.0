@@ -20,7 +20,7 @@ public class ColliderGenerator : MonoBehaviour {
     }
 
     public void GenerateChunkColliders(VoxelChunk chunk) {
-        RemoveChunkColliders(chunk);
+        chunk.RemoveChunkColliders();
         // Reset checked vertices
         ResetStores();
 
@@ -34,12 +34,6 @@ public class ColliderGenerator : MonoBehaviour {
     private void ResetStores() {
         checkedVertices.Clear();
         outlines.Clear();
-    }
-
-    private static void RemoveChunkColliders(VoxelChunk chunk) {
-        foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
-            Destroy(collider);
-        }
     }
 
     private void CalculateChunkOutlines(VoxelChunk chunk) {
