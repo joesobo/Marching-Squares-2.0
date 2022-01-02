@@ -29,22 +29,17 @@ public class VoxelChunk : MonoBehaviour {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
-    public void SetupChunk(GameObject voxelReferencePointsPrefab) {
+    public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
         voxelRefPointsPrefab = voxelReferencePointsPrefab;
         voxelResolution = CORE.voxelResolution;
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
-    }
-
-    public void FillChunk() {
-        voxels = new Voxel[voxelResolution * voxelResolution];
-
-        for (int i = 0, y = 0; y < voxelResolution; y++) {
-            for (int x = 0; x < voxelResolution; x++, i++) {
-                CreateVoxelPoint(i, x, y);
-            }
-        }
+        
+        name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
+        transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
+        FillChunk();
+        gameObject.SetActive(true);
     }
 
     public void ResetChunk() {
@@ -54,6 +49,16 @@ public class VoxelChunk : MonoBehaviour {
         xNeighbor = null;
         yNeighbor = null;
         xyNeighbor = null;
+    }
+    
+    private void FillChunk() {
+        voxels = new Voxel[voxelResolution * voxelResolution];
+
+        for (int i = 0, y = 0; y < voxelResolution; y++) {
+            for (int x = 0; x < voxelResolution; x++, i++) {
+                CreateVoxelPoint(i, x, y);
+            }
+        }
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {

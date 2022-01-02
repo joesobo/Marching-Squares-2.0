@@ -75,8 +75,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
                 if (CORE.existingChunks.ContainsKey(chunkPosition)) continue;
 
-                VoxelChunk currentChunk = GetNextChunk(chunkPosition);
-                chunksToUpdate.Add(voxelChunkGenerator.CreatePoolChunk(currentChunk, chunkPosition));
+                chunksToUpdate.Add(voxelChunkGenerator.GetNewChunk(chunkPosition));
             }
         }
     }
@@ -134,9 +133,5 @@ public class InfiniteGenerator : MonoBehaviour {
         foreach (EdgeCollider2D collider in chunk.gameObject.GetComponents<EdgeCollider2D>()) {
             Destroy(collider);
         }
-    }
-
-    private VoxelChunk GetNextChunk(Vector2 chunkCoord) {
-        return CORE.recycleableChunks.Count > 0 ? CORE.recycleableChunks.Dequeue() : voxelChunkGenerator.CreateChunk(chunkCoord);
     }
 }

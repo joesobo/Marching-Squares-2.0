@@ -13,28 +13,25 @@ public class VoxelChunkGenerator : MonoBehaviour {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
-    public VoxelChunk CreateChunk(Vector2 chunkPosition) {
+    private VoxelChunk CreateChunk(Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
         VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
-        chunk.name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
-        chunk.FillChunk();
-        chunk.SetupChunk(voxelReferencePointsPrefab);
+        chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
 
         CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
         return chunk;
     }
 
-    public VoxelChunk CreatePoolChunk(VoxelChunk chunk, Vector2Int chunkPosition) {
-        chunk.name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
-        chunk.FillChunk();
-        chunk.gameObject.SetActive(true);
-        chunk.transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
+    private VoxelChunk CreatePoolChunk(VoxelChunk chunk, Vector2 chunkPosition) {
+        chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
         chunk.ResetReferencePoints();
 
-        if (!CORE.existingChunks.ContainsKey(chunkPosition)) {
-            CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
-        }
+        CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
         return chunk;
+    }
+
+    public VoxelChunk GetNewChunk(Vector2 chunkPosition) {
+        return CORE.recycleableChunks.Count > 0 ? CreatePoolChunk(CORE.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(chunkPosition);
     }
 
     public void SetupChunkNeighbors(VoxelChunk chunk) {
