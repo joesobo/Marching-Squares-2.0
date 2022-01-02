@@ -88,12 +88,13 @@ public class ColliderGenerator : MonoBehaviour {
         }
     }
 
+    // Outline edges are a pair of vertices whos edges are only contains in one triangle
     private static bool IsOutlineEdge(Vector3 startVertice, Vector3 endVertice, VoxelChunk chunk) {
         int sharedTriangleCount = 0;
 
-        List<Triangle> startIndexTriangles = chunk.triangleDictionary[startVertice];
+        List<Triangle> startVerticeTriangles = chunk.triangleDictionary[startVertice];
 
-        foreach (Triangle unused in startIndexTriangles.Where(triangle =>
+        foreach (Triangle unused in startVerticeTriangles.Where(triangle =>
             (VectorsEqual(triangle[0], endVertice)) ||
             (VectorsEqual(triangle[1], endVertice)) ||
             (VectorsEqual(triangle[2], endVertice)))) {

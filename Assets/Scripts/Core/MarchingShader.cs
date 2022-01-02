@@ -50,6 +50,7 @@ public class MarchingShader : MonoBehaviour {
         Triangle[] tris = new Triangle[numTris];
         triangleBuffer.GetData(tris, 0, 0, numTris);
 
+        chunk.triangleDictionary.Clear();
         chunk.vertices = new Vector3[numTris * 3];
         triangles = new int[numTris * 3];
         colors = new Color32[numTris * 3];
@@ -72,7 +73,7 @@ public class MarchingShader : MonoBehaviour {
 
                 chunk.vertices[index] = vertex;
 
-                AddTrianglesToDictionary(index, tris[i], chunk);
+                AddTrianglesToDictionary(chunk.vertices[index], tris[i], chunk);
             }
         }
     }
@@ -107,11 +108,8 @@ public class MarchingShader : MonoBehaviour {
         }
     }
 
-    private static void AddTrianglesToDictionary(int vertexIndexKey, Triangle triangle, VoxelChunk chunk) {
-        Vector3 vertice = chunk.vertices[vertexIndexKey];
-
+    private static void AddTrianglesToDictionary(Vector3 vertice, Triangle triangle, VoxelChunk chunk) {
         if (chunk.triangleDictionary.ContainsKey(vertice)) {
-            if (chunk.triangleDictionary[vertice].Contains(triangle)) return;
             chunk.triangleDictionary[vertice].Add(triangle);
         } else {
             List<Triangle> triangleList = new List<Triangle> { triangle };

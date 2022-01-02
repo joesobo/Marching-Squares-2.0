@@ -86,7 +86,9 @@ public class InfiniteGenerator : MonoBehaviour {
 
             FindImportantNeighbors(chunksToUpdate);
 
-            GenerateChunkList(neighborChunksToUpdate.Values);
+            if (neighborChunksToUpdate.Count > 0) {
+                GenerateChunkList(neighborChunksToUpdate.Values);
+            }
 
             chunksToUpdate.Clear();
             neighborChunksToUpdate.Clear();

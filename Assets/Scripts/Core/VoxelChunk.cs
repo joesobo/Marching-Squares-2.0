@@ -7,11 +7,11 @@ public class VoxelChunk : MonoBehaviour {
     private CoreScriptableObject CORE;
 
     // Reference to neighbor chunks for edge voxel information
-    [HideInInspector] public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
+    public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
-    [HideInInspector] public Voxel[] voxels;
+    public Voxel[] voxels;
     // Storage of chunks vertices
-    [HideInInspector] public Vector3[] vertices = null;
+    public Vector3[] vertices = null;
     // Storage of relationship between triangles and vertices
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
     // Storage of chunks vertice reference points
@@ -100,8 +100,8 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     public void RemoveChunkColliders() {
-        foreach (EdgeCollider2D collider in this.gameObject.GetComponents<EdgeCollider2D>()) {
-            Destroy(collider);
+        foreach (EdgeCollider2D chunkCollider in gameObject.GetComponents<EdgeCollider2D>()) {
+            Destroy(chunkCollider);
         }
     }
 }
