@@ -29,24 +29,40 @@ int indexFromCoord(int x, int y) {
   return y * _VoxelResolution + x + y;
 }
 
-void addTriangle(float2 a, float2 b, float2 c, Color col) {
+void addTriangle(float2 aMidPoint, float2 bMidPoint, float2 cMidPoint, Color col) {
   Triangle tri;
-  tri.vertexA = a;
-  tri.vertexB = b;
-  tri.vertexC = c; 
+  tri.vertexA = aMidPoint;
+  tri.vertexB = bMidPoint;
+  tri.vertexC = cMidPoint;
   tri.red = col.red;
   tri.green = col.green;
   tri.blue = col.blue;
   _Triangles.Append(tri);
 }
 
-bool isMultiMaterial(float a, float b, float c, float d) {
-  if (a == 0 && b == 0 && c == 0 && d == 0) {
+
+void GetCornerStates(int2 uv, out int cornerStates[4]) {
+  cornerStates[0] = _States[indexFromCoord(uv.x, uv.y)];
+  cornerStates[1] = _States[indexFromCoord(uv.x + 1, uv.y)];
+  cornerStates[2] = _States[indexFromCoord(uv.x, uv.y + 1)];
+  cornerStates[3] = _States[indexFromCoord(uv.x + 1, uv.y + 1)];
+}
+
+bool isMultiMaterial(int2 uv) {
+  int squareCornerStates[4];
+  GetCornerStates(uv, squareCornerStates);
+
+  int aMidPoint = squareCornerStates[0];
+  int bMidPoint = squareCornerStates[1];
+  int cMidPoint = squareCornerStates[2];
+  int dMidPoint = squareCornerStates[3];
+
+  if (aMidPoint == 0 && bMidPoint == 0 && cMidPoint == 0 && dMidPoint == 0) {
     return false;
   }
 
-  float value = a > 0 ? a : b > 0 ? b : c > 0 ? c : d;
-  if ((a == value || a == 0) && (b == value || b == 0) && (c == value || c == 0) && (d == value || d == 0)) {
+  float value = aMidPoint > 0 ? aMidPoint : bMidPoint > 0 ? bMidPoint : cMidPoint > 0 ? cMidPoint : dMidPoint;
+  if ((aMidPoint == value || aMidPoint == 0) && (bMidPoint == value || bMidPoint == 0) && (cMidPoint == value || cMidPoint == 0) && (dMidPoint == value || dMidPoint == 0)) {
     return false;
   }
 
@@ -58,315 +74,386 @@ Color colorByState(float state) {
   col.red = state / 255.0;
   col.blue = 0;
   col.green = 0;
-   
+
   return col;
 }
 
+int GetCellType(int2 uv) {
+  int squareCornerStates[4];
+  GetCornerStates(uv, squareCornerStates);
+
+  // find voxel cell type based on corner states
+  int cellType = 0;
+
+  if (squareCornerStates[0] > 0) cellType |= 1;
+  if (squareCornerStates[1] > 0) cellType |= 2;
+  if (squareCornerStates[2] > 0) cellType |= 4;
+  if (squareCornerStates[3] > 0) cellType |= 8;
+
+  // handle extra states for multi-material voxels
+  if(cellType >= 15) {
+    if (squareCornerStates[0] != squareCornerStates[1] && squareCornerStates[0] != squareCornerStates[2] && squareCornerStates[0] != squareCornerStates[3] && squareCornerStates[1] == squareCornerStates[2] && squareCornerStates[1] == squareCornerStates[3]) {
+    cellType = 16;
+    }
+    else if (squareCornerStates[1] != squareCornerStates[0] && squareCornerStates[1] != squareCornerStates[2] && squareCornerStates[1] != squareCornerStates[3] && squareCornerStates[0] == squareCornerStates[2] && squareCornerStates[0] == squareCornerStates[3]) {
+    cellType = 17;
+    }
+    else if (squareCornerStates[2] != squareCornerStates[3] && squareCornerStates[2] != squareCornerStates[0] && squareCornerStates[2] != squareCornerStates[1] && squareCornerStates[0] == squareCornerStates[1] && squareCornerStates[0] == squareCornerStates[3]) {
+    cellType = 18;
+    }
+    else if (squareCornerStates[3] != squareCornerStates[0] && squareCornerStates[3] != squareCornerStates[1] && squareCornerStates[3] != squareCornerStates[2] && squareCornerStates[0] == squareCornerStates[1] && squareCornerStates[0] == squareCornerStates[2]) {
+    cellType = 19;
+    }
+    else if (squareCornerStates[0] != squareCornerStates[1] && squareCornerStates[2] != squareCornerStates[1] && squareCornerStates[1] == squareCornerStates[3]) {
+    cellType = 20;
+    }
+    else if (squareCornerStates[1] != squareCornerStates[0] && squareCornerStates[3] != squareCornerStates[0] && squareCornerStates[0] == squareCornerStates[2]) {
+    cellType = 21;
+    }
+  }
+
+  return cellType;
+}
+
+void GetColors(int2 uv, out Color colors[4]) {
+  int squareCornerStates[4];
+  GetCornerStates(uv, squareCornerStates);
+
+  colors[0] = colorByState(squareCornerStates[0]);
+  colors[1] = colorByState(squareCornerStates[1]);
+  colors[2] = colorByState(squareCornerStates[2]);
+  colors[3] = colorByState(squareCornerStates[3]);
+}
+
+void GetCorners(int2 uv, out float2 corners[4]) {
+  float res = float(_VoxelResolution * _ChunkResolution);
+
+  corners[0] = float2(uv) / res;
+  corners[1] = float2(uv.x + 1, uv.y) / res;
+  corners[2] = float2(uv.x + 1, uv.y + 1) / res;
+  corners[3] = float2(uv.x, uv.y + 1) / res;
+}
+
+void GetMidPoints(int2 uv, float resLen, float2 offset, out int midpoints[4]) {
+  float2 corners[4];
+  GetCorners(uv, corners);
+
+  midpoints[0] = float2(corners[0].x + resLen * 0.5, corners[0].y) + offset;
+  midpoints[1] = float2(corners[0].x + resLen, corners[0].y + resLen * 0.5) + offset;
+  midpoints[2] = float2(corners[0].x + resLen * 0.5, corners[0].y + resLen) + offset;
+  midpoints[3] = float2(corners[0].x, corners[0].y + resLen * 0.5) + offset;
+}
+
+void GetInnerPoints(int2 uv, float resLen, float2 offset, out float2 innerPoints[4]) {
+  float2 corners[4];
+  GetCorners(uv, corners);
+
+  innerPoints[0] = float2(corners[0].x + resLen * 0.25, corners[0].y + resLen * 0.25) + offset;
+  innerPoints[1] = float2(corners[0].x + resLen * 0.75, corners[0].y + resLen * 0.25) + offset;
+  innerPoints[2] = float2(corners[0].x + resLen * 0.75, corners[0].y + resLen * 0.75) + offset;
+  innerPoints[3] = float2(corners[0].x + resLen * 0.25, corners[0].y + resLen * 0.75) + offset;
+}
+
+void GetCornersWithOffset(int2 uv, float2 offset, out int offsetCorners[4]) {
+  float2 corners[4];
+  GetCorners(uv, corners);
+
+  offsetCorners[0] = corners[0] + offset;
+  offsetCorners[1] = corners[1] + offset;
+  offsetCorners[2] = corners[2] + offset;
+  offsetCorners[3] = corners[3] + offset;
+}
+
+void TriangulateMultiMaterial(float2 uv, float resLen, float2 offset) {
+  int cellType = GetCellType(uv);
+
+  Color color[4];
+  GetColors(uv, color);
+
+  int midpoints[4];
+  GetMidPoints(uv, resLen, offset, midpoints);
+  float2 aMidPoint = midpoints[0];
+  float2 bMidPoint = midpoints[1];
+  float2 cMidPoint = midpoints[2];
+  float2 dMidPoint = midpoints[3];
+
+  int offsetCorners[4];
+  GetCornersWithOffset(uv, offset, offsetCorners);
+  float2 ACorner = offsetCorners[0];
+  float2 BCorner = offsetCorners[1];
+  float2 CCorner = offsetCorners[2];
+  float2 DCorner = offsetCorners[3];
+
+  float2 innerPoints[4];
+  GetInnerPoints(uv, resLen, offset, innerPoints);
+  float2 innerA = innerPoints[0];
+  float2 innerB = innerPoints[1];
+  float2 innerC = innerPoints[2];
+  float2 innerD = innerPoints[3];
+
+  float2 center = float2(ACorner.x + resLen * 0.5, ACorner.y + resLen * 0.5) + offset;
+
+  switch (cellType) {
+    case 1:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      break;
+    case 2:
+      addTriangle(bMidPoint, BCorner, aMidPoint, color[1]);
+      break;
+    case 3:
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(aMidPoint, center, BCorner, color[1]);
+      addTriangle(center, bMidPoint, BCorner, color[1]);
+      break;
+    case 4:
+      addTriangle(cMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 5:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      addTriangle(cMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 6:
+      addTriangle(BCorner, aMidPoint, center, color[1]);
+      addTriangle(center, bMidPoint, BCorner, color[1]);
+      addTriangle(bMidPoint, center, cMidPoint, color[2]);
+      addTriangle(cMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 7:
+      addTriangle(ACorner, dMidPoint, aMidPoint, color[0]);
+      addTriangle(dMidPoint, center, aMidPoint, color[0]);
+      addTriangle(dMidPoint, innerD, center, color[0]);
+      addTriangle(BCorner, aMidPoint, center, color[1]);
+      addTriangle(BCorner, center, bMidPoint, color[1]);
+      addTriangle(bMidPoint, center, cMidPoint, color[2]);
+      addTriangle(bMidPoint, cMidPoint, CCorner, color[2]);
+      addTriangle(center, innerD, cMidPoint, color[2]);
+      break;
+    case 8:
+      addTriangle(cMidPoint, dMidPoint, DCorner, color[3]);
+      break;
+    case 9:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(center, ACorner, dMidPoint, color[0]);
+      addTriangle(center, dMidPoint, cMidPoint, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 10:
+      addTriangle(bMidPoint, BCorner, aMidPoint, color[1]);
+      addTriangle(cMidPoint, dMidPoint, DCorner, color[3]);
+      break;
+    case 11:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      addTriangle(aMidPoint, dMidPoint, center, color[0]);
+      addTriangle(BCorner, aMidPoint, center, color[1]);
+      addTriangle(BCorner, center, bMidPoint, color[1]);
+      addTriangle(bMidPoint, center, innerC, color[1]);
+      addTriangle(center, dMidPoint, DCorner, color[3]);
+      addTriangle(center, DCorner, cMidPoint, color[3]);
+      addTriangle(center, cMidPoint, innerC, color[3]);
+      break;
+    case 12:
+      addTriangle(bMidPoint, center, CCorner, color[2]);
+      addTriangle(CCorner, center, cMidPoint, color[2]);
+      addTriangle(cMidPoint, center, dMidPoint, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 13:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      addTriangle(aMidPoint, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, center, innerB, color[0]);
+      addTriangle(innerB, center, bMidPoint, color[2]);
+      addTriangle(bMidPoint, center, cMidPoint, color[2]);
+      addTriangle(bMidPoint, cMidPoint, CCorner, color[2]);
+      addTriangle(center, dMidPoint, DCorner, color[3]);
+      addTriangle(center, DCorner, cMidPoint, color[3]);
+      break;
+    case 14:
+      addTriangle(innerA, center, aMidPoint, color[1]);
+      addTriangle(BCorner, aMidPoint, center, color[1]);
+      addTriangle(BCorner, center, bMidPoint, color[1]);
+      addTriangle(bMidPoint, center, cMidPoint, color[2]);
+      addTriangle(bMidPoint, cMidPoint, CCorner, color[2]);
+      addTriangle(center, dMidPoint, DCorner, color[3]);
+      addTriangle(center, DCorner, cMidPoint, color[3]);
+      addTriangle(center, innerA, dMidPoint, color[3]);
+      break;
+    case 15:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[1]);
+      addTriangle(center, CCorner, bMidPoint, color[2]);
+      addTriangle(center, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 16:
+      addTriangle(ACorner, dMidPoint, aMidPoint, color[0]);
+      addTriangle(aMidPoint, dMidPoint, center, color[1]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[1]);
+      addTriangle(center, CCorner, bMidPoint, color[2]);
+      addTriangle(center, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 17:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[0]);
+      addTriangle(center, CCorner, bMidPoint, color[2]);
+      addTriangle(center, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 18:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[1]);
+      addTriangle(bMidPoint, center, cMidPoint, color[0]);
+      addTriangle(bMidPoint, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 19:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[1]);
+      addTriangle(center, CCorner, bMidPoint, color[2]);
+      addTriangle(center, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[0]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 20:
+      addTriangle(ACorner, dMidPoint, aMidPoint, color[0]);
+      addTriangle(aMidPoint, dMidPoint, center, color[1]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[1]);
+      addTriangle(bMidPoint, center, cMidPoint, color[1]);
+      addTriangle(bMidPoint, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[3]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+    case 21:
+      addTriangle(ACorner, center, aMidPoint, color[0]);
+      addTriangle(ACorner, dMidPoint, center, color[0]);
+      addTriangle(aMidPoint, bMidPoint, BCorner, color[1]);
+      addTriangle(aMidPoint, center, bMidPoint, color[2]);
+      addTriangle(center, CCorner, bMidPoint, color[2]);
+      addTriangle(center, cMidPoint, CCorner, color[2]);
+      addTriangle(dMidPoint, cMidPoint, center, color[2]);
+      addTriangle(dMidPoint, DCorner, cMidPoint, color[3]);
+      break;
+  }
+}
+
+void TriangulateNormal(float2 uv, float resLen, float2 offset) {
+  int cellType = GetCellType(uv);
+
+  Color color[4];
+  GetColors(uv, color);
+
+  int midpoints[4];
+  GetMidPoints(uv, resLen, offset, midpoints);
+  float2 aMidPoint = midpoints[0];
+  float2 bMidPoint = midpoints[1];
+  float2 cMidPoint = midpoints[2];
+  float2 dMidPoint = midpoints[3];
+
+  int offsetCorners[4];
+  GetCornersWithOffset(uv, offset, offsetCorners);
+  float2 ACorner = offsetCorners[0];
+  float2 BCorner = offsetCorners[1];
+  float2 CCorner = offsetCorners[2];
+  float2 DCorner = offsetCorners[3];
+
+  switch (cellType) {
+    case 1:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      break;
+    case 2:
+      addTriangle(bMidPoint, BCorner, aMidPoint, color[1]);
+      break;
+    case 3:
+      addTriangle(BCorner, ACorner, dMidPoint, color[0]);
+      addTriangle(dMidPoint, bMidPoint, BCorner, color[1]);
+      break;
+    case 4:
+      addTriangle(cMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 5:
+      addTriangle(aMidPoint, ACorner, dMidPoint, color[0]);
+      addTriangle(cMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 6:
+      addTriangle(BCorner, cMidPoint, CCorner, color[2]);
+      addTriangle(aMidPoint, cMidPoint, BCorner, color[1]);
+      break;
+    case 7:
+      addTriangle(dMidPoint, BCorner, ACorner, color[0]);
+      addTriangle(dMidPoint, cMidPoint, BCorner, color[1]);
+      addTriangle(cMidPoint, CCorner, BCorner, color[2]);
+      break;
+    case 8:
+      addTriangle(cMidPoint, dMidPoint, DCorner, color[3]);
+      break;
+    case 9:
+      addTriangle(DCorner, cMidPoint, ACorner, color[3]);
+      addTriangle(cMidPoint, aMidPoint, ACorner, color[0]);
+      break;
+    case 10:
+      addTriangle(bMidPoint, BCorner, aMidPoint, color[1]);
+      addTriangle(cMidPoint, dMidPoint, DCorner, color[3]);
+      break;
+    case 11:
+      addTriangle(ACorner, bMidPoint, BCorner, color[1]);
+      addTriangle(ACorner, cMidPoint, bMidPoint, color[0]);
+      addTriangle(ACorner, DCorner, cMidPoint, color[3]);
+      break;
+    case 12:
+      addTriangle(DCorner, CCorner, dMidPoint, color[3]);
+      addTriangle(dMidPoint, CCorner, bMidPoint, color[2]);
+      break;
+    case 13:
+      addTriangle(ACorner, DCorner, aMidPoint, color[0]);
+      addTriangle(aMidPoint, DCorner, bMidPoint, color[3]);
+      addTriangle(bMidPoint, DCorner, CCorner, color[2]);
+      break;
+    case 14:
+      addTriangle(DCorner, CCorner, dMidPoint, color[3]);
+      addTriangle(dMidPoint, CCorner, aMidPoint, color[2]);
+      addTriangle(aMidPoint, CCorner, BCorner, color[1]);
+      break;
+    case 15:
+      addTriangle(ACorner, CCorner, BCorner, color[1]);
+      addTriangle(ACorner, DCorner, CCorner, color[3]);
+      break;
+  }
+}
+
 void TriangulateCellRows(int2 uv) {
+  // Skip last row/column of voxel points (not enough points for aMidPoint square)
   if (uv.x >= _VoxelResolution || uv.y >= _VoxelResolution) {
     return;
   }
 
   float res = float(_VoxelResolution * _ChunkResolution);
   float resLen = (1.0 / res);
-
-  int squareCornerStates[4] = {
-    _States[indexFromCoord(uv.x, uv.y)],
-    _States[indexFromCoord(uv.x + 1, uv.y)],
-    _States[indexFromCoord(uv.x + 1, uv.y + 1)],
-    _States[indexFromCoord(uv.x, uv.y + 1)],
-  };
-
-  float aState = squareCornerStates[0];
-  float bState = squareCornerStates[1];
-  float cState = squareCornerStates[2];
-  float dState = squareCornerStates[3];
-
-  Color aColor = colorByState(aState);
-  Color bColor = colorByState(bState);
-  Color cColor = colorByState(cState);
-  Color dColor = colorByState(dState);
-
-  int cellType = 0;
-
-  if (aState > 0) cellType |= 1; //A
-  if (bState > 0) cellType |= 2; //B
-  if (cState > 0) cellType |= 4; //C
-  if (dState > 0) cellType |= 8; //D
-
-  if(cellType >= 15) {
-    if (aState != bState && aState != cState && aState != dState && bState == cState && bState == dState) {
-      cellType = 16;
-    }
-    else if (bState != aState && bState != cState && bState != dState && aState == cState && aState == dState) {
-      cellType = 17;
-    }
-    else if (cState != dState && cState != aState && cState != bState && aState == bState && aState == dState) {
-      cellType = 18;
-    }
-    else if (dState != aState && dState != bState && dState != cState && aState == bState && aState == cState) {
-      cellType = 19;
-    }
-    else if (aState != bState && cState != bState && bState == dState) {
-      cellType = 20;
-    }
-    else if (bState != aState && dState != aState && aState == cState) {
-      cellType = 21;
-    }
-  }
-
   float2 offset = float2(resLen * 0.5, resLen * 0.5);
 
-  float2 A = float2(uv) / res;
-  float2 B = float2(uv.x + 1, uv.y) / res;
-  float2 C = float2(uv.x + 1, uv.y + 1) / res;
-  float2 D = float2(uv.x, uv.y + 1) / res;
-
-  float2 a = float2(A.x + resLen * 0.5, A.y) + offset;
-  float2 b = float2(A.x + resLen, A.y + resLen * 0.5) + offset;
-  float2 c = float2(A.x + resLen * 0.5, A.y + resLen) + offset;
-  float2 d = float2(A.x, A.y + resLen * 0.5) + offset;
-
-  float2 center = float2(A.x + resLen * 0.5, A.y + resLen * 0.5) + offset;
-
-  float2 innerA = float2(A.x + resLen * 0.25, A.y + resLen * 0.25) + offset;
-  float2 innerB = float2(A.x + resLen * 0.75, A.y + resLen * 0.25) + offset;
-  float2 innerC = float2(A.x + resLen * 0.75, A.y + resLen * 0.75) + offset;
-  float2 innerD = float2(A.x + resLen * 0.25, A.y + resLen * 0.75) + offset;
-
-  A += offset;
-  B += offset;
-  C += offset;
-  D += offset;
-
-  Triangle tri;
-  
-  // if (isMultiMaterial(aState, bState, cState, dState)) {
-    switch (cellType) {
-      case 1: 
-        addTriangle(a, A, d, aColor);
-        break;
-      case 2:  
-        addTriangle(b, B, a, bColor);
-        break;
-      case 3:
-        addTriangle(A, d, center, aColor);
-        addTriangle(A, center, a, aColor);
-        addTriangle(a, center, B, bColor);
-        addTriangle(center, b, B, bColor);
-        break;
-      case 4: 
-        addTriangle(c, C, b, cColor);
-        break;
-      case 5: 
-        addTriangle(a, A, d, aColor);
-        addTriangle(c, C, b, cColor);
-        break;
-      case 6:
-        addTriangle(B, a, center, bColor);
-        addTriangle(center, b, B, bColor);
-        addTriangle(b, center, c, cColor);
-        addTriangle(c, C, b, cColor);
-        break;
-      case 7: 
-        addTriangle(A, d, a, aColor);
-        addTriangle(d, center, a, aColor);
-        addTriangle(d, innerD, center, aColor);
-        addTriangle(B, a, center, bColor);
-        addTriangle(B, center, b, bColor);
-        addTriangle(b, center, c, cColor);
-        addTriangle(b, c, C, cColor);
-        addTriangle(center, innerD, c, cColor);
-        break;
-      case 8:  
-        addTriangle(c, d, D, dColor);
-        break;
-      case 9:
-        addTriangle(A, center, a, aColor);
-        addTriangle(center, A, d, aColor);
-        addTriangle(center, d, c, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 10: 
-        addTriangle(b, B, a, bColor);
-        addTriangle(c, d, D, dColor);
-        break;
-      case 11:
-        addTriangle(a, A, d, aColor);
-        addTriangle(a, d, center, aColor);
-        addTriangle(B, a, center, bColor);
-        addTriangle(B, center, b, bColor);
-        addTriangle(b, center, innerC, bColor);
-        addTriangle(center, d, D, dColor);
-        addTriangle(center, D, c, dColor);
-        addTriangle(center, c, innerC, dColor);
-        break;
-      case 12: 
-        addTriangle(b, center, C, cColor);
-        addTriangle(C, center, c, cColor);
-        addTriangle(c, center, d, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 13: 
-        addTriangle(a, A, d, aColor);
-        addTriangle(a, d, center, aColor);
-        addTriangle(a, center, innerB, aColor);
-        addTriangle(innerB, center, b, cColor);
-        addTriangle(b, center, c, cColor);
-        addTriangle(b, c, C, cColor);
-        addTriangle(center, d, D, dColor);
-        addTriangle(center, D, c, dColor);
-        break;
-      case 14: 
-        addTriangle(innerA, center, a, bColor);
-        addTriangle(B, a, center, bColor);
-        addTriangle(B, center, b, bColor);
-        addTriangle(b, center, c, cColor);
-        addTriangle(b, c, C, cColor);
-        addTriangle(center, d, D, dColor);
-        addTriangle(center, D, c, dColor);
-        addTriangle(center, innerA, d, dColor);
-        break;
-      case 15: 
-        addTriangle(A, center, a, aColor);
-        addTriangle(A, d, center, aColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, bColor);
-        addTriangle(center, C, b, cColor);
-        addTriangle(center, c, C, cColor);
-        addTriangle(d, c, center, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 16:
-        addTriangle(A, d, a, aColor);
-        addTriangle(a, d, center, bColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, bColor);
-        addTriangle(center, C, b, cColor);
-        addTriangle(center, c, C, cColor);
-        addTriangle(d, c, center, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 17: 
-        addTriangle(A, center, a, aColor);
-        addTriangle(A, d, center, aColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, aColor);
-        addTriangle(center, C, b, cColor);
-        addTriangle(center, c, C, cColor);
-        addTriangle(d, c, center, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 18: 
-        addTriangle(A, center, a, aColor);
-        addTriangle(A, d, center, aColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, bColor);
-        addTriangle(b, center, c, aColor);
-        addTriangle(b, c, C, cColor);
-        addTriangle(d, c, center, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 19: 
-        addTriangle(A, center, a, aColor);
-        addTriangle(A, d, center, aColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, bColor);
-        addTriangle(center, C, b, cColor);
-        addTriangle(center, c, C, cColor);
-        addTriangle(d, c, center, aColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 20: 
-        addTriangle(A, d, a, aColor);
-        addTriangle(a, d, center, bColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, bColor);
-        addTriangle(b, center, c, bColor);
-        addTriangle(b, c, C, cColor);
-        addTriangle(d, c, center, dColor);
-        addTriangle(d, D, c, dColor);
-        break;
-      case 21: 
-        addTriangle(A, center, a, aColor);
-        addTriangle(A, d, center, aColor);
-        addTriangle(a, b, B, bColor);
-        addTriangle(a, center, b, cColor);
-        addTriangle(center, C, b, cColor);
-        addTriangle(center, c, C, cColor);
-        addTriangle(d, c, center, cColor);
-        addTriangle(d, D, c, dColor);
-        break;
-    }
-  // } else {
-  //   switch (cellType) {
-  //     case 1: 
-  //       addTriangle(a, A, d, aColor);
-  //       break;
-  //     case 2:  
-  //       addTriangle(b, B, a, bColor);
-  //       break;
-  //     case 3:  
-  //       addTriangle(B, A, d, aColor);
-  //       addTriangle(d, b, B, bColor);
-  //       break;
-  //     case 4: 
-  //       addTriangle(c, C, b, cColor);
-  //       break;
-  //     case 5: 
-  //       addTriangle(a, A, d, aColor);
-  //       addTriangle(c, C, b, cColor);
-  //       break;
-  //     case 6:  
-  //       addTriangle(B, c, C, cColor);
-  //       addTriangle(a, c, B, bColor);
-  //       break;
-  //     case 7: 
-  //       addTriangle(d, B, A, aColor);
-  //       addTriangle(d, c, B, bColor);
-  //       addTriangle(c, C, B, cColor);
-  //       break;
-  //     case 8:  
-  //       addTriangle(c, d, D, dColor);
-  //       break;
-  //     case 9:  
-  //       addTriangle(D, c, A, dColor);
-  //       addTriangle(c, a, A, aColor);
-  //       break;
-  //     case 10: 
-  //       addTriangle(b, B, a, bColor);
-  //       addTriangle(c, d, D, dColor);
-  //       break;
-  //     case 11: 
-  //       addTriangle(A, b, B, bColor);
-  //       addTriangle(A, c, b, aColor);
-  //       addTriangle(A, D, c, dColor);
-  //       break;
-  //     case 12: 
-  //       addTriangle(D, C, d, dColor);
-  //       addTriangle(d, C, b, cColor);
-  //       break;
-  //     case 13: 
-  //       addTriangle(A, D, a, aColor);
-  //       addTriangle(a, D, b, dColor);
-  //       addTriangle(b, D, C, cColor);
-  //       break;
-  //     case 14: 
-  //       addTriangle(D, C, d, dColor);
-  //       addTriangle(d, C, a, cColor);
-  //       addTriangle(a, C, B, bColor);
-  //       break;
-  //     case 15: 
-  //       addTriangle(A, C, B, bColor);
-  //       addTriangle(A, D, C, dColor);
-  //       break;
-  //   }
-  // }
+  if (isMultiMaterial(uv)) {
+    TriangulateMultiMaterial(uv, resLen, offset);
+  } else {
+    TriangulateNormal(uv, resLen, offset);
+  }
 }
 
 [numthreads(8,8,1)]
-void CSMain (int3 id : SV_DispatchThreadID)
-{
-    int2 uv = GetUV(id);
-    TriangulateCellRows(uv);
+void CSMain (int3 id : SV_DispatchThreadID) {
+  int2 uv = GetUV(id);
+  TriangulateCellRows(uv);
 }
