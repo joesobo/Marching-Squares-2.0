@@ -11,8 +11,6 @@ public class InfiniteGenerator : MonoBehaviour {
     private Vector2 playerPosition;
 
     private VoxelChunkGenerator voxelChunkGenerator;
-    private VoxelMeshGenerator voxelMeshGenerator;
-    private ColliderGenerator colliderGenerator;
 
     private bool startGeneration;
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
@@ -21,8 +19,6 @@ public class InfiniteGenerator : MonoBehaviour {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
-        voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
-        colliderGenerator = FindObjectOfType<ColliderGenerator>();
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;
     }
@@ -90,9 +86,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
-            voxelChunkGenerator.SetupChunkNeighbors(chunk);
-            voxelMeshGenerator.GenerateChunkMesh(chunk);
-            colliderGenerator.GenerateChunkColliders(chunk);
+            chunk.GenerateChunk();
         }
     }
 

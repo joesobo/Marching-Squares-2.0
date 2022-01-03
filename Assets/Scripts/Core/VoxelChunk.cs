@@ -72,10 +72,10 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
-    private void RefreshChunk() {
+    public void GenerateChunk() {
         voxelChunkGenerator.SetupChunkNeighbors(this);
-        voxelMeshGenerator.GenerateChunkMesh(this);
-        colliderGenerator.GenerateChunkColliders(this);
+        RefreshMesh();
+        RefreshCollider();
     }
 
     private void FillChunk() {
