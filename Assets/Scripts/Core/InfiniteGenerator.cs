@@ -92,8 +92,6 @@ public class InfiniteGenerator : MonoBehaviour {
         foreach (VoxelChunk chunk in chunks) {
             voxelChunkGenerator.SetupChunkNeighbors(chunk);
             voxelMeshGenerator.GenerateChunkMesh(chunk);
-            // Remove colliders from chunk if regenerating its colliders
-            chunk.RemoveChunkColliders();
             colliderGenerator.GenerateChunkColliders(chunk);
         }
     }

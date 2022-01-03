@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using Core;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
     private CoreScriptableObject CORE;
+
+    private VoxelChunkGenerator voxelChunkGenerator;
+    private VoxelMeshGenerator voxelMeshGenerator;
+    private ColliderGenerator colliderGenerator;
 
     // Reference to neighbor chunks for edge voxel information
     public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
@@ -27,6 +32,9 @@ public class VoxelChunk : MonoBehaviour {
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
+        voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+        colliderGenerator = FindObjectOfType<ColliderGenerator>();
     }
 
     public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
@@ -49,6 +57,25 @@ public class VoxelChunk : MonoBehaviour {
         xNeighbor = null;
         yNeighbor = null;
         xyNeighbor = null;
+    }
+
+    [HorizontalGroup("Split", 0.5f)]
+    [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
+    private void RefreshMesh() {
+        voxelMeshGenerator.GenerateChunkMesh(this);
+    }
+
+    [HorizontalGroup("Split", 0.5f)]
+    [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.4f, 1, 0.8f)]
+    private void RefreshCollider() {
+        colliderGenerator.GenerateChunkColliders(this);
+    }
+
+    [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
+    private void RefreshChunk() {
+        voxelChunkGenerator.SetupChunkNeighbors(this);
+        voxelMeshGenerator.GenerateChunkMesh(this);
+        colliderGenerator.GenerateChunkColliders(this);
     }
 
     private void FillChunk() {

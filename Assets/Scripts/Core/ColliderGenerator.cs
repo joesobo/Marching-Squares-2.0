@@ -10,6 +10,8 @@ public class ColliderGenerator : MonoBehaviour {
     }
 
     public void GenerateChunkColliders(VoxelChunk chunk) {
+        // Remove colliders from chunk if regenerating its colliders
+        chunk.RemoveChunkColliders();
         // Reset logic for chunk
         ColliderLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
         // Calculate outlines
