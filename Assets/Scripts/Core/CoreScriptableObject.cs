@@ -4,6 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/CoreScriptableObject", order = 1)]
 public class CoreScriptableObject : SerializedScriptableObject {
+    public int seed = 1;
     // Number of voxels per a chunk
     public int voxelResolution = 8;
     // Radius of chunks around the player

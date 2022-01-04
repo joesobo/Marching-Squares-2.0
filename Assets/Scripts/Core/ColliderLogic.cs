@@ -19,7 +19,7 @@ public static class ColliderLogic {
 
     // Loop through all vertices until all are used in outlines
     public static IEnumerable<List<Vector3>> CalculateOutlines(VoxelChunk chunk) {
-        foreach (Vector3 vertex in chunk.vertices) {
+        foreach (Vector3 vertex in chunk.outlineVertices) {
             if (checkedVertices.Contains(vertex)) continue;
 
             Vector3? newOutlineVertex = GetNextVertex(chunk, vertex);

@@ -59,5 +59,11 @@
         "UserSettings/": true
     },
     "editor.foldingStrategy": "indentation",
-    "cSpell.words": ["whos"]
+    "cSpell.words": ["whos"],
+    "favorites.resources": [
+        {
+            "filePath": "Assets\\Graphs\\CORE.md",
+            "group": "Default"
+        }
+    ]
 }

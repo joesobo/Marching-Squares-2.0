@@ -16,7 +16,9 @@ public class VoxelChunk : MonoBehaviour {
     // Storage of chunks voxels
     public Voxel[] voxels;
     // Storage of chunks vertices
-    public Vector3[] vertices = null;
+    public Vector3[] meshVertices = null;
+    // Storage of chunks outline vertices
+    public Vector3[] outlineVertices = null;
     // Storage of relationship between triangles and vertices
     public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
     // Storage of chunks vertice reference points
@@ -52,7 +54,8 @@ public class VoxelChunk : MonoBehaviour {
 
     public void ResetChunk() {
         voxels = null;
-        vertices = null;
+        meshVertices = null;
+        outlineVertices = null;
         triangleDictionary.Clear();
         xNeighbor = null;
         yNeighbor = null;

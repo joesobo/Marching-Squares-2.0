@@ -746,6 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marchingSquareShader: {fileID: 7200000, guid: 09716d5295fd131418fdbf96167b30ae, type: 3}
+  verticeShader: {fileID: 7200000, guid: 69e96eb42c6ea98469ab7dc5b99ac7e2, type: 3}
 --- !u!114 &779051275
 MonoBehaviour:
   m_ObjectHideFlags: 0

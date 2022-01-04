@@ -32,9 +32,9 @@ public class VoxelMesh : MonoBehaviour {
 
         marchingShader.ShaderTriangulate(chunk, out triangles, out colors);
 
-        mesh.vertices = chunk.vertices;
+        mesh.vertices = chunk.meshVertices;
         mesh.triangles = triangles;
-        mesh.uv = GetUVs(chunk.vertices);
+        mesh.uv = GetUVs(chunk.meshVertices);
         mesh.colors32 = colors;
         mesh.RecalculateNormals();
 

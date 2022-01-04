@@ -6,12 +6,13 @@ public class MarchingShader : MonoBehaviour {
     private CoreScriptableObject CORE;
 
     public ComputeShader marchingSquareShader;
+    public ComputeShader verticeShader;
 
     private const int SHADER_THREADS = 8;
 
     private int voxelResolution, chunkResolution;
     // Compute shader buffer storage
-    private ComputeBuffer verticeBuffer, triangleBuffer, triCountBuffer, stateBuffer;
+    private ComputeBuffer triangleBuffer, triCountBuffer, stateBuffer, verticeTriBuffer, verticeTriCountBuffer;
 
     // voxel state values for calculating type of voxel
     private int[] stateValues;
@@ -28,19 +29,28 @@ public class MarchingShader : MonoBehaviour {
     }
 
     public void ShaderTriangulate(VoxelChunk chunk, out int[] triangles, out Color32[] colors) {
-        int numThreadsPerResolution = Mathf.CeilToInt(voxelResolution / SHADER_THREADS);
+        int numThreadsPerResolution = 1;
 
         triangleBuffer.SetCounterValue(0);
-        marchingSquareShader.SetBuffer(0, "_Vertices", verticeBuffer);
         marchingSquareShader.SetBuffer(0, "_Triangles", triangleBuffer);
         marchingSquareShader.SetBuffer(0, "_States", stateBuffer);
         marchingSquareShader.SetInt("_VoxelResolution", voxelResolution);
         marchingSquareShader.SetInt("_ChunkResolution", chunkResolution);
 
+        verticeTriBuffer.SetCounterValue(0);
+        verticeShader.SetBuffer(0, "_Triangles", verticeTriBuffer);
+        verticeShader.SetBuffer(0, "_States", stateBuffer);
+        verticeShader.SetInt("_VoxelResolution", voxelResolution);
+        verticeShader.SetInt("_ChunkResolution", chunkResolution);
+
         SetupStates(chunk);
         stateBuffer.SetData(stateValues);
 
         marchingSquareShader.Dispatch(0, numThreadsPerResolution, numThreadsPerResolution, 1);
+
+        verticeShader.Dispatch(0, numThreadsPerResolution, numThreadsPerResolution, 1);
+
+
 
         ComputeBuffer.CopyCount(triangleBuffer, triCountBuffer, 0);
         int[] triCountArray = { 0 };
@@ -50,20 +60,38 @@ public class MarchingShader : MonoBehaviour {
         Triangle[] tris = new Triangle[numTris];
         triangleBuffer.GetData(tris, 0, 0, numTris);
 
-        chunk.triangleDictionary.Clear();
-        chunk.vertices = new Vector3[numTris * 3];
         triangles = new int[numTris * 3];
         colors = new Color32[numTris * 3];
 
-        GetShaderData(numTris, tris, triangles, colors, chunk);
+        chunk.meshVertices = new Vector3[numTris * 3];
+
+        GetMeshShaderData(numTris, tris, triangles, colors, chunk);
+
+
+
+        ComputeBuffer.CopyCount(verticeTriBuffer, verticeTriCountBuffer, 0);
+        int[] triVerticeCountArray = { 0 };
+        verticeTriCountBuffer.GetData(triVerticeCountArray);
+        int numVerticeTris = triVerticeCountArray[0];
+
+        Triangle[] verticeTris = new Triangle[numVerticeTris];
+        verticeTriBuffer.GetData(verticeTris, 0, 0, numVerticeTris);
+
+        chunk.triangleDictionary.Clear();
+        chunk.outlineVertices = new Vector3[numVerticeTris * 3];
+
+        GetOutlineShaderData(numVerticeTris, verticeTris, chunk);
     }
 
-    private void GetShaderData(int numTris, IList<Triangle> tris, IList<int> triangles, IList<Color32> colors, VoxelChunk chunk) {
+    private void GetMeshShaderData(int numTris, IList<Triangle> tris, IList<int> triangles, IList<Color32> colors, VoxelChunk chunk) {
         for (int i = 0; i < numTris; i++) {
             for (int j = 0; j < 3; j++) {
                 int index = i * 3 + j;
-                colors[index] = new Color32((byte)(tris[i].red * 255), (byte)(tris[i].green * 255),
-                    (byte)(tris[i].blue * 255), 255);
+                colors[index] = new Color32(
+                    (byte)(tris[i].red * 255),
+                    (byte)(tris[i].green * 255),
+                    (byte)(tris[i].blue * 255),
+                    255);
 
                 triangles[index] = index;
 
@@ -71,9 +99,23 @@ public class MarchingShader : MonoBehaviour {
                 vertex.x *= chunkResolution * voxelResolution;
                 vertex.y *= chunkResolution * voxelResolution;
 
-                chunk.vertices[index] = vertex;
+                chunk.meshVertices[index] = vertex;
+            }
+        }
+    }
 
-                AddTrianglesToDictionary(chunk.vertices[index], tris[i], chunk);
+    private void GetOutlineShaderData(int numTris, IList<Triangle> tris, VoxelChunk chunk) {
+        for (int i = 0; i < numTris; i++) {
+            for (int j = 0; j < 3; j++) {
+                int index = i * 3 + j;
+
+                Vector2 vertex = tris[i][j];
+                vertex.x *= chunkResolution * voxelResolution;
+                vertex.y *= chunkResolution * voxelResolution;
+
+                chunk.outlineVertices[index] = vertex;
+
+                AddTrianglesToDictionary(chunk.outlineVertices[index], tris[i], chunk);
             }
         }
     }
@@ -122,20 +164,22 @@ public class MarchingShader : MonoBehaviour {
         int numPoints = (voxelResolution + 1) * (voxelResolution + 1);
         int numVoxelsPerResolution = voxelResolution - 1;
         int numVoxels = numVoxelsPerResolution * numVoxelsPerResolution;
-        int maxTriangleCount = numVoxels * 12;
+        int maxTriangleCount = numVoxels * 13;
 
         ReleaseBuffers();
-        verticeBuffer = new ComputeBuffer(numPoints, sizeof(float) * 3);
         triangleBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
+        verticeTriBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
         triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
+        verticeTriCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
         stateBuffer = new ComputeBuffer(numPoints, sizeof(int));
     }
 
     private void ReleaseBuffers() {
         if (triangleBuffer != null) {
-            verticeBuffer.Release();
             triangleBuffer.Release();
+            verticeTriBuffer.Release();
             triCountBuffer.Release();
+            verticeTriCountBuffer.Release();
             stateBuffer.Release();
         }
     }

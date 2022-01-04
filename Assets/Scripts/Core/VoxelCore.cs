@@ -7,6 +7,8 @@ public class VoxelCore : MonoBehaviour {
     private InfiniteGenerator infiniteGenerator;
 
     private void Awake() {
+        Random.InitState(CoreData.seed);
+
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
     }
 

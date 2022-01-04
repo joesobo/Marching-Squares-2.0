@@ -1,0 +1,207 @@
+#pragma kernel CSMain
+
+struct Triangle {
+  float2 vertexA;
+  float2 vertexB;
+  float2 vertexC;
+  float red;
+  float green;
+  float blue;
+};
+
+// RWStructuredBuffer<float3> _Vertices;
+AppendStructuredBuffer<Triangle> _Triangles;
+RWStructuredBuffer<int> _States;
+uint _VoxelResolution;
+uint _ChunkResolution;
+float _Res;
+float _ResLen;
+float2 _Offset;
+
+int2 GetUV (int3 id) {
+  return id.xy;
+}
+
+int indexFromCoord(int x, int y) {
+  return y * _VoxelResolution + x + y;
+}
+
+void addTriangle(float2 aMidpoint, float2 bMidpoint, float2 cMidpoint) {
+  Triangle tri;
+  tri.vertexA = aMidpoint;
+  tri.vertexB = bMidpoint;
+  tri.vertexC = cMidpoint;
+  tri.red = 0.0f;
+  tri.green = 0.0f;
+  tri.blue = 0.0f;
+  _Triangles.Append(tri);
+}
+
+void GetCornerStates(float2 uv, out int cornerStates[4]) {
+  cornerStates[0] = _States[indexFromCoord(uv.x, uv.y)];
+  cornerStates[1] = _States[indexFromCoord(uv.x + 1, uv.y)];
+  cornerStates[2] = _States[indexFromCoord(uv.x + 1, uv.y + 1)];
+  cornerStates[3] = _States[indexFromCoord(uv.x, uv.y + 1)];
+}
+
+int GetCellType(int cornerStates[4]) {
+  int cellType = 0;
+  float aState = cornerStates[0];
+  float bState = cornerStates[1];
+  float cState = cornerStates[2];
+  float dState = cornerStates[3];
+
+  if (aState > 0) cellType |= 1;
+  if (bState > 0) cellType |= 2;
+  if (cState > 0) cellType |= 4;
+  if (dState > 0) cellType |= 8;
+
+  return cellType;
+}
+
+void GetCorners(float2 uv, out float2 corners[4]) {
+  corners[0] = float2(uv) / _Res;
+  corners[1] = float2(uv.x + 1, uv.y) / _Res;
+  corners[2] = float2(uv.x + 1, uv.y + 1) / _Res;
+  corners[3] = float2(uv.x, uv.y + 1) / _Res;
+}
+
+void GetMidpoints(float2 uv, float2 corners[4], out float2 midpoints[4]) {
+  float2 aCorner = corners[0];
+  float2 bCorner = corners[1];
+  float2 cCorner = corners[2];
+  float2 dCorner = corners[3];
+
+  midpoints[0] = float2(aCorner.x + _ResLen * 0.5, aCorner.y) + _Offset;
+  midpoints[1] = float2(aCorner.x + _ResLen, aCorner.y + _ResLen * 0.5) + _Offset;
+  midpoints[2] = float2(aCorner.x + _ResLen * 0.5, aCorner.y + _ResLen) + _Offset;
+  midpoints[3] = float2(aCorner.x, aCorner.y + _ResLen * 0.5) + _Offset;
+}
+
+void TriangulateNormal(int cellType, float2 corners[4], float2 midpoints[4]) {
+  float2 aCorner = corners[0];
+  float2 bCorner = corners[1];
+  float2 cCorner = corners[2];
+  float2 dCorner = corners[3];
+
+  float2 aMidpoint = midpoints[0];
+  float2 bMidpoint = midpoints[1];
+  float2 cMidpoint = midpoints[2];
+  float2 dMidpoint = midpoints[3];
+
+  switch (cellType) {
+    case 1:
+      // addTriangle(aMidpoint, aCorner, dMidpoint, aColor);
+      addTriangle(dMidpoint, aMidpoint, aCorner);
+      break;
+    case 2:
+      // addTriangle(bMidpoint, bCorner, aMidpoint, bColor);
+      // addTriangle(bCorner, aMidpoint, bMidpoint, bColor);
+      addTriangle(aMidpoint, bMidpoint, bCorner);
+      break;
+    case 3:
+      addTriangle(bCorner, aCorner, dMidpoint);
+      addTriangle(dMidpoint, bMidpoint, bCorner);
+      break;
+    case 4:
+      // addTriangle(cMidpoint, cCorner, bMidpoint, cColor);
+      addTriangle(cCorner, bMidpoint, cMidpoint);
+      break;
+    case 5:
+      // addTriangle(aMidpoint, aCorner, dMidpoint, aColor);
+      addTriangle(dMidpoint, aMidpoint, aCorner);
+      // addTriangle(cMidpoint, cCorner, bMidpoint, cColor);
+      addTriangle(bMidpoint, cMidpoint, cCorner);
+      break;
+    case 6:
+      // addTriangle(bCorner, cMidpoint, cCorner, cColor);
+      addTriangle(cMidpoint, cCorner, bCorner);
+      // addTriangle(aMidpoint, cMidpoint, bCorner, bColor);
+      addTriangle(bCorner, aMidpoint, cMidpoint);
+      break;
+    case 7:
+      // addTriangle(dMidpoint, bCorner, aCorner, aColor);
+      addTriangle(bCorner, aCorner, dMidpoint);
+      addTriangle(dMidpoint, cMidpoint, bCorner);
+      addTriangle(cMidpoint, cCorner, bCorner);
+      break;
+    case 8:
+      addTriangle(cMidpoint, dMidpoint, dCorner);
+      break;
+    case 9:
+      // addTriangle(dCorner, cMidpoint, aCorner, dColor);
+      addTriangle(aCorner, dCorner, cMidpoint);
+      addTriangle(cMidpoint, aMidpoint, aCorner);
+      break;
+    case 10:
+      // addTriangle(bMidpoint, bCorner, aMidpoint, bColor);
+      addTriangle(bCorner, aMidpoint, bMidpoint);
+      addTriangle(cMidpoint, dMidpoint, dCorner);
+      break;
+    case 11:
+      // addTriangle(aCorner, bMidpoint, bCorner, bColor);
+      addTriangle(bMidpoint, bCorner, aCorner);
+      addTriangle(aCorner, cMidpoint, bMidpoint);
+      addTriangle(aCorner, dCorner, cMidpoint);
+      break;
+    case 12:
+      // addTriangle(dCorner, cCorner, dMidpoint, dColor);
+      addTriangle(dMidpoint, dCorner, cCorner);
+      // addTriangle(dMidpoint, cCorner, bMidpoint, cColor);
+      addTriangle(cCorner, bMidpoint, dMidpoint);
+      break;
+    case 13:
+      // addTriangle(aCorner, dCorner, aMidpoint, aColor);
+      addTriangle(aMidpoint, aCorner, dCorner);
+      // addTriangle(aMidpoint, dCorner, bMidpoint, dColor);
+      addTriangle(bMidpoint, aMidpoint, dCorner);
+      // addTriangle(bMidpoint, dCorner, cCorner, cColor);
+      addTriangle(dCorner, cCorner, bMidpoint);
+      break;
+    case 14:
+      // addTriangle(dCorner, cCorner, dMidpoint, dColor);
+      addTriangle(dMidpoint, dCorner, cCorner);
+      // addTriangle(dMidpoint, cCorner, aMidpoint, cColor);
+      addTriangle(aMidpoint, dMidpoint, cCorner);
+      // addTriangle(aMidpoint, cCorner, bCorner, bColor);
+      addTriangle(cCorner, bCorner, aMidpoint);
+      break;
+    case 15:
+      // addTriangle(aCorner, cCorner, bCorner);
+      addTriangle(cCorner, bCorner, aCorner);
+      addTriangle(aCorner, dCorner, cCorner);
+      break;
+  }
+}
+
+void TriangulateCellRows(int2 uv) {
+  if (uv.x >= _VoxelResolution || uv.y >= _VoxelResolution) return;
+
+  int cornerStates[4];
+  GetCornerStates(uv, cornerStates);
+
+  int cellType = GetCellType(cornerStates);
+
+  float2 corners[4];
+  GetCorners(uv, corners);
+
+  float2 midpoints[4];
+  GetMidpoints(uv, corners, midpoints);
+
+  corners[0] += _Offset;
+  corners[1] += _Offset;
+  corners[2] += _Offset;
+  corners[3] += _Offset;
+
+  TriangulateNormal(cellType, corners, midpoints);
+}
+
+[numthreads(8,8,1)]
+void CSMain (int3 id : SV_DispatchThreadID) {
+  _Res = float(_VoxelResolution * _ChunkResolution);
+  _ResLen = (1.0 / _Res);
+  _Offset = float2(_ResLen * 0.5, _ResLen * 0.5);
+
+  int2 uv = GetUV(id);
+  TriangulateCellRows(uv);
+}
