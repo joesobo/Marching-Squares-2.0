@@ -4,9 +4,6 @@ struct Triangle {
   float2 vertexA;
   float2 vertexB;
   float2 vertexC;
-  float red;
-  float green;
-  float blue;
 };
 
 AppendStructuredBuffer<Triangle> _Triangles;
@@ -30,9 +27,6 @@ void addTriangle(float2 aMidpoint, float2 bMidpoint, float2 cMidpoint) {
   tri.vertexA = aMidpoint;
   tri.vertexB = bMidpoint;
   tri.vertexC = cMidpoint;
-  tri.red = 0.0f;
-  tri.green = 0.0f;
-  tri.blue = 0.0f;
   _Triangles.Append(tri);
 }
 

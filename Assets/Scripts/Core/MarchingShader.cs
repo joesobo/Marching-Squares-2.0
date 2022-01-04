@@ -73,7 +73,7 @@ public class MarchingShader : MonoBehaviour {
         outlineTriCountBuffer.GetData(outlineTriCountArray);
         int numOutlineTris = outlineTriCountArray[0];
 
-        Triangle[] verticeTris = new Triangle[numOutlineTris];
+        OutlineTriangle[] verticeTris = new OutlineTriangle[numOutlineTris];
         outlineTriBuffer.GetData(verticeTris, 0, 0, numOutlineTris);
 
         chunk.triangleDictionary.Clear();
@@ -103,7 +103,7 @@ public class MarchingShader : MonoBehaviour {
         }
     }
 
-    private void GetOutlineShaderData(int numTris, IList<Triangle> tris, VoxelChunk chunk) {
+    private void GetOutlineShaderData(int numTris, IList<OutlineTriangle> tris, VoxelChunk chunk) {
         for (int i = 0; i < numTris; i++) {
             for (int j = 0; j < 3; j++) {
                 int index = i * 3 + j;
@@ -114,7 +114,7 @@ public class MarchingShader : MonoBehaviour {
 
                 chunk.outlineVertices[index] = vertex;
 
-                AddTrianglesToDictionary(chunk.outlineVertices[index], tris[i], chunk);
+                AddOutlineTrianglesToDictionary(chunk.outlineVertices[index], tris[i], chunk);
             }
         }
     }
@@ -149,11 +149,11 @@ public class MarchingShader : MonoBehaviour {
         }
     }
 
-    private static void AddTrianglesToDictionary(Vector3 vertice, Triangle triangle, VoxelChunk chunk) {
+    private static void AddOutlineTrianglesToDictionary(Vector3 vertice, OutlineTriangle triangle, VoxelChunk chunk) {
         if (chunk.triangleDictionary.ContainsKey(vertice)) {
             chunk.triangleDictionary[vertice].Add(triangle);
         } else {
-            List<Triangle> triangleList = new List<Triangle> { triangle };
+            List<OutlineTriangle> triangleList = new List<OutlineTriangle> { triangle };
             chunk.triangleDictionary.Add(vertice, triangleList);
         }
     }
@@ -167,8 +167,8 @@ public class MarchingShader : MonoBehaviour {
 
         ReleaseBuffers();
         triangleBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
-        outlineTriBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 3, ComputeBufferType.Append);
         triCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
+        outlineTriBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 3 * 2, ComputeBufferType.Append);
         outlineTriCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
         stateBuffer = new ComputeBuffer(numPoints, sizeof(int));
     }
@@ -176,8 +176,8 @@ public class MarchingShader : MonoBehaviour {
     private void ReleaseBuffers() {
         if (triangleBuffer != null) {
             triangleBuffer.Release();
-            outlineTriBuffer.Release();
             triCountBuffer.Release();
+            outlineTriBuffer.Release();
             outlineTriCountBuffer.Release();
             stateBuffer.Release();
         }

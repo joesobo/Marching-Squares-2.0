@@ -38,7 +38,7 @@ public static class ColliderLogic {
 
     // Searches for the next viable vertex in the outline
     private static Vector3? GetNextVertex(VoxelChunk chunk, Vector3 vertex) {
-        foreach (Triangle triangle in chunk.triangleDictionary[vertex]) {
+        foreach (OutlineTriangle triangle in chunk.triangleDictionary[vertex]) {
             // Loop through all vertices of the triangle
             for (int i = 0; i < 3; i++) {
                 Vector2 triangleVertice = triangle[i] * scaleResolution;
@@ -71,9 +71,9 @@ public static class ColliderLogic {
     private static bool IsOutlineEdge(Vector3 startVertice, Vector3 endVertice, VoxelChunk chunk) {
         int sharedTriangleCount = 0;
 
-        List<Triangle> startVerticeTriangles = chunk.triangleDictionary[startVertice];
+        List<OutlineTriangle> startVerticeTriangles = chunk.triangleDictionary[startVertice];
 
-        foreach (Triangle unused in startVerticeTriangles.Where(triangle =>
+        foreach (OutlineTriangle unused in startVerticeTriangles.Where(triangle =>
             (triangle[0].Equal(endVertice)) ||
             (triangle[1].Equal(endVertice)) ||
             (triangle[2].Equal(endVertice)))) {

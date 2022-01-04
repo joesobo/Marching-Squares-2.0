@@ -15,12 +15,12 @@ public class VoxelChunk : MonoBehaviour {
     public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
     public Voxel[] voxels;
-    // Storage of chunks vertices
+    // Storage of chunks mesh vertices
     public Vector3[] meshVertices = null;
     // Storage of chunks outline vertices
     public Vector3[] outlineVertices = null;
-    // Storage of relationship between triangles and vertices
-    public readonly Dictionary<Vector2, List<Triangle>> triangleDictionary = new Dictionary<Vector2, List<Triangle>>();
+    // Storage of relationship between triangles and outline vertices
+    public readonly Dictionary<Vector2, List<OutlineTriangle>> triangleDictionary = new Dictionary<Vector2, List<OutlineTriangle>>();
     // Storage of chunks vertice reference points
     private List<GameObject> voxelReferencePoints;
 
