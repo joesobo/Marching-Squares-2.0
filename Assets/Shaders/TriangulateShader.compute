@@ -348,12 +348,9 @@ void TriangulateNormal(int cellType, float2 corners[4], float2 midpoints[4], Col
 
   switch (cellType) {
     case 1:
-      // addTriangle(aMidpoint, aCorner, dMidpoint, aColor);
       addTriangle(dMidpoint, aMidpoint, aCorner, aColor);
       break;
     case 2:
-      // addTriangle(bMidpoint, bCorner, aMidpoint, bColor);
-      // addTriangle(bCorner, aMidpoint, bMidpoint, bColor);
       addTriangle(aMidpoint, bMidpoint, bCorner, bColor);
       break;
     case 3:
@@ -361,23 +358,17 @@ void TriangulateNormal(int cellType, float2 corners[4], float2 midpoints[4], Col
       addTriangle(dMidpoint, bMidpoint, bCorner, bColor);
       break;
     case 4:
-      // addTriangle(cMidpoint, cCorner, bMidpoint, cColor);
       addTriangle(cCorner, bMidpoint, cMidpoint, cColor);
       break;
     case 5:
-      // addTriangle(aMidpoint, aCorner, dMidpoint, aColor);
       addTriangle(dMidpoint, aMidpoint, aCorner, aColor);
-      // addTriangle(cMidpoint, cCorner, bMidpoint, cColor);
       addTriangle(bMidpoint, cMidpoint, cCorner, cColor);
       break;
     case 6:
-      // addTriangle(bCorner, cMidpoint, cCorner, cColor);
       addTriangle(cMidpoint, cCorner, bCorner, cColor);
-      // addTriangle(aMidpoint, cMidpoint, bCorner, bColor);
       addTriangle(bCorner, aMidpoint, cMidpoint, bColor);
       break;
     case 7:
-      // addTriangle(dMidpoint, bCorner, aCorner, aColor);
       addTriangle(bCorner, aCorner, dMidpoint, aColor);
       addTriangle(dMidpoint, cMidpoint, bCorner, bColor);
       addTriangle(cMidpoint, cCorner, bCorner, cColor);
@@ -386,45 +377,33 @@ void TriangulateNormal(int cellType, float2 corners[4], float2 midpoints[4], Col
       addTriangle(cMidpoint, dMidpoint, dCorner, dColor);
       break;
     case 9:
-      // addTriangle(dCorner, cMidpoint, aCorner, dColor);
       addTriangle(aCorner, dCorner, cMidpoint, dColor);
       addTriangle(cMidpoint, aMidpoint, aCorner, aColor);
       break;
     case 10:
-      // addTriangle(bMidpoint, bCorner, aMidpoint, bColor);
       addTriangle(bCorner, aMidpoint, bMidpoint, bColor);
       addTriangle(cMidpoint, dMidpoint, dCorner, dColor);
       break;
     case 11:
-      // addTriangle(aCorner, bMidpoint, bCorner, bColor);
       addTriangle(bMidpoint, bCorner, aCorner, bColor);
       addTriangle(aCorner, cMidpoint, bMidpoint, aColor);
       addTriangle(aCorner, dCorner, cMidpoint, dColor);
       break;
     case 12:
-      // addTriangle(dCorner, cCorner, dMidpoint, dColor);
       addTriangle(dMidpoint, dCorner, cCorner, dColor);
-      // addTriangle(dMidpoint, cCorner, bMidpoint, cColor);
       addTriangle(cCorner, bMidpoint, dMidpoint, cColor);
       break;
     case 13:
-      // addTriangle(aCorner, dCorner, aMidpoint, aColor);
       addTriangle(aMidpoint, aCorner, dCorner, aColor);
-      // addTriangle(aMidpoint, dCorner, bMidpoint, dColor);
       addTriangle(bMidpoint, aMidpoint, dCorner, dColor);
-      // addTriangle(bMidpoint, dCorner, cCorner, cColor);
       addTriangle(dCorner, cCorner, bMidpoint, cColor);
       break;
     case 14:
-      // addTriangle(dCorner, cCorner, dMidpoint, dColor);
       addTriangle(dMidpoint, dCorner, cCorner, dColor);
-      // addTriangle(dMidpoint, cCorner, aMidpoint, cColor);
       addTriangle(aMidpoint, dMidpoint, cCorner, cColor);
-      // addTriangle(aMidpoint, cCorner, bCorner, bColor);
       addTriangle(cCorner, bCorner, aMidpoint, bColor);
       break;
     case 15:
-      // addTriangle(aCorner, cCorner, bCorner, bColor);
       addTriangle(cCorner, bCorner, aCorner, bColor);
       addTriangle(aCorner, dCorner, cCorner, dColor);
       break;
