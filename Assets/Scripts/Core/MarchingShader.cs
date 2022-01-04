@@ -28,6 +28,7 @@ public class MarchingShader : MonoBehaviour {
         CreateBuffers();
     }
 
+    // TODO: Refactor this to be more efficient when I learn more about shaders and how to connect them
     public void ShaderTriangulate(VoxelChunk chunk, out int[] triangles, out Color32[] colors) {
         int numThreadsPerResolution = Mathf.CeilToInt(voxelResolution / SHADER_THREADS);
 
