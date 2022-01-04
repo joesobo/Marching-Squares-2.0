@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using Core;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {

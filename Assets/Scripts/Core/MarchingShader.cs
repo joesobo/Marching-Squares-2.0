@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Core;
 
 public class MarchingShader : MonoBehaviour {
     private CoreScriptableObject CORE;
