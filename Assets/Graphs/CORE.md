@@ -17,20 +17,18 @@ graph LR;
     subgraph Colliders
       ColliderGenerator{{ColliderGenerator}};
       ColliderLogic{{ColliderLogic}};
+      OutlineShaderController{{OutlineShaderController}};
+      OutlineShader{{OutlineShader}};
     end
 
     subgraph Mesh
       VoxelMeshGenerator{{VoxelMeshGenerator}};
       VoxelMesh{{VoxelMesh}};
-    end
-
-    subgraph MarchingSquares
       MeshShaderController{{MeshShaderController}};
       MeshShader{{MeshShader}};
-      OutlineShaderController{{OutlineShaderController}};
-      OutlineShader{{OutlineShader}};
-      MarchingHelper{{MarchingHelper}};
     end
+
+    MarchingHelper{{MarchingHelper}};
   end
 
   %% Debug
