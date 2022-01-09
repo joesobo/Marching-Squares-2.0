@@ -5,13 +5,20 @@ using UnityEngine;
 public class ColliderGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
 
+    private OutlineShaderController outlineShaderController;
+
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        outlineShaderController = FindObjectOfType<OutlineShaderController>();
     }
 
     public void GenerateChunkColliders(VoxelChunk chunk) {
         // Remove colliders from chunk if regenerating its colliders
         chunk.RemoveChunkColliders();
+
+        // recalculate chunks outlines
+        outlineShaderController.ShaderTriangulate(chunk);
+
         // Reset logic for chunk
         ColliderLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
         // Calculate outlines

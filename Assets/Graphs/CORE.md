@@ -25,8 +25,9 @@ graph LR;
     end
 
     subgraph MarchingSquares
-      MarchingShader{{MarchingShader}};
+      MeshShaderController{{MeshShaderController}};
       MeshShader{{MeshShader}};
+      OutlineShaderController{{OutlineShaderController}};
       OutlineShader{{OutlineShader}};
       MarchingHelper{{MarchingHelper}};
     end
@@ -59,15 +60,18 @@ graph LR;
 
   ColliderGenerator ==> VoxelCore;
   ColliderGenerator ==> ColliderLogic;
+  ColliderGenerator ==> OutlineShaderController;
 
   VoxelMeshGenerator ==> VoxelMesh;
 
   VoxelMesh ==> VoxelCore;
-  VoxelMesh ==> MarchingShader;
+  VoxelMesh ==> MeshShaderController;
 
-  MarchingShader ==> VoxelCore;
-  MarchingShader ==> MeshShader;
-  MarchingShader ==> OutlineShader;
+  MeshShaderController ==> VoxelCore;
+  MeshShaderController ==> MeshShader;
+
+  OutlineShaderController ==> VoxelCore;
+  OutlineShaderController ==> OutlineShader;
 
   MeshShader ==> MarchingHelper;
   OutlineShader ==> MarchingHelper;

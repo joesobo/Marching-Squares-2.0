@@ -133,4 +133,38 @@ public class VoxelChunk : MonoBehaviour {
             Destroy(chunkCollider);
         }
     }
+
+    public int[] GetChunkStates() {
+        int[] stateValues = new int[(voxelResolution + 1) * (voxelResolution + 1)];
+
+        for (int i = 0, y = 0; y < voxelResolution; y++) {
+            for (int x = 0; x < voxelResolution; x++, i++) {
+                stateValues[y * voxelResolution + x + y] = voxels[i].state;
+            }
+        }
+
+        for (int y = 0; y < voxelResolution; y++) {
+            if (xNeighbor && xNeighbor.voxels != null) {
+                stateValues[y * voxelResolution + voxelResolution + y] = xNeighbor.voxels[y * voxelResolution].state;
+            } else {
+                stateValues[y * voxelResolution + voxelResolution + y] = -1;
+            }
+        }
+
+        for (int x = 0; x < voxelResolution; x++) {
+            if (yNeighbor && yNeighbor.voxels != null) {
+                stateValues[(voxelResolution + 1) * voxelResolution + x] = yNeighbor.voxels[x].state;
+            } else {
+                stateValues[(voxelResolution + 1) * voxelResolution + x] = -1;
+            }
+        }
+
+        if (xyNeighbor && xyNeighbor.voxels != null) {
+            stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = xyNeighbor.voxels[0].state;
+        } else {
+            stateValues[(voxelResolution + 1) * (voxelResolution + 1) - 1] = -1;
+        }
+
+        return stateValues;
+    }
 }

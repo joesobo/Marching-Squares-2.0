@@ -13,13 +13,13 @@ public class VoxelMesh : MonoBehaviour {
     // Scale of textures when applied to voxels
     private int textureTileAmount;
 
-    private MarchingShader marchingShader;
+    private MeshShaderController meshShaderController;
 
     public Material material;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-        marchingShader = FindObjectOfType<MarchingShader>();
+        meshShaderController = FindObjectOfType<MeshShaderController>();
 
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;
@@ -30,7 +30,7 @@ public class VoxelMesh : MonoBehaviour {
     public void TriangulateChunkMesh(VoxelChunk chunk) {
         Mesh mesh = new Mesh { name = "VoxelChunk Mesh" };
 
-        marchingShader.ShaderTriangulate(chunk, out triangles, out colors);
+        meshShaderController.ShaderTriangulate(chunk, out triangles, out colors);
 
         mesh.vertices = chunk.meshVertices;
         mesh.triangles = triangles;
