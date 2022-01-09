@@ -1,5 +1,11 @@
 #pragma kernel CSMain
 
+CGPROGRAM
+
+#include "MarchingHelper.cginc"
+
+ENDCG
+
 struct Triangle {
   float2 vertexA;
   float2 vertexB;
@@ -22,10 +28,6 @@ uint _ChunkResolution;
 float _Res;
 float _ResLen;
 float2 _Offset;
-
-int2 GetUV (int3 id) {
-  return id.xy;
-}
 
 int indexFromCoord(int x, int y) {
   return y * _VoxelResolution + x + y;

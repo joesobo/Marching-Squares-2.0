@@ -26,7 +26,9 @@ graph LR;
 
     subgraph MarchingSquares
       MarchingShader{{MarchingShader}};
-      MarchingSquaresShader{{MarchingSquaresShader}};
+      MeshShader{{MeshShader}};
+      OutlineShader{{OutlineShader}};
+      MarchingHelper{{MarchingHelper}};
     end
   end
 
@@ -64,7 +66,11 @@ graph LR;
   VoxelMesh ==> MarchingShader;
 
   MarchingShader ==> VoxelCore;
-  MarchingShader ==> MarchingSquaresShader;
+  MarchingShader ==> MeshShader;
+  MarchingShader ==> OutlineShader;
+
+  MeshShader ==> MarchingHelper;
+  OutlineShader ==> MarchingHelper;
 
   ChunkHelper ==> InfiniteGenerator;
   ChunkHelper ==> VoxelChunkGenerator;
