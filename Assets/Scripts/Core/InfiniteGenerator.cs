@@ -84,13 +84,13 @@ public class InfiniteGenerator : MonoBehaviour {
         }
     }
 
-    private void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
+    public void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             chunk.GenerateChunk();
         }
     }
 
-    private IEnumerable<VoxelChunk> FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
+    public IEnumerable<VoxelChunk> FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
         List<VoxelChunk> neighborChunksToUpdate = new List<VoxelChunk>();
 
         foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {

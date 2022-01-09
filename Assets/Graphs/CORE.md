@@ -42,12 +42,21 @@ graph LR;
     Vector2Extension{{Vector2Extension}};
   end
 
+  %% Terrain Editor
+  subgraph TerrainEditor
+    TerrainEditingSO((TerrainEditingSO));
+    TerrainEditorController{{TerrainEditorController}};
+  end
+
+  Player{Player};
+
   %% Core Connections
   VoxelCore ==> CORE;
   VoxelCore ==> InfiniteGenerator;
 
   InfiniteGenerator ==> VoxelCore;
   InfiniteGenerator ==> VoxelChunkGenerator;
+  InfiniteGenerator ==> Player;
 
   VoxelChunkGenerator ==> VoxelCore;
   VoxelChunkGenerator ==> VoxelChunk;
@@ -80,4 +89,9 @@ graph LR;
   Vector2Extension ==> ColliderLogic;
 
   DebugController ==> VoxelCore;
+
+  TerrainEditorController ==> VoxelCore;
+  TerrainEditorController ==> TerrainEditingSO;
+  TerrainEditorController ==> InfiniteGenerator;
+  TerrainEditorController ==> Player;
 ```

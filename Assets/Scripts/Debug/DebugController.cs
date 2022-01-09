@@ -7,6 +7,7 @@ public class DebugController : MonoBehaviour {
     public GameObject debugPanel;
     public TextMeshProUGUI mousePositionText;
     public TextMeshProUGUI chunkPositionText;
+    // public TextMeshProUGUI voxelPositionText;
 
     private bool isActive = false;
 
@@ -27,6 +28,7 @@ public class DebugController : MonoBehaviour {
 
             mousePositionText.text = "Mouse Position: (" + normalizedMouse.x + ", " + normalizedMouse.y + ")";
             chunkPositionText.text = "Chunk Position: (" + chunkPosition.x + ", " + chunkPosition.y + ")";
+            // voxelPositionText.text = "Voxel Position: (" + chunkPosition.x + ", " + chunkPosition.y + ")";
             debugPanel.SetActive(true);
         } else {
             debugPanel.SetActive(false);
