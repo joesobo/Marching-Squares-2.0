@@ -23,7 +23,7 @@ MonoBehaviour:
     SerializationNodes:
     - Name: existingChunks
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[Core.VoxelChunk,
+      Data: 0|System.Collections.Generic.Dictionary`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[VoxelChunk,
         Assembly-CSharp]], mscorlib
     - Name: comparer
       Entry: 7
@@ -43,7 +43,7 @@ MonoBehaviour:
       Data: 
     - Name: recycleableChunks
       Entry: 7
-      Data: 2|System.Collections.Generic.Queue`1[[Core.VoxelChunk, Assembly-CSharp]],
+      Data: 2|System.Collections.Generic.Queue`1[[VoxelChunk, Assembly-CSharp]],
         System
     - Name: 
       Entry: 12
@@ -54,7 +54,8 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  seed: 1
   voxelResolution: 8
   chunkResolution: 2
-  showVoxelReferencePoints: 0
+  showVoxelReferencePoints: 1
   doInfiniteGeneration: 1
