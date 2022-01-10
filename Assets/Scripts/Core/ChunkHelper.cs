@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public static class ChunkHelper {
-    public static Vector2Int GetWholePosition(VoxelChunk chunk) {
+    public static Vector2Int GetWholePosition(this VoxelChunk chunk) {
         Vector2 position = chunk.transform.position;
         return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
     }

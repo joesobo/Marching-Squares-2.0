@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainEditorController : MonoBehaviour {
-    public TerrainEditingScriptableObject terrainEditingScriptableObject;
+    public TerrainEditingScriptableObject editingScriptableObject;
     private CoreScriptableObject CORE;
 
-    private int voxelResolution, chunkResolution;
+    private int voxelResolution, chunkResolution, radius;
 
     private GameObject player;
     private InfiniteGenerator infiniteGenerator;
@@ -30,33 +30,78 @@ public class TerrainEditorController : MonoBehaviour {
     }
 
     // TODO: connect to debug controller
+    // TODO: implement different stencils
     private void Update() {
         // Follow player
         transform.position = player.transform.position;
 
         // Check for player editing in area
         if (Input.GetMouseButton(0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
-            EditChunks();
-        }
+            radius = editingScriptableObject.Radius;
 
-        // update mesh / collider for chunk and important neighbors
+            Edit();
+        }
+    }
+
+    // TODO: Refactor out edit chunks
+    // TODO: refactor out voxel finding?
+    private void Edit() {
+        GetChunks();
+
+        EditChunks();
+
         UpdateChunks();
     }
 
+    // TODO: make this a lot more efficient (dont check every point, just the edges)
+    private void GetChunks() {
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
+
+                Vector2Int chunkWorldPosition = GetChunkWorldPosition(hitPosition);
+
+                if (CORE.existingChunks.ContainsKey(chunkWorldPosition) && !chunksToUpdate.Contains(CORE.existingChunks[chunkWorldPosition])) {
+                    chunksToUpdate.Add(CORE.existingChunks[chunkWorldPosition]);
+                }
+            }
+        }
+    }
+
     private void EditChunks() {
-        Vector2Int chunkWorldPosition = GetChunkWorldPosition(hitInfo.point);
+        foreach (VoxelChunk chunk in chunksToUpdate) {
+            EditVoxels(GetVoxels(chunk));
+        }
+    }
 
-        if (CORE.existingChunks.ContainsKey(chunkWorldPosition)) {
-            VoxelChunk chunk = CORE.existingChunks[chunkWorldPosition];
-            Voxel voxel = chunk.voxels[GetVoxelIndex(hitInfo.point)];
+    private List<Voxel> GetVoxels(VoxelChunk chunk) {
+        List<Voxel> editVoxels = new List<Voxel>();
 
-            if (voxel.state == 1 && terrainEditingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove) {
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
+
+                // check if position exists in this chunk
+                if (ChunkContainsPosition(chunk, hitPosition)) {
+                    Voxel voxel = chunk.voxels[GetVoxelIndex(hitPosition)];
+
+                    if (!editVoxels.Contains(voxel)) {
+                        editVoxels.Add(voxel);
+                    }
+                }
+            }
+        }
+
+        return editVoxels;
+    }
+
+    private void EditVoxels(List<Voxel> voxels) {
+        foreach (Voxel voxel in voxels) {
+            if (voxel.state == 1 && editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove) {
                 voxel.state = 0;
-            } else if (voxel.state == 0 && terrainEditingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill) {
+            } else if (voxel.state == 0 && editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill) {
                 voxel.state = 1;
             }
-
-            chunksToUpdate.Add(chunk);
         }
     }
 
@@ -76,7 +121,7 @@ public class TerrainEditorController : MonoBehaviour {
     }
 
     private Vector2Int GetChunkPosition(Vector3 point) {
-        return new Vector2Int((int)Mathf.Floor(Mathf.Floor(hitInfo.point.x) / voxelResolution), (int)Mathf.Floor(Mathf.Floor(hitInfo.point.y) / voxelResolution));
+        return new Vector2Int((int)Mathf.Floor(Mathf.Floor(point.x) / voxelResolution), (int)Mathf.Floor(Mathf.Floor(point.y) / voxelResolution));
     }
 
     private Vector2Int GetChunkWorldPosition(Vector3 point) {
@@ -85,13 +130,20 @@ public class TerrainEditorController : MonoBehaviour {
 
     private Vector2 GetVoxelPosition(Vector3 point) {
         Vector2Int chunkWorldOffset = GetChunkWorldPosition(point);
-        return new Vector2((Mathf.Floor(hitInfo.point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(hitInfo.point.y) - chunkWorldOffset.y) + 0.5f);
+        return new Vector2((Mathf.Floor(point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(point.y) - chunkWorldOffset.y) + 0.5f);
     }
 
     private int GetVoxelIndex(Vector3 point) {
         Vector2 voxelPos = GetVoxelPosition(point);
         float halfSize = voxelResolution * 0.5f;
         return (int)((voxelPos.x + voxelPos.y * voxelResolution) - halfSize);
+    }
+
+    private bool ChunkContainsPosition(VoxelChunk chunk, Vector2 position) {
+        Vector2 startPos = chunk.GetWholePosition();
+        Vector2 endPos = startPos + Vector2.one * voxelResolution;
+
+        return position.x >= startPos.x && position.x <= endPos.x && position.y >= startPos.y && position.y <= endPos.y;
     }
 
     private void OnDrawGizmos() {
@@ -106,6 +158,6 @@ public class TerrainEditorController : MonoBehaviour {
         Vector2 voxelLocalPosition = GetVoxelPosition(mousePos);
         Vector2 voxelPosition = voxelLocalPosition + chunkPos;
 
-        Gizmos.DrawCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one);
+        Gizmos.DrawCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one * (editingScriptableObject.Radius * 2 + 1));
     }
 }

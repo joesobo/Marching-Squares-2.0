@@ -93,7 +93,7 @@ public class InfiniteGenerator : MonoBehaviour {
     public IEnumerable<VoxelChunk> FindImportantNeighbors(IEnumerable<VoxelChunk> chunks) {
         List<VoxelChunk> neighborChunksToUpdate = new List<VoxelChunk>();
 
-        foreach (Vector2Int setupCoord in chunks.Select(GetWholePosition)) {
+        foreach (Vector2Int setupCoord in chunks.Select(chunk => chunk.GetWholePosition())) {
             // Checks if bottom-left 3 neighbors are existing and adds to list if not already in list
             for (int i = -1; i < 1; i++) {
                 for (int j = -1; j < 1; j++) {

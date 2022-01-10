@@ -18,7 +18,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
         chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
 
-        CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
+        CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
@@ -26,7 +26,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
         chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
         chunk.ResetReferencePoints();
 
-        CORE.existingChunks.Add(GetWholePosition(chunk), chunk);
+        CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
@@ -36,7 +36,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
     public void SetupChunkNeighbors(VoxelChunk chunk) {
         int voxelResolution = CORE.voxelResolution;
-        Vector2Int setupCoord = GetWholePosition(chunk);
+        Vector2Int setupCoord = chunk.GetWholePosition();
 
         if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
 
