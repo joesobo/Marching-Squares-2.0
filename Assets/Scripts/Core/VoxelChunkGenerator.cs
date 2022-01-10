@@ -1,5 +1,4 @@
 using UnityEngine;
-using static ChunkHelper;
 
 public class VoxelChunkGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;

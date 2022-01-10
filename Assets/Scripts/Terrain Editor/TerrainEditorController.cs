@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +7,7 @@ public class TerrainEditorController : MonoBehaviour {
 
     private int voxelResolution, chunkResolution, radius;
 
+    private Camera cam;
     private GameObject player;
     private InfiniteGenerator infiniteGenerator;
     private BoxCollider playerEditingArea;
@@ -18,6 +18,7 @@ public class TerrainEditorController : MonoBehaviour {
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
 
     private void Start() {
+        cam = Camera.main;
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
@@ -36,7 +37,7 @@ public class TerrainEditorController : MonoBehaviour {
         transform.position = player.transform.position;
 
         // Check for player editing in area
-        if (Input.GetMouseButton(0) && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
+        if (Input.GetMouseButton(0) && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
             radius = editingScriptableObject.Radius;
 
             Edit();
@@ -95,22 +96,22 @@ public class TerrainEditorController : MonoBehaviour {
         return editVoxels;
     }
 
-    private void EditVoxels(List<Voxel> voxels) {
-        foreach (Voxel voxel in voxels) {
-            if (voxel.state == 1 && editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove) {
-                voxel.state = 0;
-            } else if (voxel.state == 0 && editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill) {
-                voxel.state = 1;
-            }
+    private void EditVoxels(IEnumerable<Voxel> voxels) {
+        foreach (Voxel voxel in voxels)
+        {
+            voxel.state = voxel.state switch
+            {
+                1 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove => 0,
+                0 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill => 1,
+                _ => voxel.state
+            };
         }
     }
 
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
-            foreach (VoxelChunk chunk in chunksToUpdate) {
-                infiniteGenerator.GenerateChunkList(chunksToUpdate);
-                infiniteGenerator.GenerateChunkList(infiniteGenerator.FindImportantNeighbors(chunksToUpdate));
-            }
+            infiniteGenerator.GenerateChunkList(chunksToUpdate);
+            infiniteGenerator.GenerateChunkList(infiniteGenerator.FindImportantNeighbors(chunksToUpdate));
 
             chunksToUpdate.Clear();
         }
@@ -120,6 +121,7 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
+    // TODO: Refactor out general chunk functions
     private Vector2Int GetChunkPosition(Vector3 point) {
         return new Vector2Int((int)Mathf.Floor(Mathf.Floor(point.x) / voxelResolution), (int)Mathf.Floor(Mathf.Floor(point.y) / voxelResolution));
     }
@@ -146,6 +148,7 @@ public class TerrainEditorController : MonoBehaviour {
         return position.x >= startPos.x && position.x <= endPos.x && position.y >= startPos.y && position.y <= endPos.y;
     }
 
+    // TODO: include radius in selected chunk gizmo
     private void OnDrawGizmos() {
         Gizmos.color = new Color(1, 0, 0, 0.5f);
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
