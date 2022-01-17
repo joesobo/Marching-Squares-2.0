@@ -22,4 +22,30 @@ public static class ChunkHelper {
         CORE.recycleableChunks.Enqueue(chunk);
         chunk.gameObject.SetActive(false);
     }
+
+    public static Vector2Int GetChunkPosition(Vector3 point, int voxelResolution) {
+        return new Vector2Int((int)Mathf.Floor(Mathf.Floor(point.x) / voxelResolution), (int)Mathf.Floor(Mathf.Floor(point.y) / voxelResolution));
+    }
+
+    public static Vector2Int GetChunkWorldPosition(Vector3 point, int voxelResolution) {
+        return GetChunkPosition(point, voxelResolution) * voxelResolution;
+    }
+
+    public static Vector2 GetVoxelPosition(Vector3 point, int voxelResolution) {
+        Vector2Int chunkWorldOffset = GetChunkWorldPosition(point, voxelResolution);
+        return new Vector2((Mathf.Floor(point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(point.y) - chunkWorldOffset.y) + 0.5f);
+    }
+
+    public static int GetVoxelIndex(Vector3 point, int voxelResolution) {
+        Vector2 voxelPos = GetVoxelPosition(point, voxelResolution);
+        float halfSize = voxelResolution * 0.5f;
+        return (int)((voxelPos.x + voxelPos.y * voxelResolution) - halfSize);
+    }
+
+    public static bool ChunkContainsPosition(VoxelChunk chunk, Vector2 position, int voxelResolution) {
+        Vector2 startPos = chunk.GetWholePosition();
+        Vector2 endPos = startPos + Vector2.one * voxelResolution;
+
+        return position.x >= startPos.x && position.x <= endPos.x && position.y >= startPos.y && position.y <= endPos.y;
+    }
 }

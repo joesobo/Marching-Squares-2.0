@@ -46,6 +46,7 @@ graph LR;
   subgraph TerrainEditor
     TerrainEditingSO((TerrainEditingSO));
     TerrainEditorController{{TerrainEditorController}};
+    TerrainEditorGizmos{{TerrainEditorGizmos}};
   end
 
   Player{Player};
@@ -57,9 +58,11 @@ graph LR;
   InfiniteGenerator ==> VoxelCore;
   InfiniteGenerator ==> VoxelChunkGenerator;
   InfiniteGenerator ==> Player;
+  InfiniteGenerator ==> ChunkHelper;
 
   VoxelChunkGenerator ==> VoxelCore;
   VoxelChunkGenerator ==> VoxelChunk;
+  VoxelChunkGenerator ==> ChunkHelper;
 
   VoxelChunk ==> VoxelCore;
   VoxelChunk ==> ColliderGenerator;
@@ -83,9 +86,6 @@ graph LR;
   MeshShader ==> MarchingHelper;
   OutlineShader ==> MarchingHelper;
 
-  ChunkHelper ==> InfiniteGenerator;
-  ChunkHelper ==> VoxelChunkGenerator;
-
   Vector2Extension ==> ColliderLogic;
 
   DebugController ==> VoxelCore;
@@ -94,4 +94,8 @@ graph LR;
   TerrainEditorController ==> TerrainEditingSO;
   TerrainEditorController ==> InfiniteGenerator;
   TerrainEditorController ==> Player;
+  TerrainEditorController ==> TerrainEditorGizmos;
+  TerrainEditorController ==> ChunkHelper;
+
+  TerrainEditorGizmos ==> ChunkHelper;
 ```

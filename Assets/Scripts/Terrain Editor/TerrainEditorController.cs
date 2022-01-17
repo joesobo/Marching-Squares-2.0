@@ -60,7 +60,7 @@ public class TerrainEditorController : MonoBehaviour {
             for (int j = -radius; j <= radius; j++) {
                 Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
 
-                Vector2Int chunkWorldPosition = GetChunkWorldPosition(hitPosition);
+                Vector2Int chunkWorldPosition = ChunkHelper.GetChunkWorldPosition(hitPosition, voxelResolution);
 
                 if (CORE.existingChunks.ContainsKey(chunkWorldPosition) && !chunksToUpdate.Contains(CORE.existingChunks[chunkWorldPosition])) {
                     chunksToUpdate.Add(CORE.existingChunks[chunkWorldPosition]);
@@ -83,8 +83,8 @@ public class TerrainEditorController : MonoBehaviour {
                 Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
 
                 // check if position exists in this chunk
-                if (ChunkContainsPosition(chunk, hitPosition)) {
-                    Voxel voxel = chunk.voxels[GetVoxelIndex(hitPosition)];
+                if (ChunkHelper.ChunkContainsPosition(chunk, hitPosition, voxelResolution)) {
+                    Voxel voxel = chunk.voxels[ChunkHelper.GetVoxelIndex(hitPosition, voxelResolution)];
 
                     if (!editVoxels.Contains(voxel)) {
                         editVoxels.Add(voxel);
@@ -119,67 +119,10 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
-    // TODO: Refactor out general chunk functions
-    private Vector2Int GetChunkPosition(Vector3 point) {
-        return new Vector2Int((int)Mathf.Floor(Mathf.Floor(point.x) / voxelResolution), (int)Mathf.Floor(Mathf.Floor(point.y) / voxelResolution));
-    }
-
-    private Vector2Int GetChunkWorldPosition(Vector3 point) {
-        return GetChunkPosition(point) * voxelResolution;
-    }
-
-    private Vector2 GetVoxelPosition(Vector3 point) {
-        Vector2Int chunkWorldOffset = GetChunkWorldPosition(point);
-        return new Vector2((Mathf.Floor(point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(point.y) - chunkWorldOffset.y) + 0.5f);
-    }
-
-    private int GetVoxelIndex(Vector3 point) {
-        Vector2 voxelPos = GetVoxelPosition(point);
-        float halfSize = voxelResolution * 0.5f;
-        return (int)((voxelPos.x + voxelPos.y * voxelResolution) - halfSize);
-    }
-
-    private bool ChunkContainsPosition(VoxelChunk chunk, Vector2 position) {
-        Vector2 startPos = chunk.GetWholePosition();
-        Vector2 endPos = startPos + Vector2.one * voxelResolution;
-
-        return position.x >= startPos.x && position.x <= endPos.x && position.y >= startPos.y && position.y <= endPos.y;
-    }
-
     private void OnDrawGizmos() {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        DrawChunksGizmo(mousePos);
-        DrawVoxelEditingGizmo(mousePos);
-    }
-
-    private void DrawChunksGizmo(Vector3 mousePos) {
-        List<Vector2Int> chunkPositions = new List<Vector2Int>();
-        Gizmos.color = Color.red;
-        int radius = editingScriptableObject.Radius;
-        float halfSize = voxelResolution * 0.5f;
-
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                Vector2 hitPosition = new Vector2(mousePos.x + i, mousePos.y + j);
-                Vector2Int chunkPos = GetChunkWorldPosition(hitPosition);
-                if (!chunkPositions.Contains(chunkPos)) {
-                    chunkPositions.Add(chunkPos);
-                }
-            }
-        }
-
-        foreach (Vector2Int chunkPos in chunkPositions) {
-            Gizmos.DrawWireCube(new Vector3(chunkPos.x + halfSize, chunkPos.y + halfSize, 0), Vector3.one * voxelResolution);
-        }
-    }
-
-    private void DrawVoxelEditingGizmo(Vector3 mousePos) {
-        Gizmos.color = Color.blue;
-        Vector2Int chunkPos = GetChunkWorldPosition(mousePos);
-        Vector2 voxelLocalPosition = GetVoxelPosition(mousePos);
-        Vector2 voxelPosition = voxelLocalPosition + chunkPos;
-
-        Gizmos.DrawWireCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one * (editingScriptableObject.Radius * 2 + 1));
+        TerrainEditorGizmos.DrawChunksGizmo(mousePos, editingScriptableObject.Radius, voxelResolution);
+        TerrainEditorGizmos.DrawVoxelEditingGizmo(mousePos, editingScriptableObject.Radius, voxelResolution);
     }
 }
