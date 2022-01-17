@@ -37,7 +37,7 @@ public class TerrainEditorController : MonoBehaviour {
         transform.position = player.transform.position;
 
         // Check for player editing in area
-        if (IsPlayerEditing() && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
+        if (IsPlayerEditing()) {
             radius = editingScriptableObject.Radius;
             start = radius > 0 ? -radius : 0;
             end = radius > 0 ? radius : 0;
@@ -46,10 +46,6 @@ public class TerrainEditorController : MonoBehaviour {
 
             Edit();
         }
-    }
-
-    private bool IsPlayerEditing() {
-        return Input.GetMouseButton(0) && lastMousePosition != Input.mousePosition + this.transform.position;
     }
 
     private void Edit() {
@@ -94,6 +90,10 @@ public class TerrainEditorController : MonoBehaviour {
 
             chunksToUpdate.Clear();
         }
+    }
+
+    private bool IsPlayerEditing() {
+        return Input.GetMouseButton(0) && lastMousePosition != Input.mousePosition + this.transform.position && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask);
     }
 
     private void OnDrawGizmos() {
