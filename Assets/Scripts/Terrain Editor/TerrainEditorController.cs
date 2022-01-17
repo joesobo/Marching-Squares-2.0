@@ -42,7 +42,7 @@ public class TerrainEditorController : MonoBehaviour {
             start = radius > 0 ? -radius : 0;
             end = radius > 0 ? radius : 0;
             inc = radius > 0 ? radius : 1;
-            lastMousePosition = Input.mousePosition + this.transform.position;
+            lastMousePosition = Input.mousePosition + transform.position;
 
             Edit();
         }
@@ -93,7 +93,7 @@ public class TerrainEditorController : MonoBehaviour {
     }
 
     private bool IsPlayerEditing() {
-        return Input.GetMouseButton(0) && lastMousePosition != Input.mousePosition + this.transform.position && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask);
+        return Input.GetMouseButton(0) && lastMousePosition != Input.mousePosition + transform.position && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask);
     }
 
     private void OnDrawGizmos() {

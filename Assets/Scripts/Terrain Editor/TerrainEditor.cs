@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,10 +33,11 @@ public static class TerrainEditor {
         // Filter selected voxels by editing type
         List<Voxel> filteredVoxels = new List<Voxel>();
         foreach (Voxel voxel in selectedVoxels) {
-            if (voxel.state == 1 && editingType == TerrainEditingScriptableObject.Type.Remove) {
-                filteredVoxels.Add(voxel);
-            } else if (voxel.state == 0 && editingType == TerrainEditingScriptableObject.Type.Fill) {
-                filteredVoxels.Add(voxel);
+            switch (voxel.state) {
+                case 1 when editingType == TerrainEditingScriptableObject.Type.Remove:
+                case 0 when editingType == TerrainEditingScriptableObject.Type.Fill:
+                    filteredVoxels.Add(voxel);
+                    break;
             }
         }
 
