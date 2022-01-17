@@ -97,10 +97,8 @@ public class TerrainEditorController : MonoBehaviour {
     }
 
     private void EditVoxels(IEnumerable<Voxel> voxels) {
-        foreach (Voxel voxel in voxels)
-        {
-            voxel.state = voxel.state switch
-            {
+        foreach (Voxel voxel in voxels) {
+            voxel.state = voxel.state switch {
                 1 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove => 0,
                 0 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill => 1,
                 _ => voxel.state
@@ -148,19 +146,40 @@ public class TerrainEditorController : MonoBehaviour {
         return position.x >= startPos.x && position.x <= endPos.x && position.y >= startPos.y && position.y <= endPos.y;
     }
 
-    // TODO: include radius in selected chunk gizmo
     private void OnDrawGizmos() {
-        Gizmos.color = new Color(1, 0, 0, 0.5f);
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2Int chunkPos = GetChunkWorldPosition(mousePos);
+
+        DrawChunksGizmo(mousePos);
+        DrawVoxelEditingGizmo(mousePos);
+    }
+
+    private void DrawChunksGizmo(Vector3 mousePos) {
+        List<Vector2Int> chunkPositions = new List<Vector2Int>();
+        Gizmos.color = Color.red;
+        int radius = editingScriptableObject.Radius;
         float halfSize = voxelResolution * 0.5f;
 
-        Gizmos.DrawCube(new Vector3(chunkPos.x + halfSize, chunkPos.y + halfSize, 0), Vector3.one * voxelResolution);
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                Vector2 hitPosition = new Vector2(mousePos.x + i, mousePos.y + j);
+                Vector2Int chunkPos = GetChunkWorldPosition(hitPosition);
+                if (!chunkPositions.Contains(chunkPos)) {
+                    chunkPositions.Add(chunkPos);
+                }
+            }
+        }
 
-        Gizmos.color = new Color(0, 0, 1, 0.5f);
+        foreach (Vector2Int chunkPos in chunkPositions) {
+            Gizmos.DrawWireCube(new Vector3(chunkPos.x + halfSize, chunkPos.y + halfSize, 0), Vector3.one * voxelResolution);
+        }
+    }
+
+    private void DrawVoxelEditingGizmo(Vector3 mousePos) {
+        Gizmos.color = Color.blue;
+        Vector2Int chunkPos = GetChunkWorldPosition(mousePos);
         Vector2 voxelLocalPosition = GetVoxelPosition(mousePos);
         Vector2 voxelPosition = voxelLocalPosition + chunkPos;
 
-        Gizmos.DrawCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one * (editingScriptableObject.Radius * 2 + 1));
+        Gizmos.DrawWireCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one * (editingScriptableObject.Radius * 2 + 1));
     }
 }

@@ -123,7 +123,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.white;
         Vector3 position = transform.position;
         Gizmos.DrawWireCube(new Vector3(position.x + halfSize, position.y + halfSize), Vector3.one * voxelResolution);
     }
