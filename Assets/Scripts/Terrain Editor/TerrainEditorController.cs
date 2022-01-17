@@ -31,10 +31,8 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
-    // TODO: connect to debug controller
     // TODO: implement different stencils
     private void Update() {
-        // Follow player
         transform.position = player.transform.position;
 
         // Check for player editing in area

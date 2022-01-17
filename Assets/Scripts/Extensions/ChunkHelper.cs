@@ -32,14 +32,19 @@ public static class ChunkHelper {
     }
 
     public static Vector2 GetVoxelPosition(Vector3 point, int voxelResolution) {
+        Vector2 voxelPos = GetVoxelWorldPosition(point, voxelResolution);
+        Vector2Int chunkPos = GetChunkWorldPosition(point, voxelResolution);
+        return new Vector2(voxelPos.x - 0.5f, voxelPos.y - 0.5f);
+    }
+
+    public static Vector2 GetVoxelWorldPosition(Vector3 point, int voxelResolution) {
         Vector2Int chunkWorldOffset = GetChunkWorldPosition(point, voxelResolution);
         return new Vector2((Mathf.Floor(point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(point.y) - chunkWorldOffset.y) + 0.5f);
     }
 
     public static int GetVoxelIndex(Vector3 point, int voxelResolution) {
         Vector2 voxelPos = GetVoxelPosition(point, voxelResolution);
-        float halfSize = voxelResolution * 0.5f;
-        return (int)((voxelPos.x + voxelPos.y * voxelResolution) - halfSize);
+        return (int)(voxelPos.x + voxelPos.y * voxelResolution);
     }
 
     public static bool ChunkContainsPosition(VoxelChunk chunk, Vector2 position, int voxelResolution) {
