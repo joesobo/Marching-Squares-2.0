@@ -13,8 +13,8 @@ public static class TerrainEditor {
         }
     }
 
-    public static List<Voxel> GetSelectedVoxels(this VoxelChunk chunk, Vector2 selectPoint, int radius, int voxelResolution) {
-        List<Voxel> editVoxels = new List<Voxel>();
+    public static List<Voxel> GetSelectedVoxels(this VoxelChunk chunk, Vector2 selectPoint, int radius, int voxelResolution, TerrainEditingScriptableObject.Type editingType) {
+        List<Voxel> selectedVoxels = new List<Voxel>();
 
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {
@@ -24,13 +24,23 @@ public static class TerrainEditor {
                 if (ChunkHelper.ChunkContainsPosition(chunk, hitPosition, voxelResolution)) {
                     Voxel voxel = chunk.voxels[ChunkHelper.GetVoxelIndex(hitPosition, voxelResolution)];
 
-                    if (!editVoxels.Contains(voxel)) {
-                        editVoxels.Add(voxel);
+                    if (!selectedVoxels.Contains(voxel)) {
+                        selectedVoxels.Add(voxel);
                     }
                 }
             }
         }
 
-        return editVoxels;
+        // Filter selected voxels by editing type
+        List<Voxel> filteredVoxels = new List<Voxel>();
+        foreach (Voxel voxel in selectedVoxels) {
+            if (voxel.state == 1 && editingType == TerrainEditingScriptableObject.Type.Remove) {
+                filteredVoxels.Add(voxel);
+            } else if (voxel.state == 0 && editingType == TerrainEditingScriptableObject.Type.Fill) {
+                filteredVoxels.Add(voxel);
+            }
+        }
+
+        return filteredVoxels;
     }
 }

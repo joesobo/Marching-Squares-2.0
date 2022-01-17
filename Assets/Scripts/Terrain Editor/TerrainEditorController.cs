@@ -5,7 +5,7 @@ public class TerrainEditorController : MonoBehaviour {
     public TerrainEditingScriptableObject editingScriptableObject;
     private CoreScriptableObject CORE;
 
-    private int voxelResolution, chunkResolution, radius;
+    private int voxelResolution, chunkResolution, radius, start, end, inc;
 
     private Camera cam;
     private GameObject player;
@@ -14,6 +14,7 @@ public class TerrainEditorController : MonoBehaviour {
 
     private RaycastHit hitInfo;
     public LayerMask layerMask;
+    private Vector3 lastMousePosition;
 
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
 
@@ -36,11 +37,19 @@ public class TerrainEditorController : MonoBehaviour {
         transform.position = player.transform.position;
 
         // Check for player editing in area
-        if (Input.GetMouseButton(0) && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
+        if (IsPlayerEditing() && Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hitInfo, 100, layerMask)) {
             radius = editingScriptableObject.Radius;
+            start = radius > 0 ? -radius : 0;
+            end = radius > 0 ? radius : 0;
+            inc = radius > 0 ? radius : 1;
+            lastMousePosition = Input.mousePosition + this.transform.position;
 
             Edit();
         }
+    }
+
+    private bool IsPlayerEditing() {
+        return Input.GetMouseButton(0) && lastMousePosition != Input.mousePosition + this.transform.position;
     }
 
     private void Edit() {
@@ -51,10 +60,9 @@ public class TerrainEditorController : MonoBehaviour {
         UpdateChunks();
     }
 
-    // TODO: make this a lot more efficient (dont check every point, just the edges)
     private void GetChunks() {
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
+        for (int i = start; i <= end; i += inc) {
+            for (int j = start; j <= end; j += inc) {
                 Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
 
                 Vector2Int chunkWorldPosition = ChunkHelper.GetChunkWorldPosition(hitPosition, voxelResolution);
@@ -67,9 +75,15 @@ public class TerrainEditorController : MonoBehaviour {
     }
 
     private void EditChunks() {
-        foreach (VoxelChunk chunk in chunksToUpdate) {
-            List<Voxel> selectedVoxels = chunk.GetSelectedVoxels(hitInfo.point, radius, voxelResolution);
-            TerrainEditor.EditVoxels(selectedVoxels, editingScriptableObject.EditingType);
+        for (int i = 0; i < chunksToUpdate.Count; i++) {
+            VoxelChunk chunk = chunksToUpdate[i];
+            List<Voxel> selectedVoxels = chunk.GetSelectedVoxels(hitInfo.point, radius, voxelResolution, editingScriptableObject.EditingType);
+
+            if (selectedVoxels.Count > 0) {
+                TerrainEditor.EditVoxels(selectedVoxels, editingScriptableObject.EditingType);
+            } else {
+                chunksToUpdate.Remove(chunk);
+            }
         }
     }
 
