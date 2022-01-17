@@ -583,6 +583,7 @@ GameObject:
   m_Component:
   - component: {fileID: 254321875}
   - component: {fileID: 254321874}
+  - component: {fileID: 254321877}
   - component: {fileID: 254321876}
   m_Layer: 3
   m_Name: Marching Terrain Editor
@@ -634,6 +635,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &254321877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254321873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2989fd6e0815608469f1f96bee642769, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1197,8 +1210,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugPanel: {fileID: 1555325802}
-  mousePositionText: {fileID: 187492302}
+  voxelPositionText: {fileID: 0}
   chunkPositionText: {fileID: 1921914784}
+  isActive: 0
 --- !u!114 &1762822387
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,8 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/TerrainEditingScriptableObject", order = 2)]
 public class TerrainEditingScriptableObject : SerializedScriptableObject {
     public enum Stencil {
-        Circle,
-        Square
+        Square,
+        Circle
     }
 
     public enum Type {

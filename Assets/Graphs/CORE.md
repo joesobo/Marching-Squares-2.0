@@ -48,6 +48,8 @@ graph LR;
     TerrainEditorController{{TerrainEditorController}};
     TerrainEditorGizmos{{TerrainEditorGizmos}};
     TerrainEditor{{TerrainEditor}};
+    EditorStencil{{EditorStencil}};
+    EditorStencilCircle{{EditorStencilCircle}};
   end
 
   Player{Player};
@@ -100,4 +102,9 @@ graph LR;
   TerrainEditorController ==> TerrainEditor;
 
   TerrainEditorGizmos ==> ChunkHelper;
+
+  TerrainEditor ==> VoxelCore;
+  TerrainEditor ==> TerrainEditorController;
+  TerrainEditor ==> EditorStencil;
+  TerrainEditor ==> EditorStencilCircle;
 ```

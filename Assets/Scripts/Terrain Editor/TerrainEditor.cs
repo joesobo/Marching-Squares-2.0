@@ -1,8 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class TerrainEditor {
-    public static void EditVoxels(IEnumerable<Voxel> voxels, TerrainEditingScriptableObject.Type editingType) {
+public class TerrainEditor : MonoBehaviour {
+    private TerrainEditingScriptableObject editingScriptableObject;
+    private CoreScriptableObject CORE;
+
+    private readonly EditingStencil[] stencils = {
+        new EditingStencil(),
+        new EditingStencilCircle()
+    };
+
+    public void Start() {
+        editingScriptableObject = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+    }
+
+    public void EditVoxels(IEnumerable<Voxel> voxels) {
+        TerrainEditingScriptableObject.Type editingType = editingScriptableObject.EditingType;
+
         foreach (Voxel voxel in voxels) {
             voxel.state = voxel.state switch {
                 1 when editingType == TerrainEditingScriptableObject.Type.Remove => 0,
@@ -12,8 +27,12 @@ public static class TerrainEditor {
         }
     }
 
-    public static List<Voxel> GetSelectedVoxels(this VoxelChunk chunk, Vector2 selectPoint, int radius, int voxelResolution, TerrainEditingScriptableObject.Type editingType) {
+    public List<Voxel> GetSelectedVoxels(VoxelChunk chunk, Vector2 selectPoint) {
+        EditingStencil activeStencil = stencils[(int)editingScriptableObject.StencilType];
+        TerrainEditingScriptableObject.Type editingType = editingScriptableObject.EditingType;
         List<Voxel> selectedVoxels = new List<Voxel>();
+        int voxelResolution = CORE.voxelResolution;
+        int radius = editingScriptableObject.Radius;
 
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {
@@ -23,7 +42,7 @@ public static class TerrainEditor {
                 if (ChunkHelper.ChunkContainsPosition(chunk, hitPosition, voxelResolution)) {
                     Voxel voxel = chunk.voxels[ChunkHelper.GetVoxelIndex(hitPosition, voxelResolution)];
 
-                    if (!selectedVoxels.Contains(voxel)) {
+                    if (!selectedVoxels.Contains(voxel) && activeStencil.IsVoxelInStencil(selectPoint, hitPosition, radius)) {
                         selectedVoxels.Add(voxel);
                     }
                 }

@@ -4,6 +4,7 @@ using UnityEngine;
 public class TerrainEditorController : MonoBehaviour {
     public TerrainEditingScriptableObject editingScriptableObject;
     private CoreScriptableObject CORE;
+    private TerrainEditor terrainEditor;
 
     private int voxelResolution, chunkResolution, radius, start, end, inc;
 
@@ -21,6 +22,7 @@ public class TerrainEditorController : MonoBehaviour {
     private void Start() {
         cam = Camera.main;
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        terrainEditor = FindObjectOfType<TerrainEditor>();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
         playerEditingArea = GetComponent<BoxCollider>();
@@ -32,7 +34,6 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
-    // TODO: implement different stencils
     private void Update() {
         transform.position = player.transform.position;
 
@@ -73,12 +74,13 @@ public class TerrainEditorController : MonoBehaviour {
     private void EditChunks() {
         for (int i = 0; i < chunksToUpdate.Count; i++) {
             VoxelChunk chunk = chunksToUpdate[i];
-            List<Voxel> selectedVoxels = chunk.GetSelectedVoxels(hitInfo.point, radius, voxelResolution, editingScriptableObject.EditingType);
+            List<Voxel> selectedVoxels = terrainEditor.GetSelectedVoxels(chunk, hitInfo.point);
 
             if (selectedVoxels.Count > 0) {
-                TerrainEditor.EditVoxels(selectedVoxels, editingScriptableObject.EditingType);
+                terrainEditor.EditVoxels(selectedVoxels);
             } else {
                 chunksToUpdate.Remove(chunk);
+                i--;
             }
         }
     }
@@ -100,6 +102,10 @@ public class TerrainEditorController : MonoBehaviour {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         TerrainEditorGizmos.DrawChunksGizmo(mousePos, editingScriptableObject.Radius, voxelResolution);
-        TerrainEditorGizmos.DrawVoxelEditingGizmo(mousePos, editingScriptableObject.Radius, voxelResolution);
+        TerrainEditorGizmos.DrawVoxelEditingGizmo(mousePos, editingScriptableObject, voxelResolution);
+    }
+
+    public TerrainEditingScriptableObject GetTerrainEditingScriptableObject() {
+        return editingScriptableObject;
     }
 }
