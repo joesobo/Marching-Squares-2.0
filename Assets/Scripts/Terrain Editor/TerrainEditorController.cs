@@ -27,7 +27,8 @@ public class TerrainEditorController : MonoBehaviour {
         voxelResolution = CORE.voxelResolution;
         chunkResolution = CORE.chunkResolution;
 
-        SetupColliderArea();
+        // Setup collider area
+        playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
     // TODO: connect to debug controller
@@ -44,8 +45,6 @@ public class TerrainEditorController : MonoBehaviour {
         }
     }
 
-    // TODO: Refactor out edit chunks
-    // TODO: refactor out voxel finding?
     private void Edit() {
         GetChunks();
 
@@ -71,38 +70,8 @@ public class TerrainEditorController : MonoBehaviour {
 
     private void EditChunks() {
         foreach (VoxelChunk chunk in chunksToUpdate) {
-            EditVoxels(GetVoxels(chunk));
-        }
-    }
-
-    private List<Voxel> GetVoxels(VoxelChunk chunk) {
-        List<Voxel> editVoxels = new List<Voxel>();
-
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                Vector2 hitPosition = new Vector2(hitInfo.point.x + i, hitInfo.point.y + j);
-
-                // check if position exists in this chunk
-                if (ChunkHelper.ChunkContainsPosition(chunk, hitPosition, voxelResolution)) {
-                    Voxel voxel = chunk.voxels[ChunkHelper.GetVoxelIndex(hitPosition, voxelResolution)];
-
-                    if (!editVoxels.Contains(voxel)) {
-                        editVoxels.Add(voxel);
-                    }
-                }
-            }
-        }
-
-        return editVoxels;
-    }
-
-    private void EditVoxels(IEnumerable<Voxel> voxels) {
-        foreach (Voxel voxel in voxels) {
-            voxel.state = voxel.state switch {
-                1 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Remove => 0,
-                0 when editingScriptableObject.EditingType == TerrainEditingScriptableObject.Type.Fill => 1,
-                _ => voxel.state
-            };
+            List<Voxel> selectedVoxels = chunk.GetSelectedVoxels(hitInfo.point, radius, voxelResolution);
+            TerrainEditor.EditVoxels(selectedVoxels, editingScriptableObject.EditingType);
         }
     }
 
@@ -113,10 +82,6 @@ public class TerrainEditorController : MonoBehaviour {
 
             chunksToUpdate.Clear();
         }
-    }
-
-    private void SetupColliderArea() {
-        playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
     }
 
     private void OnDrawGizmos() {

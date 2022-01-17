@@ -43,10 +43,11 @@ graph LR;
   end
 
   %% Terrain Editor
-  subgraph TerrainEditor
+  subgraph TerrainEditorModule
     TerrainEditingSO((TerrainEditingSO));
     TerrainEditorController{{TerrainEditorController}};
     TerrainEditorGizmos{{TerrainEditorGizmos}};
+    TerrainEditor{{TerrainEditor}};
   end
 
   Player{Player};
@@ -96,6 +97,7 @@ graph LR;
   TerrainEditorController ==> Player;
   TerrainEditorController ==> TerrainEditorGizmos;
   TerrainEditorController ==> ChunkHelper;
+  TerrainEditorController ==> TerrainEditor;
 
   TerrainEditorGizmos ==> ChunkHelper;
 ```
