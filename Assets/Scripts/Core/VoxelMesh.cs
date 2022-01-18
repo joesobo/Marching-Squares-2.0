@@ -38,8 +38,8 @@ public class VoxelMesh : MonoBehaviour {
         mesh.colors32 = colors;
         mesh.RecalculateNormals();
 
-        chunk.GetComponent<MeshFilter>().mesh = mesh;
-        chunk.GetComponent<MeshRenderer>().sharedMaterial = material;
+        chunk.meshFilter.mesh = mesh;
+        chunk.meshRenderer.sharedMaterial = material;
     }
 
     private Vector2[] GetUVs(IList<Vector3> vertices) {

@@ -28,6 +28,9 @@ public class VoxelChunk : MonoBehaviour {
     // The amount of voxels in each direction of the chunk
     private int voxelResolution;
 
+    public MeshFilter meshFilter;
+    public MeshRenderer meshRenderer;
+
     // Half the resolution for finding center of chunks
     private float halfSize;
 
@@ -36,6 +39,8 @@ public class VoxelChunk : MonoBehaviour {
         voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
         voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
         colliderGenerator = FindObjectOfType<ColliderGenerator>();
+        meshFilter = FindObjectOfType<MeshFilter>();
+        meshRenderer = FindObjectOfType<MeshRenderer>();
     }
 
     public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {

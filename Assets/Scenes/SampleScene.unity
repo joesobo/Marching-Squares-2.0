@@ -583,8 +583,8 @@ GameObject:
   m_Component:
   - component: {fileID: 254321875}
   - component: {fileID: 254321874}
-  - component: {fileID: 254321877}
   - component: {fileID: 254321876}
+  - component: {fileID: 254321877}
   m_Layer: 3
   m_Name: Marching Terrain Editor
   m_TagString: Untagged
