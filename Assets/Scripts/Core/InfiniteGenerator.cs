@@ -14,6 +14,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private bool startGeneration;
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
+    private readonly List<BackgroundChunk> backgroundChunksToUpdate = new List<BackgroundChunk>();
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -71,6 +72,7 @@ public class InfiniteGenerator : MonoBehaviour {
                 if (CORE.existingChunks.ContainsKey(chunkPosition)) continue;
 
                 chunksToUpdate.Add(voxelChunkGenerator.GetNewChunk(chunkPosition));
+                backgroundChunksToUpdate.Add(voxelChunkGenerator.GetNewBackgroundChunk(chunkPosition));
             }
         }
     }
@@ -80,13 +82,22 @@ public class InfiniteGenerator : MonoBehaviour {
             GenerateChunkList(chunksToUpdate);
             GenerateChunkList(FindImportantNeighbors(chunksToUpdate));
 
+            GenerateBackgroundChunks(backgroundChunksToUpdate);
+
             chunksToUpdate.Clear();
+            backgroundChunksToUpdate.Clear();
         }
     }
 
     public void GenerateChunkList(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             chunk.GenerateChunk();
+        }
+    }
+
+    public void GenerateBackgroundChunks(IEnumerable<BackgroundChunk> chunks) {
+        foreach (BackgroundChunk chunk in chunks) {
+            chunk.GenerateBackgroundChunk();
         }
     }
 

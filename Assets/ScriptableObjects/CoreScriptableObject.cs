@@ -16,11 +16,14 @@ public class CoreScriptableObject : SerializedScriptableObject {
 
     // Dictionary of current chunks
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
+    // Dictionary of current background chunks
+    public readonly Dictionary<Vector2Int, BackgroundChunk> existingBackgroundChunks = new Dictionary<Vector2Int, BackgroundChunk>();
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
 
     private void OnEnable() {
         existingChunks.Clear();
+        existingBackgroundChunks.Clear();
         recycleableChunks.Clear();
     }
 }

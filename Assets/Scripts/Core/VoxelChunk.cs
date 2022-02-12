@@ -10,6 +10,11 @@ public class VoxelChunk : MonoBehaviour {
     private VoxelMeshGenerator voxelMeshGenerator;
     private ColliderGenerator colliderGenerator;
 
+    [HideInInspector] public MeshFilter meshFilter;
+    [HideInInspector] public MeshRenderer meshRenderer;
+
+    public Material material;
+
     // Reference to neighbor chunks for edge voxel information
     public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
@@ -27,9 +32,6 @@ public class VoxelChunk : MonoBehaviour {
     private GameObject voxelRefPointsPrefab;
     // The amount of voxels in each direction of the chunk
     private int voxelResolution;
-
-    public MeshFilter meshFilter;
-    public MeshRenderer meshRenderer;
 
     // Half the resolution for finding center of chunks
     private float halfSize;
@@ -69,7 +71,7 @@ public class VoxelChunk : MonoBehaviour {
     [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
     private void RefreshMesh() {
-        voxelMeshGenerator.GenerateChunkMesh(this);
+        voxelMeshGenerator.GenerateChunkMesh(this, material);
     }
 
     [HorizontalGroup("Split", 0.5f)]

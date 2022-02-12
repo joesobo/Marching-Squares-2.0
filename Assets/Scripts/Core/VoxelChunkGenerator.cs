@@ -8,13 +8,15 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
 
+    public GameObject voxelBackgroundChunkPrefab;
+
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
     private VoxelChunk CreateChunk(Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
-        VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
+        VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
         chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
 
         CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
@@ -31,6 +33,15 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
     public VoxelChunk GetNewChunk(Vector2 chunkPosition) {
         return CORE.recycleableChunks.Count > 0 ? CreatePoolChunk(CORE.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(chunkPosition);
+    }
+
+    public BackgroundChunk GetNewBackgroundChunk(Vector2 chunkPosition) {
+        GameObject backgroundChunkObject = Instantiate(voxelBackgroundChunkPrefab, chunkPosition, Quaternion.identity);
+        BackgroundChunk chunk = backgroundChunkObject.GetComponent<BackgroundChunk>();
+        chunk.SetupChunk(chunkPosition);
+
+        CORE.existingBackgroundChunks.Add(chunk.GetWholePosition(), chunk);
+        return chunk;
     }
 
     public void SetupChunkNeighbors(VoxelChunk chunk) {

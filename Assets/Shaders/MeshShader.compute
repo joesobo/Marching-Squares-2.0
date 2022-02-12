@@ -64,7 +64,7 @@ bool isMultiMaterial(int cornerStates[4]) {
 
 Color colorByState(float state) {
   Color col;
-  col.red = state / 255.0;
+  col.red = 255 - state;
   col.blue = 0;
   col.green = 0;
 
