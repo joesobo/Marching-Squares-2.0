@@ -14,7 +14,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
     private VoxelChunk CreateChunk(Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
-        VoxelChunk chunk = chunkObject.AddComponent<VoxelChunk>();
+        VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
         chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
 
         CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);

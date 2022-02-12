@@ -7,7 +7,7 @@ public class VoxelMeshGenerator : MonoBehaviour {
         voxelMesh = FindObjectOfType<VoxelMesh>();
     }
 
-    public void GenerateChunkMesh(VoxelChunk chunk) {
-        voxelMesh.TriangulateChunkMesh(chunk);
+    public void GenerateChunkMesh(VoxelChunk chunk, Material material) {
+        voxelMesh.TriangulateChunkMesh(chunk, material);
     }
 }

@@ -94,11 +94,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175e674319b1ba24481681931ca8abb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshFilter: {fileID: 0}
+  meshRenderer: {fileID: 0}
+  material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}
   xNeighbor: {fileID: 0}
   yNeighbor: {fileID: 0}
   xyNeighbor: {fileID: 0}
   voxels: []
   meshVertices: []
   outlineVertices: []
-  meshFilter: {fileID: 0}
-  meshRenderer: {fileID: 0}
