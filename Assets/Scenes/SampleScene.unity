@@ -525,13 +525,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91583526}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.030937105, y: 0.42062548, z: -0.4039976, w: 0.8117285}
+  m_LocalPosition: {x: 0, y: 0, z: -26.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 22.96, y: 45.6, z: -43.16}
 --- !u!1 &187492301
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,7 +901,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
   voxelChunkPrefab: {fileID: 1240171735389309353, guid: effd48641428ce14aa22921b57d52876, type: 3}
-  voxelBackgroundChunkPrefab: {fileID: 1240171735389309353, guid: b6b68d4b4b2e1864f91541f1ed62d5e1, type: 3}
 --- !u!114 &779051274
 MonoBehaviour:
   m_ObjectHideFlags: 0

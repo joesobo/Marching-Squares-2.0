@@ -22,5 +22,5 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   Radius: 0
-  StencilType: 1
-  EditingType: 0
+  StencilType: 0
+  EditingType: 1

@@ -37,7 +37,7 @@ public class VoxelMesh : MonoBehaviour {
         mesh.RecalculateNormals();
 
         chunk.meshFilter.mesh = mesh;
-        chunk.meshRenderer.sharedMaterial = material;
+        chunk.meshRenderer.material = material;
     }
 
     private Vector2[] GetUVs(IList<Vector3> vertices) {

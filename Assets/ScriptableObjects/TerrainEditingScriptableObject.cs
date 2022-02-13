@@ -10,7 +10,10 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
 
     public enum Type {
         Remove,
-        Fill,
+        Dirt,
+        Grass,
+        Stone,
+        White
     }
 
     [Range(0, 5)]
