@@ -50,7 +50,7 @@ public class TerrainEditor : MonoBehaviour {
         foreach (Voxel voxel in selectedVoxels) {
             if (voxel.state != (int)editingType) {
                 filteredVoxels.Add(voxel);
-                break;
+                // break;
             }
         }
 
