@@ -16,10 +16,8 @@ public class TerrainEditor : MonoBehaviour {
     }
 
     public void EditVoxels(IEnumerable<Voxel> voxels) {
-        TerrainEditingScriptableObject.Type editingType = editingScriptableObject.EditingType;
-
         foreach (Voxel voxel in voxels) {
-            voxel.state = (int)editingType;
+            voxel.state = (int)editingScriptableObject.EditingType;
         }
     }
 
@@ -50,7 +48,6 @@ public class TerrainEditor : MonoBehaviour {
         foreach (Voxel voxel in selectedVoxels) {
             if (voxel.state != (int)editingType) {
                 filteredVoxels.Add(voxel);
-                // break;
             }
         }
 
