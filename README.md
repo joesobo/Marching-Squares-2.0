@@ -11,8 +11,8 @@ This tool is currently under development, though you can check out [the old v1.0
 - [x] Chunk Based Generation
 - [x] Infinite Generation
 - [x] Collider Creation
-- [ ] Terrain Editing
-- [ ] Multiple Terrain Types
+- [x] Terrain Editing
+- [x] Multiple Terrain Types
 - [ ] Terrain Map Display
 - [ ] Various Terrain Noise Functions
 - [ ] Simple Inspector UI for full control
