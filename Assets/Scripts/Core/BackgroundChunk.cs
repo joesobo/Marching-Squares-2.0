@@ -35,7 +35,7 @@ public class BackgroundChunk : VoxelChunk {
     private void FillChunk() {
         for (int i = 0, y = 0; y < voxelResolution; y++) {
             for (int x = 0; x < voxelResolution; x++, i++) {
-                voxels[i] = new Voxel(x, y, 1f);
+                voxels[i] = new Voxel(x, y, 1f, 1);
             }
         }
     }
