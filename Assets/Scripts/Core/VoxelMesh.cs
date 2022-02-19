@@ -15,8 +15,6 @@ public class VoxelMesh : MonoBehaviour {
 
     private MeshShaderController meshShaderController;
 
-    public Material material;
-
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         meshShaderController = FindObjectOfType<MeshShaderController>();
@@ -27,7 +25,7 @@ public class VoxelMesh : MonoBehaviour {
         textureTileAmount = (voxelResolution * chunkResolution) / 2;
     }
 
-    public void TriangulateChunkMesh(VoxelChunk chunk) {
+    public void TriangulateChunkMesh(VoxelChunk chunk, Material material) {
         Mesh mesh = new Mesh { name = "VoxelChunk Mesh" };
 
         meshShaderController.ShaderTriangulate(chunk, out triangles, out colors);
@@ -39,7 +37,7 @@ public class VoxelMesh : MonoBehaviour {
         mesh.RecalculateNormals();
 
         chunk.meshFilter.mesh = mesh;
-        chunk.meshRenderer.sharedMaterial = material;
+        chunk.meshRenderer.material = material;
     }
 
     private Vector2[] GetUVs(IList<Vector3> vertices) {
