@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Test
+  m_Name: TextureMat
   m_Shader: {fileID: -6465566751694194690, guid: c87df609f47546a469fdf8ca77ece193, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
