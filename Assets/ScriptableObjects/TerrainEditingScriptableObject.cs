@@ -15,7 +15,22 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
         Dirt,
         Grass,
         Stone,
-        White
+        White,
+        Black,
+        Blue,
+        Brown,
+        Cyan,
+        Green,
+        Light_Blue,
+        Lime,
+        Light_Gray,
+        Magenta,
+        Orange,
+        Pink,
+        Purple,
+        Red,
+        Yellow,
+        Gray,
     }
 
     [Range(0, 5)]
