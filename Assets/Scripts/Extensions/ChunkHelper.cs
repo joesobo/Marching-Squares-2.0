@@ -51,8 +51,8 @@ public static class ChunkHelper {
         Vector2 startPos = chunk.GetWholePosition();
         Vector2 endPos = startPos + Vector2.one * voxelResolution;
 
-        // return false in the case where it is on the x axis but not the right chunk
-        if (startPos.y <= 0 && position.y == 0) {
+        // return false in the case where it is on the main axis but not the right chunk
+        if ((startPos.y <= 0 && position.y == 0) || (startPos.x <= 0 && position.x == 0)) {
             return false;
         }
 
