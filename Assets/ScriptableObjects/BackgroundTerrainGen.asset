@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23bfce3b6f3bd094dabf3d3d1d67673a, type: 3}
-  m_Name: TerrainEditingData
+  m_Script: {fileID: 11500000, guid: 3be4bef1a9514514297feb1e92cce763, type: 3}
+  m_Name: BackgroundTerrainGen
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,10 +21,4 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Radius: 3
-  StencilType: 1
-  EditingType: 14
-  marchingSquaresParents:
-  - {fileID: 0}
-  - {fileID: 0}
-  LayerIndex: 0
+  EditingType: 3

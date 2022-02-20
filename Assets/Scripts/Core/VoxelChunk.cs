@@ -9,6 +9,7 @@ public class VoxelChunk : MonoBehaviour {
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
     private ColliderGenerator colliderGenerator;
+    private TerrainGenerationController terrainGenerationController;
 
     [HideInInspector] public MeshFilter meshFilter;
     [HideInInspector] public MeshRenderer meshRenderer;
@@ -41,6 +42,7 @@ public class VoxelChunk : MonoBehaviour {
         colliderGenerator = this.GetComponentInParent<ColliderGenerator>();
         meshFilter = this.GetComponentInParent<MeshFilter>();
         meshRenderer = this.GetComponentInParent<MeshRenderer>();
+        terrainGenerationController = this.GetComponentInParent<TerrainGenerationController>();
     }
 
     public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
@@ -96,7 +98,9 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
-        voxels[i] = new Voxel(x, y, 1f);
+        int noiseVal = terrainGenerationController.GetTerrainNoise();
+
+        voxels[i] = new Voxel(x, y, 1f, noiseVal);
         CreateReferencePoint(i, x, y);
     }
 

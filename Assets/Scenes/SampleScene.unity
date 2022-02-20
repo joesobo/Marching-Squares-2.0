@@ -697,13 +697,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 991f4d9ed263fd04c920f46d1017c60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  editingScriptableObject: {fileID: 11400000, guid: f92e73e4a47181f40b68c1b34b0ee55f, type: 2}
+  terrainEditingSO: {fileID: 11400000, guid: f92e73e4a47181f40b68c1b34b0ee55f, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 8
-  marchingSquaresParents:
-  - {fileID: 779051269}
-  - {fileID: 1559781016}
 --- !u!4 &254321875
 Transform:
   m_ObjectHideFlags: 0
@@ -826,162 +823,6 @@ Transform:
   m_Father: {fileID: 70601835}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &779051269
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 779051272}
-  - component: {fileID: 779051271}
-  - component: {fileID: 779051276}
-  - component: {fileID: 779051273}
-  - component: {fileID: 779051270}
-  - component: {fileID: 779051278}
-  - component: {fileID: 779051275}
-  - component: {fileID: 779051274}
-  - component: {fileID: 779051279}
-  - component: {fileID: 779051277}
-  m_Layer: 0
-  m_Name: Marching Squares Terrain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &779051270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bae2cbe420a81ff49bf15155ab0cfde5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &779051271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dff97a968756e1a458de0278fe0a8c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CoreData: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
---- !u!4 &779051272
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &779051273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 716d80be26777424eb9f4df1f2cdb3c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
-  voxelChunkPrefab: {fileID: 1240171735389309353, guid: effd48641428ce14aa22921b57d52876, type: 3}
---- !u!114 &779051274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62a0a14bfbe317f4d8d35cd7a4d16d33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marchingSquareShader: {fileID: 7200000, guid: 09716d5295fd131418fdbf96167b30ae, type: 3}
---- !u!114 &779051275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f944dbbfc37cd449b00b951b137aeae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &779051276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcecda891fc36834f8c9699d59436399, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &779051277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  icon: {fileID: 2244882685325231567, guid: 0000000000000000d000000000000000, type: 0}
-  position: 0
-  direction: 0
-  tooltip: Main Core of Marching Square terrain generator
---- !u!114 &779051278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d6711c1413692141a3de4a24ecf4c4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &779051279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 779051269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f69f8cd342c5d549b8c09b19c7210b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineShader: {fileID: 7200000, guid: 69e96eb42c6ea98469ab7dc5b99ac7e2, type: 3}
 --- !u!1 &1165099377 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
@@ -1107,162 +948,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1555325802}
   m_CullTransparentMesh: 1
---- !u!1 &1559781016
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1559781026}
-  - component: {fileID: 1559781025}
-  - component: {fileID: 1559781024}
-  - component: {fileID: 1559781023}
-  - component: {fileID: 1559781022}
-  - component: {fileID: 1559781021}
-  - component: {fileID: 1559781020}
-  - component: {fileID: 1559781019}
-  - component: {fileID: 1559781018}
-  - component: {fileID: 1559781017}
-  m_Layer: 0
-  m_Name: Marching Squares Terrain Background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1559781017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  icon: {fileID: 2244882685325231567, guid: 0000000000000000d000000000000000, type: 0}
-  position: 0
-  direction: 0
-  tooltip: Main Core of Marching Square terrain generator
---- !u!114 &1559781018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f69f8cd342c5d549b8c09b19c7210b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineShader: {fileID: 7200000, guid: 69e96eb42c6ea98469ab7dc5b99ac7e2, type: 3}
---- !u!114 &1559781019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62a0a14bfbe317f4d8d35cd7a4d16d33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  marchingSquareShader: {fileID: 7200000, guid: 09716d5295fd131418fdbf96167b30ae, type: 3}
---- !u!114 &1559781020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f944dbbfc37cd449b00b951b137aeae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1559781021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d6711c1413692141a3de4a24ecf4c4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1559781022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bae2cbe420a81ff49bf15155ab0cfde5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1559781023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 716d80be26777424eb9f4df1f2cdb3c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
-  voxelChunkPrefab: {fileID: 1240171735389309353, guid: effd48641428ce14aa22921b57d52876, type: 3}
---- !u!114 &1559781024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcecda891fc36834f8c9699d59436399, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1559781025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dff97a968756e1a458de0278fe0a8c4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CoreData: {fileID: 11400000, guid: aae711f958fbbbd40b50d9ff3c4ee1e8, type: 2}
---- !u!4 &1559781026
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1559781016}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1666540502
 GameObject:
   m_ObjectHideFlags: 0
@@ -1795,3 +1480,121 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+--- !u!1001 &366545550965893448
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709608, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_Name
+      value: Marching Squares Terrain Background
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709610, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: CoreData
+      value: 
+      objectReference: {fileID: 11400000, guid: aae711f958fbbbd40b50d9ff3c4ee1e8, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+--- !u!1001 &8262449788645407853
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8262449788278709608, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: m_Name
+      value: Marching Squares Terrain
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}

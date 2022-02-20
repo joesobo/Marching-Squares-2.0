@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8262449788278709608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8262449788278709605}
+  - component: {fileID: 8262449788278709610}
+  - component: {fileID: 8262449788278709601}
+  - component: {fileID: 8262449788278709604}
+  - component: {fileID: 8262449788278709611}
+  - component: {fileID: 8262449788278709603}
+  - component: {fileID: 8262449788278709606}
+  - component: {fileID: 8262449788278709607}
+  - component: {fileID: 8262449788278709602}
+  - component: {fileID: 8262449788278709600}
+  - component: {fileID: 6844761532381161800}
+  m_Layer: 0
+  m_Name: Marching Squares Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8262449788278709605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8262449788278709610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dff97a968756e1a458de0278fe0a8c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CoreData: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
+--- !u!114 &8262449788278709601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcecda891fc36834f8c9699d59436399, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8262449788278709604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 716d80be26777424eb9f4df1f2cdb3c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  voxelReferencePointsPrefab: {fileID: 1299107130493760777, guid: c159f0aea1fcf5c4aba341fdd83d15c9, type: 3}
+  voxelChunkPrefab: {fileID: 1240171735389309353, guid: effd48641428ce14aa22921b57d52876, type: 3}
+--- !u!114 &8262449788278709611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae2cbe420a81ff49bf15155ab0cfde5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8262449788278709603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d6711c1413692141a3de4a24ecf4c4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8262449788278709606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f944dbbfc37cd449b00b951b137aeae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8262449788278709607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a0a14bfbe317f4d8d35cd7a4d16d33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  marchingSquareShader: {fileID: 7200000, guid: 09716d5295fd131418fdbf96167b30ae, type: 3}
+--- !u!114 &8262449788278709602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f69f8cd342c5d549b8c09b19c7210b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineShader: {fileID: 7200000, guid: 69e96eb42c6ea98469ab7dc5b99ac7e2, type: 3}
+--- !u!114 &8262449788278709600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 2244882685325231567, guid: 0000000000000000d000000000000000, type: 0}
+  position: 0
+  direction: 0
+  tooltip: Main Core of Marching Square terrain generator
+--- !u!114 &6844761532381161800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262449788278709608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a22686f8cce884aa4e696a265a78a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainGenScriptableObject: {fileID: 11400000, guid: c8de5063c43e10745858015e9587005c, type: 2}
