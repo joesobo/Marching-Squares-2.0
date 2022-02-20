@@ -8,23 +8,25 @@ public class ColliderGenerator : MonoBehaviour {
     private OutlineShaderController outlineShaderController;
 
     private void Awake() {
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-        outlineShaderController = FindObjectOfType<OutlineShaderController>();
+        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
+        outlineShaderController = this.GetComponent<OutlineShaderController>();
     }
 
     public void GenerateChunkColliders(VoxelChunk chunk) {
-        // Remove colliders from chunk if regenerating its colliders
-        chunk.RemoveChunkColliders();
+        if (CORE.doColliderGeneration) {
+            // Remove colliders from chunk if regenerating its colliders
+            chunk.RemoveChunkColliders();
 
-        // recalculate chunks outlines
-        outlineShaderController.ShaderTriangulate(chunk);
+            // recalculate chunks outlines
+            outlineShaderController.ShaderTriangulate(chunk);
 
-        // Reset logic for chunk
-        ColliderLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
-        // Calculate outlines
-        IEnumerable<List<Vector3>> outlines = ColliderLogic.CalculateOutlines(chunk);
-        // Create new colliders
-        CreateColliders(chunk, outlines);
+            // Reset logic for chunk
+            ColliderLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
+            // Calculate outlines
+            IEnumerable<List<Vector3>> outlines = ColliderLogic.CalculateOutlines(chunk);
+            // Create new colliders
+            CreateColliders(chunk, outlines);
+        }
     }
 
     // Uses the outlines to create colliders for the chunk

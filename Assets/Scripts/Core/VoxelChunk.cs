@@ -13,8 +13,6 @@ public class VoxelChunk : MonoBehaviour {
     [HideInInspector] public MeshFilter meshFilter;
     [HideInInspector] public MeshRenderer meshRenderer;
 
-    public Material material;
-
     // Reference to neighbor chunks for edge voxel information
     public VoxelChunk xNeighbor, yNeighbor, xyNeighbor;
     // Storage of chunks voxels
@@ -37,12 +35,12 @@ public class VoxelChunk : MonoBehaviour {
     private float halfSize;
 
     private void Awake() {
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-        voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
-        voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
-        colliderGenerator = FindObjectOfType<ColliderGenerator>();
-        meshFilter = FindObjectOfType<MeshFilter>();
-        meshRenderer = FindObjectOfType<MeshRenderer>();
+        CORE = this.GetComponentInParent<VoxelCore>().GetCoreScriptableObject();
+        voxelChunkGenerator = this.GetComponentInParent<VoxelChunkGenerator>();
+        voxelMeshGenerator = this.GetComponentInParent<VoxelMeshGenerator>();
+        colliderGenerator = this.GetComponentInParent<ColliderGenerator>();
+        meshFilter = this.GetComponentInParent<MeshFilter>();
+        meshRenderer = this.GetComponentInParent<MeshRenderer>();
     }
 
     public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
@@ -53,7 +51,7 @@ public class VoxelChunk : MonoBehaviour {
         halfSize = 0.5f * voxelResolution;
 
         name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
-        transform.position = new Vector3(chunkPosition.x, chunkPosition.y, 0);
+        transform.position = new Vector3(chunkPosition.x, chunkPosition.y, CORE.zIndex);
         FillChunk();
         gameObject.SetActive(true);
     }
@@ -71,7 +69,7 @@ public class VoxelChunk : MonoBehaviour {
     [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
     private void RefreshMesh() {
-        voxelMeshGenerator.GenerateChunkMesh(this, material);
+        voxelMeshGenerator.GenerateChunkMesh(this, CORE.material);
     }
 
     [HorizontalGroup("Split", 0.5f)]

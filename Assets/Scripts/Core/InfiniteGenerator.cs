@@ -16,9 +16,9 @@ public class InfiniteGenerator : MonoBehaviour {
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
 
     private void Awake() {
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
-        voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
+        voxelChunkGenerator = this.GetComponent<VoxelChunkGenerator>();
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;
     }

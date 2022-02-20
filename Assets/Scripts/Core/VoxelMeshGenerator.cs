@@ -4,7 +4,7 @@ public class VoxelMeshGenerator : MonoBehaviour {
     private VoxelMesh voxelMesh;
 
     private void Awake() {
-        voxelMesh = FindObjectOfType<VoxelMesh>();
+        voxelMesh = this.GetComponent<VoxelMesh>();
     }
 
     public void GenerateChunkMesh(VoxelChunk chunk, Material material) {

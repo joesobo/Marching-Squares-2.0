@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -39,4 +40,9 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
     public Stencil StencilType = Stencil.Square;
 
     public Type EditingType = Type.Remove;
+
+    public List<GameObject> marchingSquaresParents = new List<GameObject>();
+
+    [Range(0, 1)]
+    public int LayerIndex = 0;
 }

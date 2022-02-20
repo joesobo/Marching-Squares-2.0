@@ -13,6 +13,12 @@ public class CoreScriptableObject : SerializedScriptableObject {
     public bool showVoxelReferencePoints = true;
     // Whether or not to generate new chunks after runtime
     public bool doInfiniteGeneration = true;
+    // Whether or not to genrate chunks with colliders
+    public bool doColliderGeneration = true;
+    // For setting the z offset of layers
+    public int zIndex = 0;
+    // The material the chunk should use
+    public Material material;
 
     // Dictionary of current chunks
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();

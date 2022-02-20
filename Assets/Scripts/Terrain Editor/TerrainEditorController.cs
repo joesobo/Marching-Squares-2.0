@@ -2,33 +2,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainEditorController : MonoBehaviour {
-    public TerrainEditingScriptableObject editingScriptableObject;
-    private CoreScriptableObject CORE;
+    public TerrainEditingScriptableObject terrainEditingSO;
+    public LayerMask layerMask;
+
+
+    private List<CoreScriptableObject> COREs = new List<CoreScriptableObject>();
     private TerrainEditor terrainEditor;
 
     private int voxelResolution, chunkResolution, radius, start, end, inc;
 
     private Camera cam;
     private GameObject player;
-    private InfiniteGenerator infiniteGenerator;
+    private List<InfiniteGenerator> infiniteGenerators = new List<InfiniteGenerator>();
     private BoxCollider playerEditingArea;
 
     private RaycastHit hitInfo;
-    public LayerMask layerMask;
     private Vector3 lastMousePosition;
 
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
 
     private void Start() {
         cam = Camera.main;
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         terrainEditor = FindObjectOfType<TerrainEditor>();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
-        infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
         playerEditingArea = GetComponent<BoxCollider>();
 
-        voxelResolution = CORE.voxelResolution;
-        chunkResolution = CORE.chunkResolution;
+        foreach (GameObject coreObject in terrainEditingSO.marchingSquaresParents) {
+            COREs.Add(coreObject.GetComponent<VoxelCore>().GetCoreScriptableObject());
+            infiniteGenerators.Add(coreObject.GetComponent<InfiniteGenerator>());
+        }
+
+        voxelResolution = COREs[0].voxelResolution;
+        chunkResolution = COREs[0].chunkResolution;
 
         // Setup collider area
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
@@ -39,7 +44,7 @@ public class TerrainEditorController : MonoBehaviour {
 
         // Check for player editing in area
         if (IsPlayerEditing()) {
-            radius = editingScriptableObject.Radius;
+            radius = terrainEditingSO.Radius;
             start = radius > 0 ? -radius : 0;
             end = radius > 0 ? radius : 0;
             inc = radius > 0 ? radius : 1;
@@ -64,8 +69,9 @@ public class TerrainEditorController : MonoBehaviour {
 
                 Vector2Int chunkWorldPosition = ChunkHelper.GetChunkWorldPosition(hitPosition, voxelResolution);
 
-                if (CORE.existingChunks.ContainsKey(chunkWorldPosition) && !chunksToUpdate.Contains(CORE.existingChunks[chunkWorldPosition])) {
-                    chunksToUpdate.Add(CORE.existingChunks[chunkWorldPosition]);
+                if (COREs[terrainEditingSO.LayerIndex].existingChunks.ContainsKey(chunkWorldPosition) &&
+                    !chunksToUpdate.Contains(COREs[terrainEditingSO.LayerIndex].existingChunks[chunkWorldPosition])) {
+                    chunksToUpdate.Add(COREs[terrainEditingSO.LayerIndex].existingChunks[chunkWorldPosition]);
                 }
             }
         }
@@ -87,8 +93,8 @@ public class TerrainEditorController : MonoBehaviour {
 
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
-            infiniteGenerator.GenerateChunkList(chunksToUpdate);
-            infiniteGenerator.GenerateChunkList(infiniteGenerator.FindImportantNeighbors(chunksToUpdate));
+            infiniteGenerators[terrainEditingSO.LayerIndex].GenerateChunkList(chunksToUpdate);
+            infiniteGenerators[terrainEditingSO.LayerIndex].GenerateChunkList(infiniteGenerators[terrainEditingSO.LayerIndex].FindImportantNeighbors(chunksToUpdate));
 
             chunksToUpdate.Clear();
         }
@@ -101,11 +107,11 @@ public class TerrainEditorController : MonoBehaviour {
     private void OnDrawGizmos() {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        TerrainEditorGizmos.DrawChunksGizmo(mousePos, editingScriptableObject.Radius, voxelResolution);
-        TerrainEditorGizmos.DrawVoxelEditingGizmo(mousePos, editingScriptableObject, voxelResolution);
+        TerrainEditorGizmos.DrawChunksGizmo(mousePos, terrainEditingSO.Radius, voxelResolution);
+        TerrainEditorGizmos.DrawVoxelEditingGizmo(mousePos, terrainEditingSO, voxelResolution);
     }
 
     public TerrainEditingScriptableObject GetTerrainEditingScriptableObject() {
-        return editingScriptableObject;
+        return terrainEditingSO;
     }
 }

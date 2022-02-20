@@ -9,11 +9,11 @@ public class VoxelChunkGenerator : MonoBehaviour {
     public GameObject voxelChunkPrefab;
 
     private void Awake() {
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
     }
 
     private VoxelChunk CreateChunk(Vector2 chunkPosition) {
-        GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
+        GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity, this.transform);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
         chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
 

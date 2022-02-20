@@ -59,3 +59,5 @@ MonoBehaviour:
   chunkResolution: 2
   showVoxelReferencePoints: 0
   doInfiniteGeneration: 1
+  zIndex: 0
+  material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}

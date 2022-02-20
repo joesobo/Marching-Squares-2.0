@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainEditor : MonoBehaviour {
-    private TerrainEditingScriptableObject editingScriptableObject;
-    private CoreScriptableObject CORE;
+    private TerrainEditingScriptableObject terrainEditingSO;
+    private List<CoreScriptableObject> COREs = new List<CoreScriptableObject>();
 
     private readonly EditingStencil[] stencils = {
         new EditingStencil(),
@@ -11,22 +11,24 @@ public class TerrainEditor : MonoBehaviour {
     };
 
     public void Start() {
-        editingScriptableObject = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        terrainEditingSO = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
+        foreach (VoxelCore core in FindObjectsOfType<VoxelCore>()) {
+            COREs.Add(core.GetCoreScriptableObject());
+        }
     }
 
     public void EditVoxels(IEnumerable<Voxel> voxels) {
         foreach (Voxel voxel in voxels) {
-            voxel.state = (int)editingScriptableObject.EditingType;
+            voxel.state = (int)terrainEditingSO.EditingType;
         }
     }
 
     public List<Voxel> GetSelectedVoxels(VoxelChunk chunk, Vector2 selectPoint) {
-        EditingStencil activeStencil = stencils[(int)editingScriptableObject.StencilType];
-        TerrainEditingScriptableObject.Type editingType = editingScriptableObject.EditingType;
+        EditingStencil activeStencil = stencils[(int)terrainEditingSO.StencilType];
+        TerrainEditingScriptableObject.Type editingType = terrainEditingSO.EditingType;
         List<Voxel> selectedVoxels = new List<Voxel>();
-        int voxelResolution = CORE.voxelResolution;
-        int radius = editingScriptableObject.Radius;
+        int voxelResolution = COREs[terrainEditingSO.LayerIndex].voxelResolution;
+        int radius = terrainEditingSO.Radius;
 
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {
