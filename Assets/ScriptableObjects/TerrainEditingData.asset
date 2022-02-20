@@ -21,9 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Radius: 3
-  StencilType: 1
-  EditingType: 14
+  Radius: 0
+  StencilType: 0
+  EditingType: 2
   marchingSquaresParents:
   - {fileID: 0}
   - {fileID: 0}

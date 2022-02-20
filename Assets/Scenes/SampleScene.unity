@@ -1487,6 +1487,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6844761532381161800, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
+      propertyPath: terrainGenScriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 0571bcaf19f43714bba3c4ec307b2feb, type: 2}
     - target: {fileID: 8262449788278709605, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
       propertyPath: m_RootOrder
       value: 1
