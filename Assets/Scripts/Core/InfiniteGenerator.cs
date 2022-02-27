@@ -24,7 +24,7 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private void Update() {
-        if (startGeneration && COREs[0].doInfiniteGeneration) {
+        if (startGeneration) {
             playerPosition = player.transform.position;
             UpdateAroundPlayer();
         }
@@ -36,7 +36,7 @@ public class InfiniteGenerator : MonoBehaviour {
     }
 
     private void UpdateAroundPlayer() {
-        foreach (CoreScriptableObject CORE in COREs) {
+        foreach (CoreScriptableObject CORE in COREs.Where(CORE => CORE.doInfiniteGeneration)) {
             RemoveOutOfBoundsChunks(CORE);
 
             GetInBoundsChunks(CORE);

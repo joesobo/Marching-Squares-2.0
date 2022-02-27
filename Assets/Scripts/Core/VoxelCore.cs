@@ -10,7 +10,7 @@ public class VoxelCore : MonoBehaviour {
     private void Awake() {
         Random.InitState(CoreDatas[0].seed);
 
-        infiniteGenerator = this.GetComponent<InfiniteGenerator>();
+        infiniteGenerator = GetComponent<InfiniteGenerator>();
     }
 
     private void Start() {
@@ -18,7 +18,6 @@ public class VoxelCore : MonoBehaviour {
     }
 
     private void GenerateTerrain() {
-        // Update
         infiniteGenerator.StartGeneration();
     }
 

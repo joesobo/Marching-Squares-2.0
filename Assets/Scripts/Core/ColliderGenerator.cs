@@ -6,7 +6,7 @@ public class ColliderGenerator : MonoBehaviour {
     private OutlineShaderController outlineShaderController;
 
     private void Awake() {
-        outlineShaderController = this.GetComponent<OutlineShaderController>();
+        outlineShaderController = GetComponent<OutlineShaderController>();
     }
 
     public void GenerateChunkColliders(CoreScriptableObject CORE, VoxelChunk chunk) {

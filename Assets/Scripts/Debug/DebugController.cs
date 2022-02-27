@@ -8,7 +8,7 @@ public class DebugController : MonoBehaviour {
     public TextMeshProUGUI voxelPositionText;
     public TextMeshProUGUI chunkPositionText;
 
-    public bool isActive = false;
+    public bool isActive;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject(0);

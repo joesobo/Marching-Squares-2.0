@@ -16,11 +16,11 @@ public class VoxelMesh : MonoBehaviour {
     private MeshShaderController meshShaderController;
 
     private void Awake() {
-        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject(0);
-        meshShaderController = this.GetComponent<MeshShaderController>();
+        CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
+        meshShaderController = GetComponent<MeshShaderController>();
 
-        this.voxelResolution = CORE.voxelResolution;
-        this.chunkResolution = CORE.chunkResolution;
+        voxelResolution = CORE.voxelResolution;
+        chunkResolution = CORE.chunkResolution;
 
         textureTileAmount = (voxelResolution * chunkResolution) / 2;
     }

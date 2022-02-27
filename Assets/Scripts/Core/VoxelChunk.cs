@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
-    private CoreScriptableObject CORE;
+    private CoreScriptableObject currentCORE;
 
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
@@ -36,12 +36,12 @@ public class VoxelChunk : MonoBehaviour {
     private float halfSize;
 
     private void Awake() {
-        voxelChunkGenerator = this.GetComponentInParent<VoxelChunkGenerator>();
-        voxelMeshGenerator = this.GetComponentInParent<VoxelMeshGenerator>();
-        colliderGenerator = this.GetComponentInParent<ColliderGenerator>();
-        meshFilter = this.GetComponentInParent<MeshFilter>();
-        meshRenderer = this.GetComponentInParent<MeshRenderer>();
-        terrainGenerationController = this.GetComponentInParent<TerrainGenerationController>();
+        voxelChunkGenerator = GetComponentInParent<VoxelChunkGenerator>();
+        voxelMeshGenerator = GetComponentInParent<VoxelMeshGenerator>();
+        colliderGenerator = GetComponentInParent<ColliderGenerator>();
+        meshFilter = GetComponentInParent<MeshFilter>();
+        meshRenderer = GetComponentInParent<MeshRenderer>();
+        terrainGenerationController = GetComponentInParent<TerrainGenerationController>();
     }
 
     public void SetupChunk(CoreScriptableObject CORE, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
@@ -53,7 +53,7 @@ public class VoxelChunk : MonoBehaviour {
 
         name = CORE.chunkName + " (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
         transform.position = new Vector3(chunkPosition.x, chunkPosition.y, CORE.zIndex);
-        this.CORE = CORE;
+        currentCORE = CORE;
         FillChunk();
         gameObject.SetActive(true);
     }
@@ -82,7 +82,7 @@ public class VoxelChunk : MonoBehaviour {
 
     [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
     public void GenerateChunk(CoreScriptableObject CORE) {
-        voxelChunkGenerator.SetupChunkNeighbors(CORE, this);
+        VoxelChunkGenerator.SetupChunkNeighbors(CORE, this);
         RefreshMesh(CORE);
         RefreshCollider(CORE);
     }
@@ -98,7 +98,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
-        int noiseVal = terrainGenerationController.GetTerrainNoise(CORE);
+        int noiseVal = TerrainGenerationController.GetTerrainNoise(currentCORE);
 
         voxels[i] = new Voxel(x, y, 1f, noiseVal);
         CreateReferencePoint(i, x, y);
@@ -119,7 +119,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateReferencePoint(int i, int x, int y) {
-        if (CORE.showVoxelReferencePoints) {
+        if (currentCORE.showVoxelReferencePoints) {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
             voxelRef.transform.parent = transform;
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;

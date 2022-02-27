@@ -33,7 +33,6 @@ public static class ChunkHelper {
 
     public static Vector2 GetVoxelPosition(Vector3 point, int voxelResolution) {
         Vector2 voxelPos = GetVoxelWorldPosition(point, voxelResolution);
-        Vector2Int chunkPos = GetChunkWorldPosition(point, voxelResolution);
         return new Vector2(voxelPos.x - 0.5f, voxelPos.y - 0.5f);
     }
 
