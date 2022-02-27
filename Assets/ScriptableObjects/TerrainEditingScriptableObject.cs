@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -41,8 +40,6 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
 
     public Type EditingType = Type.Remove;
 
-    public List<GameObject> marchingSquaresParents = new List<GameObject>();
-
-    [Range(0, 1)]
+    [Range(0, 2)]
     public int LayerIndex = 0;
 }

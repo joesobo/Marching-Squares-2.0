@@ -16,7 +16,7 @@ public class VoxelMesh : MonoBehaviour {
     private MeshShaderController meshShaderController;
 
     private void Awake() {
-        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
+        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject(0);
         meshShaderController = this.GetComponent<MeshShaderController>();
 
         this.voxelResolution = CORE.voxelResolution;

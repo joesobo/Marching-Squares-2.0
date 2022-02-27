@@ -23,8 +23,5 @@ MonoBehaviour:
     SerializationNodes: []
   Radius: 0
   StencilType: 0
-  EditingType: 2
-  marchingSquaresParents:
-  - {fileID: 0}
-  - {fileID: 0}
-  LayerIndex: 0
+  EditingType: 17
+  LayerIndex: 2

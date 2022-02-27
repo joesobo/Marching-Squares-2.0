@@ -3,9 +3,16 @@ graph LR;
   %% Config
   linkStyle default interpolate linear;
 
+  %% ScriptableObjects
+  subgraph ScriptableObjects
+    BackgroundCORE((BackgroundCORE));
+    ForeGroundCORE((ForeGroundCORE));
+    MainCORE((MainCORE));
+    TerrainEditingSO((TerrainEditingSO));
+  end
+
   %% Core Utilities
   subgraph Core
-    CORE((CORE));
     VoxelCore{{VoxelCore}};
     InfiniteGenerator{{InfiniteGenerator}};
 
@@ -44,7 +51,6 @@ graph LR;
 
   %% Terrain Editor
   subgraph TerrainEditorModule
-    TerrainEditingSO((TerrainEditingSO));
     TerrainEditorController{{TerrainEditorController}};
     TerrainEditorGizmos{{TerrainEditorGizmos}};
     TerrainEditor{{TerrainEditor}};
@@ -55,7 +61,9 @@ graph LR;
   Player{Player};
 
   %% Core Connections
-  VoxelCore ==> CORE;
+  VoxelCore ==> BackgroundCORE;
+  VoxelCore ==> ForeGroundCORE;
+  VoxelCore ==> MainCORE;
   VoxelCore ==> InfiniteGenerator;
 
   InfiniteGenerator ==> VoxelCore;
@@ -63,15 +71,12 @@ graph LR;
   InfiniteGenerator ==> Player;
   InfiniteGenerator ==> ChunkHelper;
 
-  VoxelChunkGenerator ==> VoxelCore;
   VoxelChunkGenerator ==> VoxelChunk;
   VoxelChunkGenerator ==> ChunkHelper;
 
-  VoxelChunk ==> VoxelCore;
   VoxelChunk ==> ColliderGenerator;
   VoxelChunk ==> VoxelMeshGenerator;
 
-  ColliderGenerator ==> VoxelCore;
   ColliderGenerator ==> ColliderLogic;
   ColliderGenerator ==> OutlineShaderController;
 

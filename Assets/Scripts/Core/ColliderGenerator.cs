@@ -3,16 +3,13 @@ using System.Linq;
 using UnityEngine;
 
 public class ColliderGenerator : MonoBehaviour {
-    private CoreScriptableObject CORE;
-
     private OutlineShaderController outlineShaderController;
 
     private void Awake() {
-        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
         outlineShaderController = this.GetComponent<OutlineShaderController>();
     }
 
-    public void GenerateChunkColliders(VoxelChunk chunk) {
+    public void GenerateChunkColliders(CoreScriptableObject CORE, VoxelChunk chunk) {
         if (CORE.doColliderGeneration) {
             // Remove colliders from chunk if regenerating its colliders
             chunk.RemoveChunkColliders();

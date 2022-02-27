@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using static TerrainEditingScriptableObject;
 
 [CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/CoreScriptableObject", order = 1)]
 public class CoreScriptableObject : SerializedScriptableObject {
@@ -24,6 +25,10 @@ public class CoreScriptableObject : SerializedScriptableObject {
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
+
+    public Type EditingType = Type.Remove;
+
+    public string chunkName = "Voxel Chunk";
 
     private void OnEnable() {
         existingChunks.Clear();

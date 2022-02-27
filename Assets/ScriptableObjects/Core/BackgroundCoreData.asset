@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6d37aeff102b2648a5085a600bd5867, type: 3}
-  m_Name: CoreData
+  m_Name: BackgroundCoreData
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -59,5 +59,8 @@ MonoBehaviour:
   chunkResolution: 2
   showVoxelReferencePoints: 0
   doInfiniteGeneration: 1
-  zIndex: 0
-  material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}
+  doColliderGeneration: 0
+  zIndex: 1
+  material: {fileID: 2100000, guid: b466fc4d4edde4149a22e7d5625c1390, type: 2}
+  EditingType: 1
+  chunkName: Background Chunk

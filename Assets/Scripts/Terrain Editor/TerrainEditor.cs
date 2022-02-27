@@ -12,9 +12,7 @@ public class TerrainEditor : MonoBehaviour {
 
     public void Start() {
         terrainEditingSO = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
-        foreach (VoxelCore core in FindObjectsOfType<VoxelCore>()) {
-            COREs.Add(core.GetCoreScriptableObject());
-        }
+        COREs = FindObjectOfType<VoxelCore>().GetAllCoreScriptableObjects();
     }
 
     public void EditVoxels(IEnumerable<Voxel> voxels) {

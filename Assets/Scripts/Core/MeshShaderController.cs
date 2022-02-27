@@ -16,7 +16,7 @@ public class MeshShaderController : MonoBehaviour {
     private int[] stateValues;
 
     private void Awake() {
-        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
+        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject(0);
 
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;

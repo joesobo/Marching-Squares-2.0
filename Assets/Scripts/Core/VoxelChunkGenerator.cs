@@ -1,39 +1,33 @@
 using UnityEngine;
 
 public class VoxelChunkGenerator : MonoBehaviour {
-    private CoreScriptableObject CORE;
-
     // The element to spawn at each reference position along the chunk
     public GameObject voxelReferencePointsPrefab;
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
 
-    private void Awake() {
-        CORE = this.GetComponent<VoxelCore>().GetCoreScriptableObject();
-    }
-
-    private VoxelChunk CreateChunk(Vector2 chunkPosition) {
+    private VoxelChunk CreateChunk(CoreScriptableObject CORE, Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity, this.transform);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
-        chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
+        chunk.SetupChunk(CORE, voxelReferencePointsPrefab, chunkPosition);
 
         CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
-    private VoxelChunk CreatePoolChunk(VoxelChunk chunk, Vector2 chunkPosition) {
-        chunk.SetupChunk(voxelReferencePointsPrefab, chunkPosition);
+    private VoxelChunk CreatePoolChunk(CoreScriptableObject CORE, VoxelChunk chunk, Vector2 chunkPosition) {
+        chunk.SetupChunk(CORE, voxelReferencePointsPrefab, chunkPosition);
         chunk.ResetReferencePoints();
 
         CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
-    public VoxelChunk GetNewChunk(Vector2 chunkPosition) {
-        return CORE.recycleableChunks.Count > 0 ? CreatePoolChunk(CORE.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(chunkPosition);
+    public VoxelChunk GetNewChunk(CoreScriptableObject CORE, Vector2 chunkPosition) {
+        return CORE.recycleableChunks.Count > 0 ? CreatePoolChunk(CORE, CORE.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(CORE, chunkPosition);
     }
 
-    public void SetupChunkNeighbors(VoxelChunk chunk) {
+    public void SetupChunkNeighbors(CoreScriptableObject CORE, VoxelChunk chunk) {
         int voxelResolution = CORE.voxelResolution;
         Vector2Int setupCoord = chunk.GetWholePosition();
 

@@ -36,7 +36,6 @@ public class VoxelChunk : MonoBehaviour {
     private float halfSize;
 
     private void Awake() {
-        CORE = this.GetComponentInParent<VoxelCore>().GetCoreScriptableObject();
         voxelChunkGenerator = this.GetComponentInParent<VoxelChunkGenerator>();
         voxelMeshGenerator = this.GetComponentInParent<VoxelMeshGenerator>();
         colliderGenerator = this.GetComponentInParent<ColliderGenerator>();
@@ -45,15 +44,16 @@ public class VoxelChunk : MonoBehaviour {
         terrainGenerationController = this.GetComponentInParent<TerrainGenerationController>();
     }
 
-    public void SetupChunk(GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
+    public void SetupChunk(CoreScriptableObject CORE, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
         voxelRefPointsPrefab = voxelReferencePointsPrefab;
         voxelResolution = CORE.voxelResolution;
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
 
-        name = "Chunk (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
+        name = CORE.chunkName + " (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
         transform.position = new Vector3(chunkPosition.x, chunkPosition.y, CORE.zIndex);
+        this.CORE = CORE;
         FillChunk();
         gameObject.SetActive(true);
     }
@@ -70,21 +70,21 @@ public class VoxelChunk : MonoBehaviour {
 
     [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
-    private void RefreshMesh() {
+    private void RefreshMesh(CoreScriptableObject CORE) {
         voxelMeshGenerator.GenerateChunkMesh(this, CORE.material);
     }
 
     [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.4f, 1, 0.8f)]
-    private void RefreshCollider() {
-        colliderGenerator.GenerateChunkColliders(this);
+    private void RefreshCollider(CoreScriptableObject CORE) {
+        colliderGenerator.GenerateChunkColliders(CORE, this);
     }
 
     [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
-    public void GenerateChunk() {
-        voxelChunkGenerator.SetupChunkNeighbors(this);
-        RefreshMesh();
-        RefreshCollider();
+    public void GenerateChunk(CoreScriptableObject CORE) {
+        voxelChunkGenerator.SetupChunkNeighbors(CORE, this);
+        RefreshMesh(CORE);
+        RefreshCollider(CORE);
     }
 
     private void FillChunk() {
@@ -98,7 +98,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
-        int noiseVal = terrainGenerationController.GetTerrainNoise();
+        int noiseVal = terrainGenerationController.GetTerrainNoise(CORE);
 
         voxels[i] = new Voxel(x, y, 1f, noiseVal);
         CreateReferencePoint(i, x, y);

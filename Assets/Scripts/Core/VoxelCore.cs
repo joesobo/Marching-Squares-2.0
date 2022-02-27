@@ -1,13 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelCore : MonoBehaviour {
-    public CoreScriptableObject CoreData;
+    public List<CoreScriptableObject> CoreDatas;
 
     // Generators for building
     private InfiniteGenerator infiniteGenerator;
 
     private void Awake() {
-        Random.InitState(CoreData.seed);
+        Random.InitState(CoreDatas[0].seed);
 
         infiniteGenerator = this.GetComponent<InfiniteGenerator>();
     }
@@ -21,7 +22,11 @@ public class VoxelCore : MonoBehaviour {
         infiniteGenerator.StartGeneration();
     }
 
-    public CoreScriptableObject GetCoreScriptableObject() {
-        return CoreData;
+    public CoreScriptableObject GetCoreScriptableObject(int index) {
+        return CoreDatas[index];
+    }
+
+    public List<CoreScriptableObject> GetAllCoreScriptableObjects() {
+        return CoreDatas;
     }
 }
