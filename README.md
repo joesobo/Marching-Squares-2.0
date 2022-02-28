@@ -15,6 +15,7 @@ This tool is currently under development, though you can check out [the old v1.0
 -   [x] Terrain Editing
 -   [x] Multiple Terrain Types
 -   [x] Multi-Layer Support
+-   [x] Chunk Edge Outlines
 -   [ ] Terrain Map Display
 -   [ ] Various Terrain Noise Functions
 -   [ ] Simple Inspector UI for full control
