@@ -21,13 +21,6 @@ graph LR;
       VoxelChunk{{VoxelChunk}};
     end
 
-    subgraph Colliders
-      ColliderGenerator{{ColliderGenerator}};
-      ColliderLogic{{ColliderLogic}};
-      OutlineShaderController{{OutlineShaderController}};
-      OutlineShader{{OutlineShader}};
-    end
-
     subgraph Mesh
       VoxelMeshGenerator{{VoxelMeshGenerator}};
       VoxelMesh{{VoxelMesh}};
@@ -37,6 +30,15 @@ graph LR;
 
     MarchingHelper{{MarchingHelper}};
   end
+
+  %% Outlines
+  subgraph Outlines
+      ColliderGenerator{{ColliderGenerator}};
+      OutlineDrawGenerator{{OutlineDrawGenerator}};
+      OutlineLogic{{OutlineLogic}};
+      OutlineShaderController{{OutlineShaderController}};
+      OutlineShader{{OutlineShader}};
+    end
 
   %% Debug
   subgraph Debug
@@ -77,8 +79,11 @@ graph LR;
   VoxelChunk ==> ColliderGenerator;
   VoxelChunk ==> VoxelMeshGenerator;
 
-  ColliderGenerator ==> ColliderLogic;
+  ColliderGenerator ==> OutlineLogic;
   ColliderGenerator ==> OutlineShaderController;
+
+  OutlineDrawGenerator ==> OutlineLogic;
+  OutlineDrawGenerator ==> OutlineShaderController;
 
   VoxelMeshGenerator ==> VoxelMesh;
 
@@ -94,7 +99,7 @@ graph LR;
   MeshShader ==> MarchingHelper;
   OutlineShader ==> MarchingHelper;
 
-  Vector2Extension ==> ColliderLogic;
+  Vector2Extension ==> OutlineLogic;
 
   DebugController ==> VoxelCore;
 
