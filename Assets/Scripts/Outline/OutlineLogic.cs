@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class ColliderLogic {
+public static class OutlineLogic {
     // Stores the checked vertices in a chunk
     private static readonly HashSet<Vector3> checkedVertices = new HashSet<Vector3>();
     // Stores a list of outlines made up of a list of vertices

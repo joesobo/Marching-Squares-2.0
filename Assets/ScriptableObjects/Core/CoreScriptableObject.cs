@@ -16,6 +16,8 @@ public class CoreScriptableObject : SerializedScriptableObject {
     public bool doInfiniteGeneration = true;
     // Whether or not to genrate chunks with colliders
     public bool doColliderGeneration = true;
+    // Whether or not to generate chunks with outlines
+    public bool doOutlines = true;
     // For setting the z offset of layers
     public int zIndex = 0;
     // The material the chunk should use

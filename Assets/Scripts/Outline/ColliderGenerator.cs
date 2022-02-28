@@ -18,9 +18,9 @@ public class ColliderGenerator : MonoBehaviour {
             outlineShaderController.ShaderTriangulate(chunk);
 
             // Reset logic for chunk
-            ColliderLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
+            OutlineLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
             // Calculate outlines
-            IEnumerable<List<Vector3>> outlines = ColliderLogic.CalculateOutlines(chunk);
+            IEnumerable<List<Vector3>> outlines = OutlineLogic.CalculateOutlines(chunk);
             // Create new colliders
             CreateColliders(chunk, outlines);
         }
