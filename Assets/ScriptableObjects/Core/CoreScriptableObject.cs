@@ -28,7 +28,7 @@ public class CoreScriptableObject : SerializedScriptableObject {
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
     // The terrain type for chunks to spawn
-    public Type TerrainType = Type.Remove;
+    public BlockType TerrainType = BlockType.Remove;
     // Name of chunks
     public string chunkName = "Voxel Chunk";
 

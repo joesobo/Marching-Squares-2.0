@@ -23,7 +23,7 @@ public class TerrainEditor : MonoBehaviour {
 
     public List<Voxel> GetSelectedVoxels(VoxelChunk chunk, Vector2 selectPoint) {
         EditingStencil activeStencil = stencils[(int)terrainEditingSO.StencilType];
-        TerrainEditingScriptableObject.Type editingType = terrainEditingSO.EditingType;
+        TerrainEditingScriptableObject.BlockType editingType = terrainEditingSO.EditingType;
         List<Voxel> selectedVoxels = new List<Voxel>();
         int voxelResolution = COREs[terrainEditingSO.LayerIndex].voxelResolution;
         int radius = terrainEditingSO.Radius;

@@ -10,7 +10,7 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
     }
 
     [EnumToggleButtons]
-    public enum Type {
+    public enum BlockType {
         Remove,
         Dirt,
         Grass,
@@ -38,7 +38,7 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
 
     public Stencil StencilType = Stencil.Square;
 
-    public Type EditingType = Type.Remove;
+    public BlockType EditingType = BlockType.Remove;
 
     [Range(0, 2)]
     public int LayerIndex = 0;
