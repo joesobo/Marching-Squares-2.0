@@ -3,41 +3,13 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/TerrainEditingScriptableObject", order = 3)]
 public class TerrainEditingScriptableObject : SerializedScriptableObject {
-    [EnumToggleButtons]
-    public enum Stencil {
-        Square,
-        Circle
-    }
-
-    [EnumToggleButtons]
-    public enum BlockType {
-        Remove,
-        Dirt,
-        Stone,
-        Grass,
-        White,
-        Black,
-        Blue,
-        Brown,
-        Cyan,
-        Green,
-        Light_Blue,
-        Lime,
-        Light_Gray,
-        Magenta,
-        Orange,
-        Pink,
-        Purple,
-        Red,
-        Yellow,
-        Gray,
-    }
-
     [Range(0, 5)]
     public int Radius = 1;
 
+    [EnumToggleButtons]
     public Stencil StencilType = Stencil.Square;
 
+    [EnumToggleButtons]
     public BlockType EditingType = BlockType.Remove;
 
     [Range(0, 2)]

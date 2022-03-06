@@ -23,9 +23,9 @@ public static class TerrainEditorGizmos {
         Vector2 voxelLocalPosition = ChunkHelper.GetVoxelWorldPosition(mousePos, voxelResolution);
         Vector2 voxelPosition = voxelLocalPosition + chunkPos;
         int radius = editingScriptableObject.Radius;
-        TerrainEditingScriptableObject.Stencil stencil = editingScriptableObject.StencilType;
+        Stencil stencil = editingScriptableObject.StencilType;
 
-        if (stencil == TerrainEditingScriptableObject.Stencil.Circle) {
+        if (stencil == Stencil.Circle) {
             Gizmos.DrawWireSphere(new Vector3(voxelPosition.x, voxelPosition.y, 0), radius + 0.5f);
         } else {
             Gizmos.DrawWireCube(new Vector3(voxelPosition.x, voxelPosition.y, 0), Vector3.one * (radius * 2 + 1));

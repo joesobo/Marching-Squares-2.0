@@ -5,10 +5,17 @@ graph LR;
 
   %% ScriptableObjects
   subgraph ScriptableObjects
-    BackgroundCORE((BackgroundCORE));
-    ForeGroundCORE((ForeGroundCORE));
-    MainCORE((MainCORE));
-    TerrainEditingSO((TerrainEditingSO));
+    CORE((CORE));
+    Layer((Layer));
+    Noise((Noise));
+    Editing((Editing));
+  end
+
+   %% Types
+  subgraph Types
+    BlockTypes((BlockTypes));
+    StencilTypes((StencilTypes));
+    TerrainTypes((TerrainTypes));
   end
 
   %% Core Utilities
@@ -56,16 +63,25 @@ graph LR;
     TerrainEditorController{{TerrainEditorController}};
     TerrainEditorGizmos{{TerrainEditorGizmos}};
     TerrainEditor{{TerrainEditor}};
-    EditorStencil{{EditorStencil}};
-    EditorStencilCircle{{EditorStencilCircle}};
+    EditingStencil{{EditingStencil}};
+    EditingStencilCircle{{EditingStencilCircle}};
+  end
+
+  %% Terrain Noise
+  subgraph TerrainNoise
+    TerrainGenerationController{{TerrainGenerationController}};
   end
 
   Player{Player};
 
   %% Core Connections
-  VoxelCore ==> BackgroundCORE;
-  VoxelCore ==> ForeGroundCORE;
-  VoxelCore ==> MainCORE;
+  Layer ==> CORE;
+
+  Layer ==> Noise;
+
+  Noise ==> TerrainTypes;
+
+  VoxelCore ==> Layer;
   VoxelCore ==> InfiniteGenerator;
 
   InfiniteGenerator ==> VoxelCore;
@@ -78,6 +94,9 @@ graph LR;
 
   VoxelChunk ==> ColliderGenerator;
   VoxelChunk ==> VoxelMeshGenerator;
+  VoxelChunk ==> TerrainGenerationController;
+  VoxelChunk ==> VoxelChunkGenerator;
+  VoxelChunk ==> OutlineDrawGenerator;
 
   ColliderGenerator ==> OutlineLogic;
   ColliderGenerator ==> OutlineShaderController;
@@ -104,7 +123,7 @@ graph LR;
   DebugController ==> VoxelCore;
 
   TerrainEditorController ==> VoxelCore;
-  TerrainEditorController ==> TerrainEditingSO;
+  TerrainEditorController ==> Editing;
   TerrainEditorController ==> InfiniteGenerator;
   TerrainEditorController ==> Player;
   TerrainEditorController ==> TerrainEditorGizmos;
@@ -112,9 +131,16 @@ graph LR;
   TerrainEditorController ==> TerrainEditor;
 
   TerrainEditorGizmos ==> ChunkHelper;
+  TerrainEditorGizmos ==> StencilTypes;
 
   TerrainEditor ==> VoxelCore;
   TerrainEditor ==> TerrainEditorController;
-  TerrainEditor ==> EditorStencil;
-  TerrainEditor ==> EditorStencilCircle;
+  TerrainEditor ==> EditingStencil;
+  TerrainEditor ==> EditingStencilCircle;
+  TerrainEditor ==> BlockTypes;
+
+  TerrainGenerationController ==> TerrainTypes;
+
+  Editing ==> BlockTypes;
+  Editing ==> StencilTypes;
 ```

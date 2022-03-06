@@ -12,5 +12,5 @@ public class TerrainNoiseScriptableObject : SerializedScriptableObject {
     [Range(0.1f, 1)]
     public float range = 1f;
 
-    public TerrainGenerationType TerrainType = TerrainGenerationType.Remove;
+    public TerrainGenerationTypes TerrainType = TerrainGenerationTypes.Remove;
 }

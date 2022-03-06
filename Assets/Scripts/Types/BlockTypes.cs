@@ -1,4 +1,4 @@
-public enum TerrainGenerationType {
+public enum BlockType {
     Remove,
     Dirt,
     Stone,
@@ -19,5 +19,4 @@ public enum TerrainGenerationType {
     Red,
     Yellow,
     Gray,
-    Perlin,
 }

@@ -25,7 +25,7 @@ public partial class TerrainGenerationController : MonoBehaviour {
         chunkResolution = layer.CORE.chunkResolution;
         seed = layer.terrainNoiseScriptableObject.seed;
 
-        if (layer.terrainNoiseScriptableObject.TerrainType == TerrainGenerationType.Perlin) {
+        if (layer.terrainNoiseScriptableObject.TerrainType == TerrainGenerationTypes.Perlin) {
             int scaledX = Mathf.RoundToInt(x * (voxelResolution - 1) + chunkPosition.x * voxelResolution);
             int scaledY = Mathf.RoundToInt(y * (voxelResolution - 1) + chunkPosition.y * voxelResolution);
 
