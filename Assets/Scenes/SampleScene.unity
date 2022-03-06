@@ -1000,8 +1000,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoreDatas:
-  - {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
   - {fileID: 11400000, guid: aae711f958fbbbd40b50d9ff3c4ee1e8, type: 2}
+  - {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
   - {fileID: 11400000, guid: 77076ddd3d2bc124280c597fad9b81fb, type: 2}
 --- !u!4 &1226365698
 Transform:
