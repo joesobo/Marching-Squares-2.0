@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelMesh : MonoBehaviour {
-    private CoreScriptableObject CORE;
     private int voxelResolution, chunkResolution;
 
     // Mesh information storage
@@ -16,7 +15,7 @@ public class VoxelMesh : MonoBehaviour {
     private MeshShaderController meshShaderController;
 
     private void Awake() {
-        CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
+        CoreScriptableObject CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
         meshShaderController = GetComponent<MeshShaderController>();
 
         voxelResolution = CORE.voxelResolution;

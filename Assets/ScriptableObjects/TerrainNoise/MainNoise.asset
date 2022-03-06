@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23bfce3b6f3bd094dabf3d3d1d67673a, type: 3}
-  m_Name: TerrainEditingData
+  m_Script: {fileID: 11500000, guid: 61cc9aa93e48fd14aa691c4fa05504bc, type: 3}
+  m_Name: MainNoise
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,7 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Radius: 2
-  StencilType: 1
-  EditingType: 4
-  LayerIndex: 2
+  frequency: 0.1
+  amplitude: 2
+  range: 0.5
+  TerrainType: 20

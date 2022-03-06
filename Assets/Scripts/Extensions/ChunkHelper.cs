@@ -13,13 +13,13 @@ public static class ChunkHelper {
         return Vector2.Distance(chunkPosition / voxelResolution, playerChunkCoord) > chunkResolution + 1;
     }
 
-    public static void RemoveChunk(this CoreScriptableObject CORE, VoxelChunk chunk) {
+    public static void RemoveChunk(this LayerScriptableObject layer, VoxelChunk chunk) {
         Vector3 position = chunk.transform.position;
         Vector2Int chunkCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
-        CORE.existingChunks.Remove(chunkCoord);
+        layer.existingChunks.Remove(chunkCoord);
         chunk.ResetChunk();
         chunk.RemoveChunkColliders();
-        CORE.recycleableChunks.Enqueue(chunk);
+        layer.recycleableChunks.Enqueue(chunk);
         chunk.gameObject.SetActive(false);
     }
 

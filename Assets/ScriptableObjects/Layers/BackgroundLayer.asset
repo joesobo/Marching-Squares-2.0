@@ -9,20 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6d37aeff102b2648a5085a600bd5867, type: 3}
-  m_Name: BackgroundCoreData
+  m_Script: {fileID: 11500000, guid: d20d1b03536cefe4793ea9f4f4390968, type: 3}
+  m_Name: BackgroundLayer
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}
@@ -58,7 +51,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 24
+      Data: 17
     - Name: 
       Entry: 7
       Data: 
@@ -67,7 +60,7 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 32
     - Name: 
       Entry: 3
       Data: 16
@@ -88,10 +81,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -24
+      Data: 16
     - Name: 
       Entry: 3
-      Data: 8
+      Data: 16
     - Name: 
       Entry: 8
       Data: 
@@ -109,10 +102,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -24
+      Data: 16
     - Name: 
       Entry: 3
-      Data: -16
+      Data: 8
     - Name: 
       Entry: 8
       Data: 
@@ -130,10 +123,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -16
+      Data: 24
     - Name: 
       Entry: 3
-      Data: 8
+      Data: 16
     - Name: 
       Entry: 8
       Data: 
@@ -151,10 +144,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -16
+      Data: 24
     - Name: 
       Entry: 3
-      Data: 16
+      Data: 8
     - Name: 
       Entry: 8
       Data: 
@@ -172,10 +165,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 24
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -193,10 +186,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 24
     - Name: 
       Entry: 3
-      Data: 0
+      Data: -8
     - Name: 
       Entry: 8
       Data: 
@@ -214,7 +207,7 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 32
     - Name: 
       Entry: 3
       Data: 8
@@ -235,10 +228,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 16
     - Name: 
       Entry: 3
-      Data: 16
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -256,10 +249,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 32
     - Name: 
       Entry: 3
-      Data: -8
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -277,10 +270,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 32
     - Name: 
       Entry: 3
-      Data: 0
+      Data: -8
     - Name: 
       Entry: 8
       Data: 
@@ -319,10 +312,10 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -24
+      Data: 16
     - Name: 
       Entry: 3
-      Data: 0
+      Data: -8
     - Name: 
       Entry: 8
       Data: 
@@ -403,48 +396,6 @@ MonoBehaviour:
       Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
     - Name: 
       Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 16
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 3
-      Data: -8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 17
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
       Data: 8
     - Name: 
       Entry: 3
@@ -454,112 +405,7 @@ MonoBehaviour:
       Data: 
     - Name: $v
       Entry: 10
-      Data: 18
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: -24
-    - Name: 
-      Entry: 3
-      Data: -8
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 19
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: -24
-    - Name: 
-      Entry: 3
       Data: 16
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 20
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 21
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: -8
-    - Name: 
-      Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 22
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 
-    - Name: $k
-      Entry: 7
-      Data: UnityEngine.Vector2Int, UnityEngine.CoreModule
-    - Name: 
-      Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
-      Data: -16
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: $v
-      Entry: 10
-      Data: 23
     - Name: 
       Entry: 8
       Data: 
@@ -582,14 +428,11 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  seed: 1
-  voxelResolution: 8
-  chunkResolution: 2
-  showVoxelReferencePoints: 0
   doInfiniteGeneration: 1
   doColliderGeneration: 0
   doOutlines: 1
-  zIndex: 1
+  zIndex: 2
   material: {fileID: 2100000, guid: b466fc4d4edde4149a22e7d5625c1390, type: 2}
-  TerrainType: 1
+  CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
+  terrainNoiseScriptableObject: {fileID: 11400000, guid: e2a57c1a4b51684469f238640d3a6cb1, type: 2}
   chunkName: Background Chunk

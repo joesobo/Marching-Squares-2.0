@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MeshShaderController : MonoBehaviour {
-    private CoreScriptableObject CORE;
-
     public ComputeShader marchingSquareShader;
 
     private const int SHADER_THREADS = 8;
@@ -16,7 +14,7 @@ public class MeshShaderController : MonoBehaviour {
     private int[] stateValues;
 
     private void Awake() {
-        CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
+        CoreScriptableObject CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
 
         this.voxelResolution = CORE.voxelResolution;
         this.chunkResolution = CORE.chunkResolution;

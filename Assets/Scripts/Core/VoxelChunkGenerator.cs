@@ -6,32 +6,32 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
 
-    private VoxelChunk CreateChunk(CoreScriptableObject CORE, Vector2 chunkPosition) {
+    private VoxelChunk CreateChunk(LayerScriptableObject layer, Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity, transform);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
-        chunk.SetupChunk(CORE, voxelReferencePointsPrefab, chunkPosition);
+        chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
 
-        CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
+        layer.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
-    private VoxelChunk CreatePoolChunk(CoreScriptableObject CORE, VoxelChunk chunk, Vector2 chunkPosition) {
-        chunk.SetupChunk(CORE, voxelReferencePointsPrefab, chunkPosition);
+    private VoxelChunk CreatePoolChunk(LayerScriptableObject layer, VoxelChunk chunk, Vector2 chunkPosition) {
+        chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
         chunk.ResetReferencePoints();
 
-        CORE.existingChunks.Add(chunk.GetWholePosition(), chunk);
+        layer.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
-    public VoxelChunk GetNewChunk(CoreScriptableObject CORE, Vector2 chunkPosition) {
-        return CORE.recycleableChunks.Count > 0 ? CreatePoolChunk(CORE, CORE.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(CORE, chunkPosition);
+    public VoxelChunk GetNewChunk(LayerScriptableObject layer, Vector2 chunkPosition) {
+        return layer.recycleableChunks.Count > 0 ? CreatePoolChunk(layer, layer.recycleableChunks.Dequeue(), chunkPosition) : CreateChunk(layer, chunkPosition);
     }
 
-    public static void SetupChunkNeighbors(CoreScriptableObject CORE, VoxelChunk chunk) {
-        int voxelResolution = CORE.voxelResolution;
+    public static void SetupChunkNeighbors(LayerScriptableObject layer, VoxelChunk chunk) {
+        int voxelResolution = layer.CORE.voxelResolution;
         Vector2Int setupCoord = chunk.GetWholePosition();
 
-        if (!CORE.existingChunks.ContainsKey(setupCoord)) return;
+        if (!layer.existingChunks.ContainsKey(setupCoord)) return;
 
         // Setup the chunk's neighbors
         Vector2Int xCoord = new Vector2Int(setupCoord.x + voxelResolution, setupCoord.y);
@@ -45,30 +45,30 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
         VoxelChunk tempChunk;
 
-        if (CORE.existingChunks.ContainsKey(xCoord)) {
-            chunk.xNeighbor = CORE.existingChunks[xCoord];
+        if (layer.existingChunks.ContainsKey(xCoord)) {
+            chunk.xNeighbor = layer.existingChunks[xCoord];
         }
 
-        if (CORE.existingChunks.ContainsKey(yCoord)) {
-            chunk.yNeighbor = CORE.existingChunks[yCoord];
+        if (layer.existingChunks.ContainsKey(yCoord)) {
+            chunk.yNeighbor = layer.existingChunks[yCoord];
         }
 
-        if (CORE.existingChunks.ContainsKey(xyCoord)) {
-            chunk.xyNeighbor = CORE.existingChunks[xyCoord];
+        if (layer.existingChunks.ContainsKey(xyCoord)) {
+            chunk.xyNeighbor = layer.existingChunks[xyCoord];
         }
 
-        if (CORE.existingChunks.ContainsKey(bxCoord)) {
-            tempChunk = CORE.existingChunks[bxCoord];
+        if (layer.existingChunks.ContainsKey(bxCoord)) {
+            tempChunk = layer.existingChunks[bxCoord];
             tempChunk.xNeighbor = chunk;
         }
 
-        if (CORE.existingChunks.ContainsKey(byCoord)) {
-            tempChunk = CORE.existingChunks[byCoord];
+        if (layer.existingChunks.ContainsKey(byCoord)) {
+            tempChunk = layer.existingChunks[byCoord];
             tempChunk.yNeighbor = chunk;
         }
 
-        if (CORE.existingChunks.ContainsKey(bxyCoord)) {
-            tempChunk = CORE.existingChunks[bxyCoord];
+        if (layer.existingChunks.ContainsKey(bxyCoord)) {
+            tempChunk = layer.existingChunks[bxyCoord];
             tempChunk.xyNeighbor = chunk;
         }
     }

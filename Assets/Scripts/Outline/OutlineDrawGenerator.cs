@@ -18,8 +18,8 @@ public class OutlineDrawGenerator : MonoBehaviour {
         playerPosition = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
     }
 
-    public void GenerateChunkOutlines(CoreScriptableObject CORE, VoxelChunk chunk) {
-        if (CORE.doOutlines) {
+    public void GenerateChunkOutlines(LayerScriptableObject layer, VoxelChunk chunk) {
+        if (layer.doOutlines) {
             // Remove outlines from chunk if regenerating its outlines
             chunk.RemoveOutlines();
 
@@ -27,29 +27,29 @@ public class OutlineDrawGenerator : MonoBehaviour {
             outlineShaderController.ShaderTriangulate(chunk);
 
             // Reset logic for chunk
-            OutlineLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
+            OutlineLogic.Reset(layer.CORE.voxelResolution * layer.CORE.chunkResolution);
             // Calculate outlines
             IEnumerable<List<Vector3>> outlines = OutlineLogic.CalculateOutlines(chunk);
             // Create new outlines
-            DrawOutline(CORE, chunk, outlines);
+            DrawOutline(chunk, outlines, layer.zIndex);
         }
     }
 
     // Uses the outlines to create lines around the chunks edges
-    private void DrawOutline(CoreScriptableObject CORE, VoxelChunk chunk, IEnumerable<List<Vector3>> outlines) {
+    private void DrawOutline(VoxelChunk chunk, IEnumerable<List<Vector3>> outlines, int zIndex) {
         foreach (List<Vector3> outline in outlines) {
             Vector3 chunkPos = chunk.transform.position;
-            Vector3 startPoint = new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, CORE.zIndex);
+            Vector3 startPoint = new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, zIndex);
             int index = 1;
 
             while (index < outline.Count()) {
-                Vector3 endPoint = new Vector3(outline[index].x + chunkPos.x - playerPosition.x, outline[index].y + chunkPos.y - playerPosition.y, CORE.zIndex);
+                Vector3 endPoint = new Vector3(outline[index].x + chunkPos.x - playerPosition.x, outline[index].y + chunkPos.y - playerPosition.y, zIndex);
                 DrawLine(chunk, startPoint, endPoint);
                 startPoint = endPoint;
                 index++;
             }
 
-            DrawLine(chunk, startPoint, new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, CORE.zIndex));
+            DrawLine(chunk, startPoint, new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, zIndex));
         }
     }
 

@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/TerrainEditingScriptableObject", order = 2)]
+[CreateAssetMenu(fileName = "CoreData", menuName = "ScriptableObjects/TerrainEditingScriptableObject", order = 3)]
 public class TerrainEditingScriptableObject : SerializedScriptableObject {
     [EnumToggleButtons]
     public enum Stencil {
@@ -13,8 +13,8 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
     public enum BlockType {
         Remove,
         Dirt,
-        Grass,
         Stone,
+        Grass,
         White,
         Black,
         Blue,

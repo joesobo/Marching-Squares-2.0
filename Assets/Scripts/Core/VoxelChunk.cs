@@ -5,7 +5,7 @@ using Shapes;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
-    private CoreScriptableObject currentCORE;
+    private LayerScriptableObject currentLayer;
 
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
@@ -47,16 +47,16 @@ public class VoxelChunk : MonoBehaviour {
         terrainGenerationController = GetComponentInParent<TerrainGenerationController>();
     }
 
-    public void SetupChunk(CoreScriptableObject CORE, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
+    public void SetupChunk(LayerScriptableObject layer, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
         voxelRefPointsPrefab = voxelReferencePointsPrefab;
-        voxelResolution = CORE.voxelResolution;
+        voxelResolution = layer.CORE.voxelResolution;
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
 
-        name = CORE.chunkName + " (" + chunkPosition.x / CORE.voxelResolution + ", " + chunkPosition.y / CORE.voxelResolution + ")";
-        transform.position = new Vector3(chunkPosition.x, chunkPosition.y, CORE.zIndex);
-        currentCORE = CORE;
+        name = layer.chunkName + " (" + chunkPosition.x / voxelResolution + ", " + chunkPosition.y / voxelResolution + ")";
+        transform.position = new Vector3(chunkPosition.x, chunkPosition.y, layer.zIndex);
+        currentLayer = layer;
         FillChunk();
         gameObject.SetActive(true);
     }
@@ -73,28 +73,28 @@ public class VoxelChunk : MonoBehaviour {
 
     [HorizontalGroup("Split", 0.33f)]
     [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
-    private void RefreshMesh(CoreScriptableObject CORE) {
-        voxelMeshGenerator.GenerateChunkMesh(this, CORE.material);
+    private void RefreshMesh(LayerScriptableObject layer) {
+        voxelMeshGenerator.GenerateChunkMesh(this, layer.material);
     }
 
     [HorizontalGroup("Split", 0.33f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.4f, 1, 0.8f)]
-    private void RefreshCollider(CoreScriptableObject CORE) {
-        colliderGenerator.GenerateChunkColliders(CORE, this);
+    private void RefreshCollider(LayerScriptableObject layer) {
+        colliderGenerator.GenerateChunkColliders(layer, this);
     }
 
     [HorizontalGroup("Split", 0.33f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.8f, 1, 0.4f)]
-    private void RefreshOultine(CoreScriptableObject CORE) {
-        outlineDrawGenerator.GenerateChunkOutlines(CORE, this);
+    private void RefreshOultine(LayerScriptableObject layer) {
+        outlineDrawGenerator.GenerateChunkOutlines(layer, this);
     }
 
     [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
-    public void GenerateChunk(CoreScriptableObject CORE) {
-        VoxelChunkGenerator.SetupChunkNeighbors(CORE, this);
-        RefreshMesh(CORE);
-        RefreshCollider(CORE);
-        RefreshOultine(CORE);
+    public void GenerateChunk(LayerScriptableObject layer) {
+        VoxelChunkGenerator.SetupChunkNeighbors(layer, this);
+        RefreshMesh(layer);
+        RefreshCollider(layer);
+        RefreshOultine(layer);
     }
 
     private void FillChunk() {
@@ -108,7 +108,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
-        int noiseVal = TerrainGenerationController.GetTerrainNoise(currentCORE);
+        int noiseVal = terrainGenerationController.GetTerrainNoise(currentLayer, x, y, transform.position);
 
         voxels[i] = new Voxel(x, y, 1f, noiseVal);
         CreateReferencePoint(i, x, y);
@@ -129,7 +129,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateReferencePoint(int i, int x, int y) {
-        if (currentCORE.showVoxelReferencePoints) {
+        if (currentLayer.CORE.showVoxelReferencePoints) {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
             voxelRef.transform.parent = transform;
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;

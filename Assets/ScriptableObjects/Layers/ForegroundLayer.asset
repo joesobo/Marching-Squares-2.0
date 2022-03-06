@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6d37aeff102b2648a5085a600bd5867, type: 3}
-  m_Name: CoreData
+  m_Script: {fileID: 11500000, guid: d20d1b03536cefe4793ea9f4f4390968, type: 3}
+  m_Name: ForegroundLayer
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -54,13 +54,11 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  voxelResolution: 8
-  chunkResolution: 2
-  showVoxelReferencePoints: 0
   doInfiniteGeneration: 1
-  doColliderGeneration: 1
+  doColliderGeneration: 0
   doOutlines: 1
   zIndex: -1
-  material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}
-  terrainNoiseScriptableObject: {fileID: 11400000, guid: 62f2e7d4e93f80442b1ebd6d308d6846, type: 2}
-  chunkName: Main Chunk
+  material: {fileID: 2100000, guid: a3c3dd4d65058ae40bb685c1a77a7b23, type: 2}
+  CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
+  terrainNoiseScriptableObject: {fileID: 11400000, guid: 6366a2cf94533d34f8e72f3886084a7a, type: 2}
+  chunkName: Foreground Chunk

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TerrainEditor : MonoBehaviour {
     private TerrainEditingScriptableObject terrainEditingSO;
-    private List<CoreScriptableObject> COREs = new List<CoreScriptableObject>();
+    private List<LayerScriptableObject> layers = new List<LayerScriptableObject>();
 
     private readonly EditingStencil[] stencils = {
         new EditingStencil(),
@@ -12,7 +12,7 @@ public class TerrainEditor : MonoBehaviour {
 
     public void Start() {
         terrainEditingSO = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
-        COREs = FindObjectOfType<VoxelCore>().GetAllCoreScriptableObjects();
+        layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
     }
 
     public void EditVoxels(IEnumerable<Voxel> voxels) {
@@ -25,7 +25,7 @@ public class TerrainEditor : MonoBehaviour {
         EditingStencil activeStencil = stencils[(int)terrainEditingSO.StencilType];
         TerrainEditingScriptableObject.BlockType editingType = terrainEditingSO.EditingType;
         List<Voxel> selectedVoxels = new List<Voxel>();
-        int voxelResolution = COREs[terrainEditingSO.LayerIndex].voxelResolution;
+        int voxelResolution = layers[0].CORE.voxelResolution;
         int radius = terrainEditingSO.Radius;
 
         for (int i = -radius; i <= radius; i++) {

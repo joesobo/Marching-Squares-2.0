@@ -5,8 +5,8 @@ public class TerrainEditorController : MonoBehaviour {
     public TerrainEditingScriptableObject terrainEditingSO;
     public LayerMask layerMask;
 
-    private List<CoreScriptableObject> COREs = new List<CoreScriptableObject>();
-    private CoreScriptableObject CORE;
+    private List<LayerScriptableObject> layers = new List<LayerScriptableObject>();
+    private LayerScriptableObject currentLayer;
     private TerrainEditor terrainEditor;
 
     private int voxelResolution, chunkResolution, radius, start, end, inc;
@@ -28,10 +28,10 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea = GetComponent<BoxCollider>();
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
 
-        COREs = FindObjectOfType<VoxelCore>().GetAllCoreScriptableObjects();
+        layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
 
-        voxelResolution = COREs[0].voxelResolution;
-        chunkResolution = COREs[0].chunkResolution;
+        voxelResolution = layers[0].CORE.voxelResolution;
+        chunkResolution = layers[0].CORE.chunkResolution;
 
         // Setup collider area
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
@@ -42,7 +42,7 @@ public class TerrainEditorController : MonoBehaviour {
 
         // Check for player editing in area
         if (IsPlayerEditing()) {
-            CORE = COREs[terrainEditingSO.LayerIndex];
+            currentLayer = layers[terrainEditingSO.LayerIndex];
             radius = terrainEditingSO.Radius;
             start = radius > 0 ? -radius : 0;
             end = radius > 0 ? radius : 0;
@@ -68,9 +68,9 @@ public class TerrainEditorController : MonoBehaviour {
 
                 Vector2Int chunkWorldPosition = ChunkHelper.GetChunkWorldPosition(hitPosition, voxelResolution);
 
-                if (CORE.existingChunks.ContainsKey(chunkWorldPosition) &&
-                    !chunksToUpdate.Contains(CORE.existingChunks[chunkWorldPosition])) {
-                    chunksToUpdate.Add(CORE.existingChunks[chunkWorldPosition]);
+                if (currentLayer.existingChunks.ContainsKey(chunkWorldPosition) &&
+                    !chunksToUpdate.Contains(currentLayer.existingChunks[chunkWorldPosition])) {
+                    chunksToUpdate.Add(currentLayer.existingChunks[chunkWorldPosition]);
                 }
             }
         }
@@ -92,8 +92,8 @@ public class TerrainEditorController : MonoBehaviour {
 
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
-            infiniteGenerator.GenerateChunkList(CORE, chunksToUpdate);
-            infiniteGenerator.GenerateChunkList(CORE, infiniteGenerator.FindImportantNeighbors(CORE, chunksToUpdate));
+            infiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
+            infiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));
 
             chunksToUpdate.Clear();
         }
