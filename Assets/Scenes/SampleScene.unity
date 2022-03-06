@@ -1029,7 +1029,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce3c3686b95ae644ae0a964ac767426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 0, g: 0, b: 0, a: 1}
+  color: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
   thickness: 0.05
 --- !u!1 &1555325802
 GameObject:

@@ -38,18 +38,18 @@ public class OutlineDrawGenerator : MonoBehaviour {
     // Uses the outlines to create lines around the chunks edges
     private void DrawOutline(CoreScriptableObject CORE, VoxelChunk chunk, IEnumerable<List<Vector3>> outlines) {
         foreach (List<Vector3> outline in outlines) {
-            Vector3 startPoint = new Vector3(outline[0].x + chunk.transform.position.x - playerPosition.x, outline[0].y + chunk.transform.position.y - playerPosition.y, CORE.zIndex);
-            Vector3 endPoint;
+            Vector3 chunkPos = chunk.transform.position;
+            Vector3 startPoint = new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, CORE.zIndex);
             int index = 1;
 
             while (index < outline.Count()) {
-                endPoint = new Vector3(outline[index].x + chunk.transform.position.x - playerPosition.x, outline[index].y + chunk.transform.position.y - playerPosition.y, CORE.zIndex);
+                Vector3 endPoint = new Vector3(outline[index].x + chunkPos.x - playerPosition.x, outline[index].y + chunkPos.y - playerPosition.y, CORE.zIndex);
                 DrawLine(chunk, startPoint, endPoint);
                 startPoint = endPoint;
                 index++;
             }
 
-            DrawLine(chunk, startPoint, new Vector3(outline[0].x + chunk.transform.position.x - playerPosition.x, outline[0].y + chunk.transform.position.y - playerPosition.y, CORE.zIndex));
+            DrawLine(chunk, startPoint, new Vector3(outline[0].x + chunkPos.x - playerPosition.x, outline[0].y + chunkPos.y - playerPosition.y, CORE.zIndex));
         }
     }
 
@@ -58,18 +58,11 @@ public class OutlineDrawGenerator : MonoBehaviour {
         Vector3 localStart = start - chunk.transform.position;
         Vector3 localEnd = end - chunk.transform.position;
 
-        if (localStart == new Vector3(-7.5f, 0.5f) ||
-            localEnd == new Vector3(-7.5f, 0.5f) ||
-            (localStart.x == -7.5f && localEnd.x == -7.5f) ||
-            (localStart.y == 0.5f && localEnd.y == 0.5f) ||
-            localStart == new Vector3(0.5f, 8.5f) ||
-            localEnd == new Vector3(0.5f, 8.5f) ||
-            (localStart.x == 0.5f && localEnd.x == 0.5f) ||
-            (localStart.y == 8.5f && localEnd.y == 8.5f) ||
-             (localStart.x == 8.5f && localEnd.x == 8.5f)) return;
+        if (IsOutlineChunkEdge(localStart, localEnd)) return;
 
-        GameObject myLine = new GameObject();
-        myLine.name = "Outline: [(" + localStart.x + ", " + localStart.y + "), (" + localEnd.x + ", " + localEnd.y + ")]";
+        GameObject myLine = new GameObject {
+            name = "Outline: [(" + localStart.x + ", " + localStart.y + "), (" + localEnd.x + ", " + localEnd.y + ")]"
+        };
         myLine.transform.parent = chunk.transform;
         Line line = myLine.AddComponent<Line>();
         line.Color = color;
@@ -79,5 +72,17 @@ public class OutlineDrawGenerator : MonoBehaviour {
         line.Geometry = LineGeometry.Billboard;
         line.Dashed = false;
         line.BlendMode = ShapesBlendMode.Opaque;
+    }
+
+    private static bool IsOutlineChunkEdge(Vector3 start, Vector3 end) {
+        return (start == new Vector3(-7.5f, 0.5f) ||
+            end == new Vector3(-7.5f, 0.5f) ||
+            (start.x == -7.5f && end.x == -7.5f) ||
+            (start.y == 0.5f && end.y == 0.5f) ||
+            start == new Vector3(0.5f, 8.5f) ||
+            end == new Vector3(0.5f, 8.5f) ||
+            (start.x == 0.5f && end.x == 0.5f) ||
+            (start.y == 8.5f && end.y == 8.5f) ||
+             (start.x == 8.5f && end.x == 8.5f));
     }
 }
