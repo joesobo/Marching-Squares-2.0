@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TerrainEditor : MonoBehaviour {
@@ -44,13 +45,6 @@ public class TerrainEditor : MonoBehaviour {
         }
 
         // Filter selected voxels by editing type
-        List<Voxel> filteredVoxels = new List<Voxel>();
-        foreach (Voxel voxel in selectedVoxels) {
-            if (voxel.state != (int)editingType) {
-                filteredVoxels.Add(voxel);
-            }
-        }
-
-        return filteredVoxels;
+        return selectedVoxels.Where(voxel => voxel.state != (int) editingType).ToList();
     }
 }

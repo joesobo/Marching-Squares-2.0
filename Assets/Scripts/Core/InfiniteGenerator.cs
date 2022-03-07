@@ -18,9 +18,9 @@ public class InfiniteGenerator : MonoBehaviour {
     private void Awake() {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
-        voxelChunkGenerator = this.GetComponent<VoxelChunkGenerator>();
-        this.voxelResolution = layers[0].CORE.voxelResolution;
-        this.chunkResolution = layers[0].CORE.chunkResolution;
+        voxelChunkGenerator = GetComponent<VoxelChunkGenerator>();
+        voxelResolution = layers[0].CORE.voxelResolution;
+        chunkResolution = layers[0].CORE.chunkResolution;
     }
 
     private void Update() {
@@ -86,7 +86,7 @@ public class InfiniteGenerator : MonoBehaviour {
         }
     }
 
-    public void GenerateChunkList(LayerScriptableObject layer, IEnumerable<VoxelChunk> chunks) {
+    public static void GenerateChunkList(LayerScriptableObject layer, IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             chunk.GenerateChunk(layer);
         }

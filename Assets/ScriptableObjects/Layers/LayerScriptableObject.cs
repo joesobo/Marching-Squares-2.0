@@ -6,7 +6,7 @@ using UnityEngine;
 public class LayerScriptableObject : SerializedScriptableObject {
     // Whether or not to generate new chunks after runtime
     public bool doInfiniteGeneration = true;
-    // Whether or not to genrate chunks with colliders
+    // Whether or not to generate chunks with colliders
     public bool doColliderGeneration = true;
     // Whether or not to generate chunks with outlines
     public bool doOutlines = true;
@@ -19,9 +19,9 @@ public class LayerScriptableObject : SerializedScriptableObject {
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
-    //
+    // Core Data
     public CoreScriptableObject CORE;
-    //
+    // Terrain noise data for this layer
     public TerrainNoiseScriptableObject terrainNoiseScriptableObject;
     // Name of chunks
     public string chunkName = "Voxel Chunk";

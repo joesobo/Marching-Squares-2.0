@@ -92,8 +92,8 @@ public class TerrainEditorController : MonoBehaviour {
 
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
-            infiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
-            infiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));
+            InfiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
+            InfiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));
 
             chunksToUpdate.Clear();
         }

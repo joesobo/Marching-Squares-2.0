@@ -54,6 +54,7 @@ public class OutlineDrawGenerator : MonoBehaviour {
     }
 
     // Draws a line between two points
+    // TODO: Add pooling
     private void DrawLine(VoxelChunk chunk, Vector3 start, Vector3 end) {
         Vector3 localStart = start - chunk.transform.position;
         Vector3 localEnd = end - chunk.transform.position;

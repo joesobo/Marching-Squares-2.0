@@ -23,14 +23,6 @@ public class VoxelCore : MonoBehaviour {
         return layers[index].CORE;
     }
 
-    public List<CoreScriptableObject> GetAllCoreScriptableObjects() {
-        List<CoreScriptableObject> cores = new List<CoreScriptableObject>();
-        foreach (LayerScriptableObject layer in layers) {
-            cores.Add(layer.CORE);
-        }
-        return cores;
-    }
-
     public LayerScriptableObject GetLayerScriptableObject(int index) {
         return layers[index];
     }
