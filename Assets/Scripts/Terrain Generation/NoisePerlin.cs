@@ -26,12 +26,12 @@ public static class NoisePerlin {
             }
 
             return (int)terrainNoise.AvailableBlocks[blockIndex];
-        } else {
-            return (int)(perlinValue * System.Enum.GetValues(typeof(BlockType)).Length) - 1;
         }
+
+        return (int)(perlinValue * System.Enum.GetValues(typeof(BlockType)).Length) - 1;
     }
 
-    public static float PerlinNoise1D(int x, LayerScriptableObject layer) {
+    private static float PerlinNoise1D(int x, LayerScriptableObject layer) {
         int voxelResolution = layer.CORE.voxelResolution;
         int chunkResolution = layer.CORE.chunkResolution;
         TerrainNoiseScriptableObject terrainNoise = layer.terrainNoiseScriptableObject;

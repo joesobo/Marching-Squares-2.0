@@ -17,8 +17,8 @@ public static class NoiseRandom {
             }
 
             return (int)terrainNoise.AvailableBlocks[blockIndex];
-        } else {
-            return (int)(randValue * System.Enum.GetValues(typeof(BlockType)).Length) - 1;
         }
+
+        return (int)(randValue * System.Enum.GetValues(typeof(BlockType)).Length) - 1;
     }
 }

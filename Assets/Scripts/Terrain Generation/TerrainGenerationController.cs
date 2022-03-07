@@ -14,14 +14,12 @@ public class TerrainGenerationController : MonoBehaviour {
 
         TerrainGenerationTypes currentType = layer.terrainNoiseScriptableObject.TerrainType;
 
-        if (currentType == TerrainGenerationTypes.Perlin && CanSpawnPerlin(scaledX, scaledY, layer)) {
-            return PerlinNoise(scaledX, scaledY, layer);
-        } else if (currentType == TerrainGenerationTypes.Fill) {
-            return FillNoise(scaledX, scaledY, layer);
-        } else if (currentType == TerrainGenerationTypes.Random) {
-            return RandomNoise(layer.terrainNoiseScriptableObject);
-        } else {
-            return 0;
-        }
+        return currentType switch {
+            TerrainGenerationTypes.Perlin when CanSpawnPerlin(scaledX, scaledY, layer) => PerlinNoise(scaledX, scaledY,
+                layer),
+            TerrainGenerationTypes.Fill => FillNoise(scaledX, scaledY, layer),
+            TerrainGenerationTypes.Random => RandomNoise(layer.terrainNoiseScriptableObject),
+            _ => 0
+        };
     }
 }
