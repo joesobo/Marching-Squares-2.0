@@ -70,6 +70,9 @@ graph LR;
   %% Terrain Noise
   subgraph TerrainNoise
     TerrainGenerationController{{TerrainGenerationController}};
+    NoiseFill{{NoiseFill}};
+    NoiseRandom{{NoiseRandom}};
+    NoisePerlin{{NoisePerlin}};
   end
 
   Player{Player};
@@ -140,6 +143,11 @@ graph LR;
   TerrainEditor ==> BlockTypes;
 
   TerrainGenerationController ==> TerrainTypes;
+  TerrainGenerationController ==> NoiseFill;
+  TerrainGenerationController ==> NoiseRandom;
+  TerrainGenerationController ==> NoisePerlin;
+
+  NoiseFill ==> NoisePerlin;
 
   Editing ==> BlockTypes;
   Editing ==> StencilTypes;
