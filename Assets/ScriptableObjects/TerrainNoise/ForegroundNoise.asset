@@ -26,3 +26,4 @@ MonoBehaviour:
   amplitude: 2
   range: 0.5
   TerrainType: 0
+  AvailableBlocks: 

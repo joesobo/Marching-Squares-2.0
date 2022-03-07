@@ -56,7 +56,7 @@ MonoBehaviour:
       Data: 
   doInfiniteGeneration: 1
   doColliderGeneration: 0
-  doOutlines: 1
+  doOutlines: 0
   zIndex: -1
   material: {fileID: 2100000, guid: a3c3dd4d65058ae40bb685c1a77a7b23, type: 2}
   CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}

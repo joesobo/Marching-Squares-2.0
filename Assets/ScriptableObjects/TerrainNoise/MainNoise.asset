@@ -21,7 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  seed: 1
   frequency: 0.1
   amplitude: 2
   range: 0.5
-  TerrainType: 20
+  TerrainType: 1
+  AvailableBlocks: 000000000100000002000000

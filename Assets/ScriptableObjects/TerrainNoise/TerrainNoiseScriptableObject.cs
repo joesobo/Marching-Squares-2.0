@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,5 +13,7 @@ public class TerrainNoiseScriptableObject : SerializedScriptableObject {
     [Range(0.1f, 1)]
     public float range = 1f;
 
-    public TerrainGenerationTypes TerrainType = TerrainGenerationTypes.Remove;
+    public TerrainGenerationTypes TerrainType = TerrainGenerationTypes.Fill;
+
+    public List<BlockType> AvailableBlocks = new List<BlockType>(new BlockType[] { BlockType.Empty });
 }

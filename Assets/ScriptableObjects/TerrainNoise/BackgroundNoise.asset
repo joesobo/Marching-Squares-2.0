@@ -25,4 +25,5 @@ MonoBehaviour:
   frequency: 0.1
   amplitude: 2
   range: 0.5
-  TerrainType: 20
+  TerrainType: 1
+  AvailableBlocks: 0100000002000000

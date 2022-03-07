@@ -10,7 +10,7 @@ public class TerrainEditingScriptableObject : SerializedScriptableObject {
     public Stencil StencilType = Stencil.Square;
 
     [EnumToggleButtons]
-    public BlockType EditingType = BlockType.Remove;
+    public BlockType EditingType = BlockType.Empty;
 
     [Range(0, 2)]
     public int LayerIndex = 0;

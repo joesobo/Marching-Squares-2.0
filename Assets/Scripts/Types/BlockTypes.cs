@@ -1,5 +1,5 @@
 public enum BlockType {
-    Remove,
+    Empty,
     Dirt,
     Stone,
     Grass,
