@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelCore : MonoBehaviour {
-    public List<LayerScriptableObject> layers;
     public CoreScriptableObject CORE;
     public WorldScriptableObject worldScriptableObject;
 
@@ -30,10 +29,10 @@ public class VoxelCore : MonoBehaviour {
     }
 
     public LayerScriptableObject GetLayerScriptableObject(int index) {
-        return layers[index];
+        return worldScriptableObject.layers[index];
     }
 
     public List<LayerScriptableObject> GetAllLayerScriptableObjects() {
-        return layers;
+        return worldScriptableObject.layers;
     }
 }
