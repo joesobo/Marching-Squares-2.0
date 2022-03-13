@@ -23,21 +23,22 @@ public class ChunkSaveManager : MonoBehaviour {
         }
     }
 
-    // TODO: add in some sort of check to see if we should save this chunk by comparing to original noise values
     public void SaveChunk(VoxelChunk chunk, LayerScriptableObject layer) {
-        int index = layers.IndexOf(layer);
-        LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
-        FileStream layerStream = worldSaveManager.layerStreams[index];
+        if (chunk.hasEditsToSave) {
+            int index = layers.IndexOf(layer);
+            LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
+            FileStream layerStream = worldSaveManager.layerStreams[index];
 
-        // overwrite or add new chunk info
-        if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
-            layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
-        } else {
-            layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+            // overwrite or add new chunk info
+            if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
+                layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
+            } else {
+                layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+            }
+
+            layerStream.SetLength(0);
+            formatter.Serialize(layerStream, layerData);
         }
-
-        layerStream.SetLength(0);
-        formatter.Serialize(layerStream, layerData);
     }
 
     private void SaveAllChunks(LayerScriptableObject layer) {
@@ -48,7 +49,9 @@ public class ChunkSaveManager : MonoBehaviour {
         layerData.chunkDataDictionary.Clear();
 
         foreach (VoxelChunk chunk in layer.existingChunks.Values) {
-            layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+            if (chunk.hasEditsToSave) {
+                layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+            }
         }
 
         layerStream.SetLength(0);

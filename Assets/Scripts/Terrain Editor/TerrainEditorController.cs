@@ -84,6 +84,7 @@ public class TerrainEditorController : MonoBehaviour {
             List<Voxel> selectedVoxels = terrainEditor.GetSelectedVoxels(chunk, hitInfo.point);
 
             if (selectedVoxels.Count > 0) {
+                chunk.hasEditsToSave = true;
                 terrainEditor.EditVoxels(selectedVoxels);
             } else {
                 chunksToUpdate.Remove(chunk);

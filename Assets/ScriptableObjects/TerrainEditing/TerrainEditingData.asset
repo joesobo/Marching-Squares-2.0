@@ -21,7 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Radius: 0
+  Radius: 5
   StencilType: 0
-  EditingType: 4
-  LayerIndex: 2
+  EditingType: 0
+  LayerIndex: 1

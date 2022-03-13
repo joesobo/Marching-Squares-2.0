@@ -38,6 +38,8 @@ public class VoxelChunk : MonoBehaviour {
     // Half the resolution for finding center of chunks
     private float halfSize;
 
+    [ReadOnly] public bool hasEditsToSave = false;
+
     private void Awake() {
         voxelChunkGenerator = GetComponentInParent<VoxelChunkGenerator>();
         voxelMeshGenerator = GetComponentInParent<VoxelMeshGenerator>();
