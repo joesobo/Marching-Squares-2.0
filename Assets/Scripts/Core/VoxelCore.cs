@@ -10,6 +10,12 @@ public class VoxelCore : MonoBehaviour {
 
     private void Awake() {
         infiniteGenerator = GetComponent<InfiniteGenerator>();
+
+        foreach (LayerScriptableObject layer in worldScriptableObject.layers) {
+            GameObject layerObject = new GameObject(layer.layerName);
+            layerObject.transform.parent = transform;
+            layer.parentReference = layerObject.transform;
+        }
     }
 
     private void Start() {

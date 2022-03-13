@@ -22,7 +22,9 @@ public class LayerScriptableObject : SerializedScriptableObject {
     // Terrain noise data for this layer
     public TerrainNoiseScriptableObject terrainNoiseScriptableObject;
     // Name of chunks
-    public string chunkName = "Voxel Chunk";
+    public string layerName = "Voxel Chunk";
+
+    [HideInInspector] public Transform parentReference;
 
     private void OnEnable() {
         existingChunks.Clear();

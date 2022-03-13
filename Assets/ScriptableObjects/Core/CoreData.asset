@@ -20,47 +20,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: existingChunks
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[UnityEngine.Vector2Int, UnityEngine.CoreModule],[VoxelChunk,
-        Assembly-CSharp]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[UnityEngine.Vector2Int,
-        UnityEngine.CoreModule]], mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: recycleableChunks
-      Entry: 7
-      Data: 2|System.Collections.Generic.Queue`1[[VoxelChunk, Assembly-CSharp]],
-        System
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
   voxelResolution: 8
   chunkResolution: 2
   showVoxelReferencePoints: 0
-  doInfiniteGeneration: 1
-  doColliderGeneration: 1
-  doOutlines: 1
-  zIndex: -1
-  material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}
-  terrainNoiseScriptableObject: {fileID: 11400000, guid: 62f2e7d4e93f80442b1ebd6d308d6846, type: 2}
-  chunkName: Main Chunk

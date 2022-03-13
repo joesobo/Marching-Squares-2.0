@@ -56,7 +56,7 @@ public class VoxelChunk : MonoBehaviour {
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
 
-        name = layer.chunkName + " (" + chunkPosition.x / voxelResolution + ", " + chunkPosition.y / voxelResolution + ")";
+        name = layer.layerName + " (" + chunkPosition.x / voxelResolution + ", " + chunkPosition.y / voxelResolution + ")";
         transform.position = new Vector3(chunkPosition.x, chunkPosition.y, layer.zIndex);
         currentLayer = layer;
         FillChunk();
