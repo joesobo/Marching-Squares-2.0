@@ -88,11 +88,12 @@ graph LR;
   Player{Player};
 
   %% Core Connections
+  World ==> Layer;
+
   Layer ==> Noise;
 
   Noise ==> TerrainTypes;
 
-  VoxelCore ==> Layer;
   VoxelCore ==> InfiniteGenerator;
   VoxelCore ==> CORE;
   VoxelCore ==> World;
