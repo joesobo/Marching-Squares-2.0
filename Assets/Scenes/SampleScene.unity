@@ -1047,6 +1047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldPath: 
+  currentLayerDatas: []
 --- !u!1 &1555325802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1545,6 +1546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldPath: 
+  currentLayerDatas: []
 --- !u!4 &1969493480
 Transform:
   m_ObjectHideFlags: 0

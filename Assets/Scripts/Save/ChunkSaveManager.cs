@@ -22,8 +22,26 @@ public class ChunkSaveManager : MonoBehaviour {
     }
 
     // TODO: add in some sort of check to see if we should save this chunk by comparing to original noise values
-    public void SaveChunk(VoxelChunk chunk, LayerSaveData layerData) {
-        layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+    public void SaveChunk(VoxelChunk chunk, LayerScriptableObject layer) {
+        int index = layers.IndexOf(layer);
+        LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
+
+        // overwrite or add new chunk info
+        if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
+            layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
+        } else {
+            layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+        }
+
+        string layerDataPath = worldSaveManager.worldPath + "layer_" + layer.name + ".save";
+        FileStream layerStream = new FileStream(layerDataPath, FileMode.OpenOrCreate);
+
+        layerStream.SetLength(0);
+        formatter.Serialize(layerStream, layerData);
+
+        layerStream.Close();
+
+        Debug.Log("Saved chunk: " + chunk.transform.position);
     }
 
     private void SaveAllChunks(LayerScriptableObject layer) {
@@ -33,7 +51,7 @@ public class ChunkSaveManager : MonoBehaviour {
         layerData.chunkDataDictionary.Clear();
 
         foreach (VoxelChunk chunk in layer.existingChunks.Values) {
-            SaveChunk(chunk, layerData);
+            layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
             Debug.Log("Saved chunk: " + chunk.transform.position);
         }
 

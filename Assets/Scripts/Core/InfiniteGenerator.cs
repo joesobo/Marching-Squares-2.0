@@ -61,7 +61,10 @@ public class InfiniteGenerator : MonoBehaviour {
 
         // Remove chunks
         foreach (Vector2Int position in removeChunkPositionList) {
-            layer.RemoveChunk(layer.existingChunks[position]);
+            VoxelChunk currentChunk = layer.existingChunks[position];
+
+            chunkSaveManager.SaveChunk(currentChunk, layer);
+            layer.RemoveChunk(currentChunk);
             // TODO: add save chunk
         }
     }
