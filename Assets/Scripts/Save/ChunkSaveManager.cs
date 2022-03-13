@@ -46,11 +46,13 @@ public class ChunkSaveManager : MonoBehaviour {
         LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
         FileStream layerStream = worldSaveManager.layerStreams[index];
 
-        layerData.chunkDataDictionary.Clear();
-
         foreach (VoxelChunk chunk in layer.existingChunks.Values) {
             if (chunk.hasEditsToSave) {
-                layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+                if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
+                    layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
+                } else {
+                    layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+                }
             }
         }
 
