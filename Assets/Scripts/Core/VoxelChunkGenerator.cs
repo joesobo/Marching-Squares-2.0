@@ -6,6 +6,12 @@ public class VoxelChunkGenerator : MonoBehaviour {
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
 
+    private static CoreScriptableObject CORE;
+
+    private void Awake() {
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+    }
+
     private VoxelChunk CreateChunk(LayerScriptableObject layer, Vector2 chunkPosition) {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity, transform);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
@@ -28,7 +34,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
     }
 
     public static void SetupChunkNeighbors(LayerScriptableObject layer, VoxelChunk chunk) {
-        int voxelResolution = layer.CORE.voxelResolution;
+        int voxelResolution = CORE.voxelResolution;
         Vector2Int setupCoord = chunk.GetWholePosition();
 
         if (!layer.existingChunks.ContainsKey(setupCoord)) return;

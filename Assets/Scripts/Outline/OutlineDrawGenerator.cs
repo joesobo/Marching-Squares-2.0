@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class OutlineDrawGenerator : MonoBehaviour {
     private OutlineShaderController outlineShaderController;
+    private CoreScriptableObject CORE;
 
     public Color color;
     public float thickness = 0.1f;
@@ -14,6 +15,7 @@ public class OutlineDrawGenerator : MonoBehaviour {
 
     private void Awake() {
         outlineShaderController = GetComponent<OutlineShaderController>();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         cam = Camera.main.transform;
         playerPosition = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
     }
@@ -27,7 +29,7 @@ public class OutlineDrawGenerator : MonoBehaviour {
             outlineShaderController.ShaderTriangulate(chunk);
 
             // Reset logic for chunk
-            OutlineLogic.Reset(layer.CORE.voxelResolution * layer.CORE.chunkResolution);
+            OutlineLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
             // Calculate outlines
             IEnumerable<List<Vector3>> outlines = OutlineLogic.CalculateOutlines(chunk);
             // Create new outlines

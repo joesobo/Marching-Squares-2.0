@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class VoxelCore : MonoBehaviour {
     public List<LayerScriptableObject> layers;
+    public CoreScriptableObject CORE;
+    public WorldScriptableObject worldScriptableObject;
 
     // Generators for building
     private InfiniteGenerator infiniteGenerator;
@@ -19,8 +21,12 @@ public class VoxelCore : MonoBehaviour {
         infiniteGenerator.StartGeneration();
     }
 
-    public CoreScriptableObject GetCoreScriptableObject(int index) {
-        return layers[index].CORE;
+    public CoreScriptableObject GetCoreScriptableObject() {
+        return CORE;
+    }
+
+    public WorldScriptableObject GetWorldScriptableObject() {
+        return worldScriptableObject;
     }
 
     public LayerScriptableObject GetLayerScriptableObject(int index) {

@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 [Serializable]
 public class Voxel {
     // The index of the element type to spawn in this voxel
-    public int state = Random.Range(0, 5);
+    public int state = 0;
 
     // The position of the voxel in the chunk
     public Vector2 position;

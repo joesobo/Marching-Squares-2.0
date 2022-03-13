@@ -19,8 +19,6 @@ public class LayerScriptableObject : SerializedScriptableObject {
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
-    // Core Data
-    public CoreScriptableObject CORE;
     // Terrain noise data for this layer
     public TerrainNoiseScriptableObject terrainNoiseScriptableObject;
     // Name of chunks

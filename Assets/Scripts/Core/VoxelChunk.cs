@@ -5,7 +5,8 @@ using Shapes;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
-    private LayerScriptableObject currentLayer;
+    [HideInInspector] public LayerScriptableObject currentLayer;
+    private CoreScriptableObject CORE;
 
     private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
@@ -45,11 +46,12 @@ public class VoxelChunk : MonoBehaviour {
         meshFilter = GetComponentInParent<MeshFilter>();
         meshRenderer = GetComponentInParent<MeshRenderer>();
         terrainGenerationController = GetComponentInParent<TerrainGenerationController>();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
     public void SetupChunk(LayerScriptableObject layer, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
         voxelRefPointsPrefab = voxelReferencePointsPrefab;
-        voxelResolution = layer.CORE.voxelResolution;
+        voxelResolution = CORE.voxelResolution;
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
@@ -80,7 +82,7 @@ public class VoxelChunk : MonoBehaviour {
     [HorizontalGroup("Split", 0.33f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.4f, 1, 0.8f)]
     private void RefreshCollider(LayerScriptableObject layer) {
-        colliderGenerator.GenerateChunkColliders(layer, this);
+        colliderGenerator.GenerateChunkColliders(layer, CORE, this);
     }
 
     [HorizontalGroup("Split", 0.33f)]
@@ -129,7 +131,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateReferencePoint(int i, int x, int y) {
-        if (currentLayer.CORE.showVoxelReferencePoints) {
+        if (CORE.showVoxelReferencePoints) {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
             voxelRef.transform.parent = transform;
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;

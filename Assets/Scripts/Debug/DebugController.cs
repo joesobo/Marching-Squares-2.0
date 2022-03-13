@@ -11,7 +11,7 @@ public class DebugController : MonoBehaviour {
     public bool isActive;
 
     private void Awake() {
-        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject(0);
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
     private void Update() {

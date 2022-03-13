@@ -14,7 +14,7 @@ public class OutlineShaderController : MonoBehaviour {
     private int[] stateValues;
 
     private void Awake() {
-        CoreScriptableObject CORE = GetComponent<VoxelCore>().GetCoreScriptableObject(0);
+        CoreScriptableObject CORE = GetComponent<VoxelCore>().GetCoreScriptableObject();
 
         voxelResolution = CORE.voxelResolution;
         chunkResolution = CORE.chunkResolution;
