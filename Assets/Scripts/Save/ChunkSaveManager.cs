@@ -10,12 +10,14 @@ public class ChunkSaveManager : MonoBehaviour {
     private BinaryFormatter formatter;
     private List<LayerScriptableObject> layers;
 
-    private void Start() {
+    private void Awake() {
         worldSaveManager = FindObjectOfType<WorldSaveManager>();
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
 
         formatter = GetBinaryFormatter();
+    }
 
+    private void Start() {
         foreach (LayerScriptableObject layer in layers) {
             worldSaveManager.currentLayerDatas.Add(ReadLayer(layer));
         }
@@ -25,6 +27,7 @@ public class ChunkSaveManager : MonoBehaviour {
     public void SaveChunk(VoxelChunk chunk, LayerScriptableObject layer) {
         int index = layers.IndexOf(layer);
         LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
+        FileStream layerStream = worldSaveManager.layerStreams[index];
 
         // overwrite or add new chunk info
         if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
@@ -33,35 +36,23 @@ public class ChunkSaveManager : MonoBehaviour {
             layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
         }
 
-        string layerDataPath = worldSaveManager.worldPath + "layer_" + layer.name + ".save";
-        FileStream layerStream = new FileStream(layerDataPath, FileMode.OpenOrCreate);
-
         layerStream.SetLength(0);
         formatter.Serialize(layerStream, layerData);
-
-        layerStream.Close();
-
-        Debug.Log("Saved chunk: " + chunk.transform.position);
     }
 
     private void SaveAllChunks(LayerScriptableObject layer) {
         int index = layers.IndexOf(layer);
         LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
+        FileStream layerStream = worldSaveManager.layerStreams[index];
 
         layerData.chunkDataDictionary.Clear();
 
         foreach (VoxelChunk chunk in layer.existingChunks.Values) {
             layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
-            Debug.Log("Saved chunk: " + chunk.transform.position);
         }
-
-        string layerDataPath = worldSaveManager.worldPath + "layer_" + layer.name + ".save";
-        FileStream layerStream = new FileStream(layerDataPath, FileMode.OpenOrCreate);
 
         layerStream.SetLength(0);
         formatter.Serialize(layerStream, layerData);
-
-        layerStream.Close();
     }
 
     public void LoadChunkData(Vector2 chunkPos, LayerScriptableObject layer, VoxelChunk chunk) {
@@ -80,11 +71,11 @@ public class ChunkSaveManager : MonoBehaviour {
     }
 
     private LayerSaveData ReadLayer(LayerScriptableObject layer) {
-        string layerDataPath = worldSaveManager.worldPath + "layer_" + layer.name + ".save";
+        int index = layers.IndexOf(layer);
 
-        FileStream layerStream = new FileStream(layerDataPath, FileMode.OpenOrCreate);
+        FileStream layerStream = worldSaveManager.layerStreams[index];
+        layerStream.Position = 0;
         LayerSaveData layerData = (LayerSaveData)formatter.Deserialize(layerStream);
-        layerStream.Close();
 
         return layerData;
     }
@@ -94,5 +85,7 @@ public class ChunkSaveManager : MonoBehaviour {
             Debug.Log("Saving layer: " + layer.name);
             SaveAllChunks(layer);
         }
+
+        worldSaveManager.CloseWorld();
     }
 }

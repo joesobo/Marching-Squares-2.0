@@ -864,7 +864,6 @@ GameObject:
   - component: {fileID: 1226365690}
   - component: {fileID: 1226365689}
   - component: {fileID: 1226365688}
-  - component: {fileID: 1226365700}
   m_Layer: 0
   m_Name: Marching Squares Terrain
   m_TagString: Untagged
@@ -1034,20 +1033,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
   thickness: 0.05
---- !u!114 &1226365700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1226365687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c0f307944712db478701a6fe58653c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldPath: 
-  currentLayerDatas: []
 --- !u!1 &1555325802
 GameObject:
   m_ObjectHideFlags: 0

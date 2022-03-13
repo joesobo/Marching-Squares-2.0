@@ -18,6 +18,7 @@ public class WorldSaveManager : MonoBehaviour {
 
     private WorldSaveData currentWorldData;
     [HideInInspector] public List<LayerSaveData> currentLayerDatas;
+    [HideInInspector] public List<FileStream> layerStreams;
 
     private void Awake() {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
@@ -26,6 +27,7 @@ public class WorldSaveManager : MonoBehaviour {
         formatter = GetBinaryFormatter();
 
         currentLayerDatas = new List<LayerSaveData>();
+        layerStreams = new List<FileStream>();
 
         worldName = world.worldName;
         worldPath = Application.persistentDataPath + "/saves/" + worldName + "/";
@@ -60,11 +62,11 @@ public class WorldSaveManager : MonoBehaviour {
             string layerDataPath = worldPath + "layer_" + layer.name + ".save";
 
             FileStream layerStream = new FileStream(layerDataPath, FileMode.Create);
+            layerStreams.Add(layerStream);
             LayerSaveData layerData = new LayerSaveData(layer.name, new List<VoxelChunk>());
             currentLayerDatas.Add(layerData);
-            formatter.Serialize(layerStream, layerData);
 
-            layerStream.Close();
+            formatter.Serialize(layerStream, layerData);
         }
     }
 
@@ -82,12 +84,15 @@ public class WorldSaveManager : MonoBehaviour {
             string layerDataPath = worldPath + "layer_" + layer.name + ".save";
 
             FileStream layerStream = new FileStream(layerDataPath, FileMode.OpenOrCreate);
+            layerStreams.Add(layerStream);
             LayerSaveData layerData = (LayerSaveData)formatter.Deserialize(layerStream);
             currentLayerDatas.Add(layerData);
-
-            layerStream.Close();
         }
+    }
 
-        Debug.Log("World loaded: " + worldName);
+    public void CloseWorld() {
+        foreach (FileStream stream in layerStreams) {
+            stream.Close();
+        }
     }
 }
