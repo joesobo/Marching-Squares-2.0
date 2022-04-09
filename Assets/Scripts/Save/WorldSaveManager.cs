@@ -12,7 +12,7 @@ public class WorldSaveManager : MonoBehaviour {
     private string worldName;
     private int seed;
 
-    private RegionSaveManager regionSaveManager;
+    private GameObject player;
 
     private List<LayerScriptableObject> layers;
     private WorldScriptableObject world;
@@ -25,16 +25,14 @@ public class WorldSaveManager : MonoBehaviour {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
 
-        regionSaveManager = FindObjectOfType<RegionSaveManager>();
-
         formatter = GetBinaryFormatter();
+
+        player = GameObject.FindGameObjectsWithTag("Player")[0];
 
         worldName = world.worldName;
         worldPath = Application.persistentDataPath + "/saves/" + worldName + "/";
         worldDataPath = worldPath + "world.save";
         seed = world.seed;
-
-        regionSaveManager.SetRegionPath(worldPath + "layers/");
 
         LoadWorld();
     }
@@ -54,7 +52,7 @@ public class WorldSaveManager : MonoBehaviour {
 
         // create world.save file
         FileStream stream = new FileStream(worldDataPath, FileMode.Create);
-        currentWorldData = new WorldSaveData(worldName, seed, DateTime.Now.ToString());
+        currentWorldData = new WorldSaveData(worldName, seed, DateTime.Now.ToString(), Vector2.zero);
         formatter.Serialize(stream, currentWorldData);
 
         stream.Dispose();
@@ -75,19 +73,23 @@ public class WorldSaveManager : MonoBehaviour {
         FileStream stream = new FileStream(worldDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
         currentWorldData = (WorldSaveData)formatter.Deserialize(stream);
 
+        player.transform.position = currentWorldData.player_pos;
+
         stream.Dispose();
     }
 
-    private void CloseWorld() {
-        // close all open regions
-        foreach (FileStream stream in regionSaveManager.regionStreams.Values) {
-            stream.Dispose();
-        }
-        regionSaveManager.regionDatas.Clear();
-        regionSaveManager.regionStreams.Clear();
+    private void SavePlayerPosition() {
+        FileStream stream = new FileStream(worldDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+        currentWorldData = (WorldSaveData)formatter.Deserialize(stream);
+        currentWorldData.player_pos = player.transform.position;
+
+        stream.SetLength(0);
+        formatter.Serialize(stream, currentWorldData);
+
+        stream.Dispose();
     }
 
     private void OnApplicationQuit() {
-        CloseWorld();
+        SavePlayerPosition();
     }
 }

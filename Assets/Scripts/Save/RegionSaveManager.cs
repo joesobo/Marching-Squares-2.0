@@ -7,6 +7,7 @@ using static SerializationManager;
 public class RegionSaveManager : MonoBehaviour {
     private BinaryFormatter formatter;
 
+    private WorldSaveManager worldSaveManager;
     private WorldSaveData currentWorldData;
 
     public Dictionary<Vector3, RegionSaveData> regionDatas;
@@ -17,16 +18,14 @@ public class RegionSaveManager : MonoBehaviour {
     private void Awake() {
         formatter = GetBinaryFormatter();
 
+        worldSaveManager = FindObjectOfType<WorldSaveManager>();
+
         regionDatas = new Dictionary<Vector3, RegionSaveData>();
         regionStreams = new Dictionary<Vector3, FileStream>();
     }
 
-    public void SetRegionPath(string path) {
-        regionPath = path;
-    }
-
     public void OpenRegion(Vector3 regionPos, LayerScriptableObject layer) {
-        string regionDataPath = regionPath + "layer_regions_" + layer.name + "/region_" + ((Vector2)regionPos) + ".save";
+        string regionDataPath = worldSaveManager.worldPath + "layers/layer_regions_" + layer.name + "/region_" + ((Vector2)regionPos) + ".save";
 
         if (regionDatas.ContainsKey(regionPos)) return;
         FileStream regionStream = new FileStream(regionDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -49,5 +48,17 @@ public class RegionSaveManager : MonoBehaviour {
         RegionSaveData regionData = regionDatas[regionPos];
         regionData.chunkDataDictionary.Clear();
         regionDatas.Remove(regionPos);
+    }
+
+    private void CloseRegions() {
+        foreach (FileStream stream in regionStreams.Values) {
+            stream.Dispose();
+        }
+        regionDatas.Clear();
+        regionStreams.Clear();
+    }
+
+    private void OnApplicationQuit() {
+        CloseRegions();
     }
 }

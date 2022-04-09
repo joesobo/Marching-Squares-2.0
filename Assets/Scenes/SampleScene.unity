@@ -1134,7 +1134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
-  worldScriptableObject: {fileID: 11400000, guid: 0a3e9ab532cf5f34dba83a982e798c50, type: 2}
+  worldScriptableObject: {fileID: 11400000, guid: cc9476320a00a2d489722fa834a64f27, type: 2}
 --- !u!4 &1226365698
 Transform:
   m_ObjectHideFlags: 0

@@ -178,8 +178,9 @@ graph LR;
 
   WorldSaveManager ==> SerializationManager;
   WorldSaveManager ==> VoxelCore;
-  WorldSaveManager ==> RegionSaveManager;
+  WorldSaveManager ==> Player;
 
   RegionSaveManager ==> SerializationManager;
   RegionSaveManager ==> VoxelCore;
+  RegionSaveManager ==> WorldSaveManager;
 ```
