@@ -11,6 +11,8 @@ public class WorldSaveManager : MonoBehaviour {
     private string worldName;
     private int seed;
 
+    private RegionSaveManager regionSaveManager;
+
     private List<LayerScriptableObject> layers;
     private WorldScriptableObject world;
 
@@ -18,22 +20,20 @@ public class WorldSaveManager : MonoBehaviour {
 
     private WorldSaveData currentWorldData;
 
-    [HideInInspector] public Dictionary<Vector3, RegionSaveData> regionDatas;
-    [HideInInspector] public Dictionary<Vector3, FileStream> regionStreams;
-
     private void Awake() {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
 
-        formatter = GetBinaryFormatter();
+        regionSaveManager = FindObjectOfType<RegionSaveManager>();
 
-        regionDatas = new Dictionary<Vector3, RegionSaveData>();
-        regionStreams = new Dictionary<Vector3, FileStream>();
+        formatter = GetBinaryFormatter();
 
         worldName = world.worldName;
         worldPath = Application.persistentDataPath + "/saves/" + worldName + "/";
         worldDataPath = worldPath + "world.save";
         seed = world.seed;
+
+        regionSaveManager.SetRegionPath(worldPath + "layers/");
 
         LoadWorld();
     }
@@ -79,38 +79,14 @@ public class WorldSaveManager : MonoBehaviour {
     }
 
     public void CloseWorld() {
-        foreach (FileStream stream in regionStreams.Values) {
+        foreach (FileStream stream in regionSaveManager.regionStreams.Values) {
             stream.Dispose();
         }
-        regionDatas.Clear();
-        regionStreams.Clear();
+        regionSaveManager.regionDatas.Clear();
+        regionSaveManager.regionStreams.Clear();
     }
 
-    public void OpenRegion(Vector3 regionPos, LayerScriptableObject layer) {
-        string regionDataPath = worldPath + "layers/layer_regions_" + layer.name + "/region_" + ((Vector2)regionPos).ToString() + ".save";
-
-
-        if (!regionDatas.ContainsKey(regionPos)) {
-            FileStream regionStream = new FileStream(regionDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-
-            regionStreams.Add(regionPos, regionStream);
-
-            if (regionStream.Length > 0) {
-                RegionSaveData regionData = (RegionSaveData)formatter.Deserialize(regionStream);
-                regionDatas.Add(regionPos, regionData);
-            } else {
-                regionDatas.Add(regionPos, new RegionSaveData(new List<VoxelChunk>()));
-            }
-        }
-    }
-
-    public void CloseRegion(Vector3 regionPos) {
-        FileStream regionStream = regionStreams[regionPos];
-
-        regionStream.Dispose();
-        regionStreams.Remove(regionPos);
-        RegionSaveData regionData = regionDatas[regionPos];
-        regionData.chunkDataDictionary.Clear();
-        regionDatas.Remove(regionPos);
+    private void OnApplicationQuit() {
+        CloseWorld();
     }
 }

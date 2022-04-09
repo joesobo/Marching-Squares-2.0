@@ -6,14 +6,14 @@ using UnityEngine;
 using static SerializationManager;
 
 public class ChunkSaveManager : MonoBehaviour {
-    private WorldSaveManager worldSaveManager;
+    private RegionSaveManager regionSaveManager;
 
     private BinaryFormatter formatter;
     private List<LayerScriptableObject> layers;
     private CoreScriptableObject CORE;
 
     private void Awake() {
-        worldSaveManager = FindObjectOfType<WorldSaveManager>();
+        regionSaveManager = FindObjectOfType<RegionSaveManager>();
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
 
@@ -24,9 +24,9 @@ public class ChunkSaveManager : MonoBehaviour {
         if (chunk.hasEditsToSave) {
             Vector3 regionPos = RegionPosFromChunkPos(chunk.transform.position, layer);
 
-            if (worldSaveManager.regionDatas.ContainsKey(regionPos)) {
-                RegionSaveData regionData = worldSaveManager.regionDatas[regionPos];
-                FileStream regionStream = worldSaveManager.regionStreams[regionPos];
+            if (regionSaveManager.regionDatas.ContainsKey(regionPos)) {
+                RegionSaveData regionData = regionSaveManager.regionDatas[regionPos];
+                FileStream regionStream = regionSaveManager.regionStreams[regionPos];
 
                 // overwrite or add new chunk info
                 if (regionData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
@@ -49,8 +49,8 @@ public class ChunkSaveManager : MonoBehaviour {
 
     public void LoadChunkData(Vector2 chunkPos, LayerScriptableObject layer, VoxelChunk chunk) {
         Vector3 regionPos = RegionPosFromChunkPos(chunkPos, layer);
-        worldSaveManager.OpenRegion(regionPos, layer);
-        RegionSaveData regionData = worldSaveManager.regionDatas[regionPos];
+        regionSaveManager.OpenRegion(regionPos, layer);
+        RegionSaveData regionData = regionSaveManager.regionDatas[regionPos];
 
         // if chunk data exists, load it
         if (regionData.chunkDataDictionary.ContainsKey(chunkPos)) {
@@ -77,7 +77,7 @@ public class ChunkSaveManager : MonoBehaviour {
             region.transform.parent = layer.parentReference;
             region.transform.position = regionPos;
             layer.regionDictionary.Add(regionPos, region);
-            worldSaveManager.OpenRegion(regionPos, layer);
+            regionSaveManager.OpenRegion(regionPos, layer);
 
             return region;
         }
@@ -92,7 +92,7 @@ public class ChunkSaveManager : MonoBehaviour {
             for (int i = 0; i < layer.regionDictionary.Values.Count; i++) {
                 GameObject region = layer.regionDictionary.ElementAt(i).Value;
                 if (region.transform.childCount == 0) {
-                    worldSaveManager.CloseRegion(region.transform.position);
+                    regionSaveManager.CloseRegion(region.transform.position);
                     layer.regionDictionary.Remove(region.transform.position);
                     Destroy(region.gameObject);
                     i--;
@@ -105,7 +105,5 @@ public class ChunkSaveManager : MonoBehaviour {
         foreach (LayerScriptableObject layer in layers) {
             SaveAllChunks(layer);
         }
-
-        worldSaveManager.CloseWorld();
     }
 }
