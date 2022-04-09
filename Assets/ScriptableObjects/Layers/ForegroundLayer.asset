@@ -59,6 +59,6 @@ MonoBehaviour:
   doOutlines: 0
   zIndex: -1
   material: {fileID: 2100000, guid: a3c3dd4d65058ae40bb685c1a77a7b23, type: 2}
-  CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
   terrainNoiseScriptableObject: {fileID: 11400000, guid: 6366a2cf94533d34f8e72f3886084a7a, type: 2}
-  chunkName: Foreground Chunk
+  layerName: Foreground Layer
+  parentReference: {fileID: 0}

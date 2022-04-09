@@ -59,6 +59,6 @@ MonoBehaviour:
   doOutlines: 0
   zIndex: 1
   material: {fileID: 2100000, guid: 96fddfbb1ff2fc244b4993e4a620efaf, type: 2}
-  CORE: {fileID: 11400000, guid: 7547b9d72ba004c44be26f46b864dffd, type: 2}
   terrainNoiseScriptableObject: {fileID: 11400000, guid: 62f2e7d4e93f80442b1ebd6d308d6846, type: 2}
-  chunkName: Main Chunk
+  layerName: Main Layer
+  parentReference: {fileID: 0}

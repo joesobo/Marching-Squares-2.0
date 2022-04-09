@@ -9,7 +9,7 @@ public class ColliderGenerator : MonoBehaviour {
         outlineShaderController = GetComponent<OutlineShaderController>();
     }
 
-    public void GenerateChunkColliders(LayerScriptableObject layer, VoxelChunk chunk) {
+    public void GenerateChunkColliders(LayerScriptableObject layer, CoreScriptableObject CORE, VoxelChunk chunk) {
         if (layer.doColliderGeneration) {
             // Remove colliders from chunk if regenerating its colliders
             chunk.RemoveChunkColliders();
@@ -18,7 +18,7 @@ public class ColliderGenerator : MonoBehaviour {
             outlineShaderController.ShaderTriangulate(chunk);
 
             // Reset logic for chunk
-            OutlineLogic.Reset(layer.CORE.voxelResolution * layer.CORE.chunkResolution);
+            OutlineLogic.Reset(CORE.voxelResolution * CORE.chunkResolution);
             // Calculate outlines
             IEnumerable<List<Vector3>> outlines = OutlineLogic.CalculateOutlines(chunk);
             // Create new colliders

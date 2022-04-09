@@ -5,6 +5,7 @@ using UnityEngine;
 public class TerrainEditor : MonoBehaviour {
     private TerrainEditingScriptableObject terrainEditingSO;
     private List<LayerScriptableObject> layers = new List<LayerScriptableObject>();
+    private CoreScriptableObject CORE;
 
     private readonly EditingStencil[] stencils = {
         new EditingStencil(),
@@ -14,6 +15,7 @@ public class TerrainEditor : MonoBehaviour {
     public void Start() {
         terrainEditingSO = FindObjectOfType<TerrainEditorController>().GetTerrainEditingScriptableObject();
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
     public void EditVoxels(IEnumerable<Voxel> voxels) {
@@ -26,7 +28,7 @@ public class TerrainEditor : MonoBehaviour {
         EditingStencil activeStencil = stencils[(int)terrainEditingSO.StencilType];
         BlockType editingType = terrainEditingSO.EditingType;
         List<Voxel> selectedVoxels = new List<Voxel>();
-        int voxelResolution = layers[0].CORE.voxelResolution;
+        int voxelResolution = CORE.voxelResolution;
         int radius = terrainEditingSO.Radius;
 
         for (int i = -radius; i <= radius; i++) {
@@ -45,6 +47,6 @@ public class TerrainEditor : MonoBehaviour {
         }
 
         // Filter selected voxels by editing type
-        return selectedVoxels.Where(voxel => voxel.state != (int) editingType).ToList();
+        return selectedVoxels.Where(voxel => voxel.state != (int)editingType).ToList();
     }
 }

@@ -9,6 +9,7 @@ graph LR;
     Layer((Layer));
     Noise((Noise));
     Editing((Editing));
+    World((World));
   end
 
    %% Types
@@ -56,6 +57,8 @@ graph LR;
   subgraph Extensions
     ChunkHelper{{ChunkHelper}};
     Vector2Extension{{Vector2Extension}};
+    Vector2SerializationSurrogate{{Vector2SerializationSurrogate}};
+    Vector3SerializationSurrogate{{Vector3SerializationSurrogate}};
   end
 
   %% Terrain Editor
@@ -75,37 +78,50 @@ graph LR;
     NoisePerlin{{NoisePerlin}};
   end
 
+  %% Save System
+  subgraph SaveSystem
+    ChunkSaveManager{{ChunkSaveManager}};
+    SerializationManager{{SerializationManager}};
+    WorldSaveManager{{WorldSaveManager}};
+    RegionSaveManager{{RegionSaveManager}};
+  end
+
   Player{Player};
 
   %% Core Connections
-  Layer ==> CORE;
+  World ==> Layer;
 
   Layer ==> Noise;
 
   Noise ==> TerrainTypes;
 
-  VoxelCore ==> Layer;
   VoxelCore ==> InfiniteGenerator;
+  VoxelCore ==> CORE;
+  VoxelCore ==> World;
 
   InfiniteGenerator ==> VoxelCore;
   InfiniteGenerator ==> VoxelChunkGenerator;
   InfiniteGenerator ==> Player;
   InfiniteGenerator ==> ChunkHelper;
+  InfiniteGenerator ==> ChunkSaveManager;
 
   VoxelChunkGenerator ==> VoxelChunk;
-  VoxelChunkGenerator ==> ChunkHelper;
+  VoxelChunkGenerator ==> VoxelCore;
+  VoxelChunkGenerator ==> ChunkSaveManager;
 
-  VoxelChunk ==> ColliderGenerator;
-  VoxelChunk ==> VoxelMeshGenerator;
-  VoxelChunk ==> TerrainGenerationController;
   VoxelChunk ==> VoxelChunkGenerator;
+  VoxelChunk ==> VoxelMeshGenerator;
+  VoxelChunk ==> ColliderGenerator;
+  VoxelChunk ==> TerrainGenerationController;
   VoxelChunk ==> OutlineDrawGenerator;
+  VoxelChunk ==> VoxelCore;
 
   ColliderGenerator ==> OutlineLogic;
   ColliderGenerator ==> OutlineShaderController;
 
   OutlineDrawGenerator ==> OutlineLogic;
   OutlineDrawGenerator ==> OutlineShaderController;
+  OutlineDrawGenerator ==> VoxelCore;
 
   VoxelMeshGenerator ==> VoxelMesh;
 
@@ -146,9 +162,24 @@ graph LR;
   TerrainGenerationController ==> NoiseFill;
   TerrainGenerationController ==> NoiseRandom;
   TerrainGenerationController ==> NoisePerlin;
+  TerrainGenerationController ==> VoxelCore;
 
   NoiseFill ==> NoisePerlin;
 
   Editing ==> BlockTypes;
   Editing ==> StencilTypes;
+
+  ChunkSaveManager ==> RegionSaveManager;
+  ChunkSaveManager ==> VoxelCore;
+  ChunkSaveManager ==> SerializationManager;
+
+  SerializationManager ==> Vector2SerializationSurrogate;
+  SerializationManager ==> Vector3SerializationSurrogate;
+
+  WorldSaveManager ==> SerializationManager;
+  WorldSaveManager ==> VoxelCore;
+  WorldSaveManager ==> RegionSaveManager;
+
+  RegionSaveManager ==> SerializationManager;
+  RegionSaveManager ==> VoxelCore;
 ```

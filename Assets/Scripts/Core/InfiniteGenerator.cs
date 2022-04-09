@@ -5,6 +5,8 @@ using static ChunkHelper;
 
 public class InfiniteGenerator : MonoBehaviour {
     private List<LayerScriptableObject> layers;
+    private CoreScriptableObject CORE;
+    private ChunkSaveManager chunkSaveManager;
     private int voxelResolution, chunkResolution;
 
     private GameObject player;
@@ -17,10 +19,12 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private void Awake() {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        chunkSaveManager = FindObjectOfType<ChunkSaveManager>();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         voxelChunkGenerator = GetComponent<VoxelChunkGenerator>();
-        voxelResolution = layers[0].CORE.voxelResolution;
-        chunkResolution = layers[0].CORE.chunkResolution;
+        voxelResolution = CORE.voxelResolution;
+        chunkResolution = CORE.chunkResolution;
     }
 
     private void Update() {
@@ -57,8 +61,13 @@ public class InfiniteGenerator : MonoBehaviour {
 
         // Remove chunks
         foreach (Vector2Int position in removeChunkPositionList) {
-            layer.RemoveChunk(layer.existingChunks[position]);
+            VoxelChunk currentChunk = layer.existingChunks[position];
+
+            chunkSaveManager.SaveChunk(currentChunk, layer);
+            layer.RemoveChunk(currentChunk);
         }
+
+        chunkSaveManager.CheckForEmptyRegions();
     }
 
     private void GetInBoundsChunks(LayerScriptableObject layer) {
@@ -72,7 +81,9 @@ public class InfiniteGenerator : MonoBehaviour {
 
                 if (layer.existingChunks.ContainsKey(chunkPosition)) continue;
 
-                chunksToUpdate.Add(voxelChunkGenerator.GetNewChunk(layer, chunkPosition));
+                VoxelChunk newChunk = voxelChunkGenerator.GetNewChunk(layer, chunkPosition);
+                chunkSaveManager.LoadChunkData(chunkPosition, layer, newChunk);
+                chunksToUpdate.Add(newChunk);
             }
         }
     }

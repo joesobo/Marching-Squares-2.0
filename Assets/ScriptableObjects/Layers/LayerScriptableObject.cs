@@ -19,15 +19,18 @@ public class LayerScriptableObject : SerializedScriptableObject {
     public readonly Dictionary<Vector2Int, VoxelChunk> existingChunks = new Dictionary<Vector2Int, VoxelChunk>();
     // Queue of chunks to be recycled
     public readonly Queue<VoxelChunk> recycleableChunks = new Queue<VoxelChunk>();
-    // Core Data
-    public CoreScriptableObject CORE;
     // Terrain noise data for this layer
     public TerrainNoiseScriptableObject terrainNoiseScriptableObject;
     // Name of chunks
-    public string chunkName = "Voxel Chunk";
+    public string layerName = "Voxel Chunk";
+    // Maps region positions to their gameobjects
+    public Dictionary<Vector3, GameObject> regionDictionary = new Dictionary<Vector3, GameObject>();
+    // Stores the relative transform of the layer gameobject
+    [HideInInspector] public Transform parentReference;
 
     private void OnEnable() {
         existingChunks.Clear();
         recycleableChunks.Clear();
+        regionDictionary.Clear();
     }
 }

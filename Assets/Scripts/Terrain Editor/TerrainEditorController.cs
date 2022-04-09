@@ -6,6 +6,7 @@ public class TerrainEditorController : MonoBehaviour {
     public LayerMask layerMask;
 
     private List<LayerScriptableObject> layers = new List<LayerScriptableObject>();
+    private CoreScriptableObject CORE;
     private LayerScriptableObject currentLayer;
     private TerrainEditor terrainEditor;
 
@@ -29,9 +30,10 @@ public class TerrainEditorController : MonoBehaviour {
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
 
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
 
-        voxelResolution = layers[0].CORE.voxelResolution;
-        chunkResolution = layers[0].CORE.chunkResolution;
+        voxelResolution = CORE.voxelResolution;
+        chunkResolution = CORE.chunkResolution;
 
         // Setup collider area
         playerEditingArea.size = new Vector3(chunkResolution * voxelResolution * 2, chunkResolution * voxelResolution * 2);
@@ -82,6 +84,7 @@ public class TerrainEditorController : MonoBehaviour {
             List<Voxel> selectedVoxels = terrainEditor.GetSelectedVoxels(chunk, hitInfo.point);
 
             if (selectedVoxels.Count > 0) {
+                chunk.hasEditsToSave = true;
                 terrainEditor.EditVoxels(selectedVoxels);
             } else {
                 chunksToUpdate.Remove(chunk);
@@ -90,6 +93,7 @@ public class TerrainEditorController : MonoBehaviour {
         }
     }
 
+    // TODO: add a way to save chunks on edit
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
             InfiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);

@@ -2,13 +2,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class VoxelCore : MonoBehaviour {
-    public List<LayerScriptableObject> layers;
+    public CoreScriptableObject CORE;
+    // World to load
+    public WorldScriptableObject worldScriptableObject;
 
     // Generators for building
     private InfiniteGenerator infiniteGenerator;
 
     private void Awake() {
         infiniteGenerator = GetComponent<InfiniteGenerator>();
+
+        foreach (LayerScriptableObject layer in worldScriptableObject.layers) {
+            GameObject layerObject = new GameObject(layer.layerName);
+            layerObject.transform.parent = transform;
+            layer.parentReference = layerObject.transform;
+        }
     }
 
     private void Start() {
@@ -19,15 +27,19 @@ public class VoxelCore : MonoBehaviour {
         infiniteGenerator.StartGeneration();
     }
 
-    public CoreScriptableObject GetCoreScriptableObject(int index) {
-        return layers[index].CORE;
+    public CoreScriptableObject GetCoreScriptableObject() {
+        return CORE;
+    }
+
+    public WorldScriptableObject GetWorldScriptableObject() {
+        return worldScriptableObject;
     }
 
     public LayerScriptableObject GetLayerScriptableObject(int index) {
-        return layers[index];
+        return worldScriptableObject.layers[index];
     }
 
     public List<LayerScriptableObject> GetAllLayerScriptableObjects() {
-        return layers;
+        return worldScriptableObject.layers;
     }
 }
