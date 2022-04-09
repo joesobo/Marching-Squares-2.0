@@ -69,18 +69,17 @@ public class ChunkSaveManager : MonoBehaviour {
 
         if (layer.regionDictionary.ContainsKey(regionPos)) {
             return layer.regionDictionary[regionPos];
-        } else {
-            CheckForEmptyRegions();
-
-            GameObject region = new GameObject(regionPos.ToString());
-            region.name = "Region " + regionPos.ToString();
-            region.transform.parent = layer.parentReference;
-            region.transform.position = regionPos;
-            layer.regionDictionary.Add(regionPos, region);
-            regionSaveManager.OpenRegion(regionPos, layer);
-
-            return region;
         }
+
+        CheckForEmptyRegions();
+
+        GameObject region = new GameObject(regionPos.ToString()) {name = "Region " + regionPos};
+        region.transform.parent = layer.parentReference;
+        region.transform.position = regionPos;
+        layer.regionDictionary.Add(regionPos, region);
+        regionSaveManager.OpenRegion(regionPos, layer);
+
+        return region;
     }
 
     private Vector3 RegionPosFromChunkPos(Vector3 chunkPos, LayerScriptableObject layer) {
@@ -91,9 +90,11 @@ public class ChunkSaveManager : MonoBehaviour {
         foreach (LayerScriptableObject layer in layers) {
             for (int i = 0; i < layer.regionDictionary.Values.Count; i++) {
                 GameObject region = layer.regionDictionary.ElementAt(i).Value;
+                
                 if (region.transform.childCount == 0) {
-                    regionSaveManager.CloseRegion(region.transform.position);
-                    layer.regionDictionary.Remove(region.transform.position);
+                    Vector3 position = region.transform.position;
+                    regionSaveManager.CloseRegion(position);
+                    layer.regionDictionary.Remove(position);
                     Destroy(region.gameObject);
                     i--;
                 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using static SerializationManager;
@@ -62,8 +63,7 @@ public class WorldSaveManager : MonoBehaviour {
         string layersDir = worldPath + "layers/";
         Directory.CreateDirectory(layersDir);
 
-        foreach (LayerScriptableObject layer in layers) {
-            string layerPath = layersDir + "layer_regions_" + layer.name + "/";
+        foreach (string layerPath in layers.Select(layer => layersDir + "layer_regions_" + layer.name + "/")) {
             Directory.CreateDirectory(layerPath);
         }
     }
@@ -78,7 +78,7 @@ public class WorldSaveManager : MonoBehaviour {
         stream.Dispose();
     }
 
-    public void CloseWorld() {
+    private void CloseWorld() {
         foreach (FileStream stream in regionSaveManager.regionStreams.Values) {
             stream.Dispose();
         }

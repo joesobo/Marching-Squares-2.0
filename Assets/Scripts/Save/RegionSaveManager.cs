@@ -5,22 +5,16 @@ using UnityEngine;
 using static SerializationManager;
 
 public class RegionSaveManager : MonoBehaviour {
-    private List<LayerScriptableObject> layers;
-    private WorldScriptableObject world;
-
     private BinaryFormatter formatter;
 
     private WorldSaveData currentWorldData;
 
-    [HideInInspector] public Dictionary<Vector3, RegionSaveData> regionDatas;
-    [HideInInspector] public Dictionary<Vector3, FileStream> regionStreams;
+    public Dictionary<Vector3, RegionSaveData> regionDatas;
+    public Dictionary<Vector3, FileStream> regionStreams;
 
     private string regionPath = "";
 
     private void Awake() {
-        layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
-        world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
-
         formatter = GetBinaryFormatter();
 
         regionDatas = new Dictionary<Vector3, RegionSaveData>();
@@ -32,19 +26,18 @@ public class RegionSaveManager : MonoBehaviour {
     }
 
     public void OpenRegion(Vector3 regionPos, LayerScriptableObject layer) {
-        string regionDataPath = regionPath + "layer_regions_" + layer.name + "/region_" + ((Vector2)regionPos).ToString() + ".save";
+        string regionDataPath = regionPath + "layer_regions_" + layer.name + "/region_" + ((Vector2)regionPos) + ".save";
 
-        if (!regionDatas.ContainsKey(regionPos)) {
-            FileStream regionStream = new FileStream(regionDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+        if (regionDatas.ContainsKey(regionPos)) return;
+        FileStream regionStream = new FileStream(regionDataPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
-            regionStreams.Add(regionPos, regionStream);
+        regionStreams.Add(regionPos, regionStream);
 
-            if (regionStream.Length > 0) {
-                RegionSaveData regionData = (RegionSaveData)formatter.Deserialize(regionStream);
-                regionDatas.Add(regionPos, regionData);
-            } else {
-                regionDatas.Add(regionPos, new RegionSaveData(new List<VoxelChunk>()));
-            }
+        if (regionStream.Length > 0) {
+            RegionSaveData regionData = (RegionSaveData)formatter.Deserialize(regionStream);
+            regionDatas.Add(regionPos, regionData);
+        } else {
+            regionDatas.Add(regionPos, new RegionSaveData(new List<VoxelChunk>()));
         }
     }
 
