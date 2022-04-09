@@ -17,9 +17,9 @@ This tool is currently under development, though you can check out [the old v1.0
 -   [x] Multi-Layer Support
 -   [x] Chunk Edge Outlines
 -   [ ] Terrain Map Display
--   [ ] Various Terrain Noise Functions
--   [ ] Simple Inspector UI for full control
--   [ ] Debug Stat Viewer
+-   [ ] Various Terrain Noise Functions (In progress)
+-   [ ] Simple Inspector UI for full control (In progress)
+-   [ ] Debug Stat Viewer (In progress)
 -   [ ] Terrain Type Builder (UI)
 -   [x] World Save System
 -   [x] World saves player edits
@@ -27,3 +27,4 @@ This tool is currently under development, though you can check out [the old v1.0
 -   [ ] Item Example integration
 -   [ ] Inventory Example integration
 -   [ ] Crafting Example integration
+-   [ ] Gamemodes
