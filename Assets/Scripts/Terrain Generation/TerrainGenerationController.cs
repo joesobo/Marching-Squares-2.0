@@ -5,10 +5,12 @@ using static NoiseFill;
 
 public class TerrainGenerationController : MonoBehaviour {
     private CoreScriptableObject CORE;
+    private WorldScriptableObject world;
     private int voxelResolution;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
     }
 
     public int GetTerrainNoise(LayerScriptableObject layer, int x, int y, Vector3 chunkPosition) {
@@ -20,8 +22,8 @@ public class TerrainGenerationController : MonoBehaviour {
         TerrainGenerationTypes currentType = layer.terrainNoiseScriptableObject.TerrainType;
 
         return currentType switch {
-            TerrainGenerationTypes.Perlin when CanSpawnPerlin(scaledX, scaledY, layer, CORE) => PerlinNoise(scaledX, scaledY, layer, CORE),
-            TerrainGenerationTypes.Fill => FillNoise(scaledX, scaledY, layer, CORE),
+            TerrainGenerationTypes.Perlin when CanSpawnPerlin(scaledX, scaledY, world.seed, layer, CORE) => PerlinNoise(scaledX, scaledY, world.seed, layer, CORE),
+            TerrainGenerationTypes.Fill => FillNoise(scaledX, scaledY, world.seed, layer, CORE),
             TerrainGenerationTypes.Random => RandomNoise(layer.terrainNoiseScriptableObject),
             _ => 0
         };

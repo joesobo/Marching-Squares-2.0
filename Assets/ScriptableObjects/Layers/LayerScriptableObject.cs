@@ -25,7 +25,7 @@ public class LayerScriptableObject : SerializedScriptableObject {
     public string layerName = "Voxel Chunk";
     // Maps region positions to their gameobjects
     public Dictionary<Vector3, GameObject> regionDictionary = new Dictionary<Vector3, GameObject>();
-
+    // Stores the relative transform of the layer gameobject
     [HideInInspector] public Transform parentReference;
 
     private void OnEnable() {

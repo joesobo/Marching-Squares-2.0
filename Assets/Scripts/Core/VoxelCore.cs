@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class VoxelCore : MonoBehaviour {
     public CoreScriptableObject CORE;
+    // World to load
     public WorldScriptableObject worldScriptableObject;
 
     // Generators for building

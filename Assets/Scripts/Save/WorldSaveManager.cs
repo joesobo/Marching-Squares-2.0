@@ -79,6 +79,7 @@ public class WorldSaveManager : MonoBehaviour {
     }
 
     private void CloseWorld() {
+        // close all open regions
         foreach (FileStream stream in regionSaveManager.regionStreams.Values) {
             stream.Dispose();
         }
