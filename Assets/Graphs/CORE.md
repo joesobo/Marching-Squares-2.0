@@ -140,6 +140,7 @@ graph LR;
   Vector2Extension ==> OutlineLogic;
 
   DebugController ==> VoxelCore;
+  DebugController ==> Player;
 
   TerrainEditorController ==> VoxelCore;
   TerrainEditorController ==> Editing;
