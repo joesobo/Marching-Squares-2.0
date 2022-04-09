@@ -21,8 +21,8 @@ This tool is currently under development, though you can check out [the old v1.0
 -   [ ] Simple Inspector UI for full control
 -   [ ] Debug Stat Viewer
 -   [ ] Terrain Type Builder (UI)
--   [ ] World Save System
--   [ ] World saves player edits
+-   [x] World Save System
+-   [x] World saves player edits
 -   [ ] Console system
 -   [ ] Item Example integration
 -   [ ] Inventory Example integration
