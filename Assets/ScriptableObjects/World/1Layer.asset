@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23bfce3b6f3bd094dabf3d3d1d67673a, type: 3}
-  m_Name: TerrainEditingData
+  m_Script: {fileID: 11500000, guid: d501d6a2c2c224347a34ccec2b601794, type: 3}
+  m_Name: 1Layer
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,7 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Radius: 4
-  StencilType: 0
-  EditingType: 14
-  LayerIndex: 0
+  worldName: 1Layer
+  seed: 20
+  layers:
+  - {fileID: 11400000, guid: 3018f9e53d980cd45a3d14aa09a14120, type: 2}

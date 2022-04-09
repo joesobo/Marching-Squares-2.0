@@ -7,14 +7,17 @@ public class VoxelChunkGenerator : MonoBehaviour {
     public GameObject voxelChunkPrefab;
 
     private static CoreScriptableObject CORE;
+    private ChunkSaveManager chunkSaveManager;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        chunkSaveManager = FindObjectOfType<ChunkSaveManager>();
     }
 
     private VoxelChunk CreateChunk(LayerScriptableObject layer, Vector2 chunkPosition) {
-        GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity, layer.parentReference);
+        GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
+        chunkObject.transform.parent = chunkSaveManager.GetChunkRegion(chunk, layer).transform;
         chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
 
         layer.existingChunks.Add(chunk.GetWholePosition(), chunk);
@@ -23,6 +26,7 @@ public class VoxelChunkGenerator : MonoBehaviour {
 
     private VoxelChunk CreatePoolChunk(LayerScriptableObject layer, VoxelChunk chunk, Vector2 chunkPosition) {
         chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
+        chunk.gameObject.transform.parent = chunkSaveManager.GetChunkRegion(chunk, layer).transform;
         chunk.ResetReferencePoints();
 
         layer.existingChunks.Add(chunk.GetWholePosition(), chunk);

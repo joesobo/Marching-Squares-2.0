@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using static SerializationManager;
@@ -9,63 +10,51 @@ public class ChunkSaveManager : MonoBehaviour {
 
     private BinaryFormatter formatter;
     private List<LayerScriptableObject> layers;
+    private CoreScriptableObject CORE;
 
     private void Awake() {
         worldSaveManager = FindObjectOfType<WorldSaveManager>();
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
+        CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
 
         formatter = GetBinaryFormatter();
     }
 
-    private void Start() {
-        foreach (LayerScriptableObject layer in layers) {
-            worldSaveManager.currentLayerDatas.Add(ReadLayer(layer));
-        }
-    }
-
     public void SaveChunk(VoxelChunk chunk, LayerScriptableObject layer) {
         if (chunk.hasEditsToSave) {
-            int index = layers.IndexOf(layer);
-            LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
-            FileStream layerStream = worldSaveManager.layerStreams[index];
+            Vector3 regionPos = RegionPosFromChunkPos(chunk.transform.position, layer);
 
-            // overwrite or add new chunk info
-            if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
-                layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
-            } else {
-                layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+            if (worldSaveManager.regionDatas.ContainsKey(regionPos)) {
+                RegionSaveData regionData = worldSaveManager.regionDatas[regionPos];
+                FileStream regionStream = worldSaveManager.regionStreams[regionPos];
+
+                // overwrite or add new chunk info
+                if (regionData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
+                    regionData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
+                } else {
+                    regionData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
+                }
+
+                regionStream.SetLength(0);
+                formatter.Serialize(regionStream, regionData);
             }
-
-            layerStream.SetLength(0);
-            formatter.Serialize(layerStream, layerData);
         }
     }
 
     private void SaveAllChunks(LayerScriptableObject layer) {
-        int index = layers.IndexOf(layer);
-        LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
-        FileStream layerStream = worldSaveManager.layerStreams[index];
-
         foreach (VoxelChunk chunk in layer.existingChunks.Values) {
-            if (chunk.hasEditsToSave) {
-                if (layerData.chunkDataDictionary.ContainsKey(chunk.transform.position)) {
-                    layerData.chunkDataDictionary[chunk.transform.position] = new ChunkSaveData(chunk);
-                } else {
-                    layerData.chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
-                }
-            }
+            SaveChunk(chunk, layer);
         }
-
-        layerStream.SetLength(0);
-        formatter.Serialize(layerStream, layerData);
     }
 
     public void LoadChunkData(Vector2 chunkPos, LayerScriptableObject layer, VoxelChunk chunk) {
-        int index = layers.IndexOf(layer);
-        LayerSaveData layerData = worldSaveManager.currentLayerDatas[index];
+        Vector3 regionPos = RegionPosFromChunkPos(chunkPos, layer);
+        worldSaveManager.OpenRegion(regionPos, layer);
+        RegionSaveData regionData = worldSaveManager.regionDatas[regionPos];
 
-        if (layerData.chunkDataDictionary.ContainsKey(chunkPos)) {
-            ChunkSaveData chunkData = layerData.chunkDataDictionary[chunkPos];
+        // if chunk data exists, load it
+        if (regionData.chunkDataDictionary.ContainsKey(chunkPos)) {
+            ChunkSaveData chunkData = regionData.chunkDataDictionary[chunkPos];
 
             chunk.transform.position = chunkData.position;
             for (int i = 0; i < chunk.voxels.Length; i++) {
@@ -75,19 +64,45 @@ public class ChunkSaveManager : MonoBehaviour {
         }
     }
 
-    private LayerSaveData ReadLayer(LayerScriptableObject layer) {
-        int index = layers.IndexOf(layer);
+    public GameObject GetChunkRegion(VoxelChunk chunk, LayerScriptableObject layer) {
+        Vector3 regionPos = RegionPosFromChunkPos(chunk.transform.position, layer);
 
-        FileStream layerStream = worldSaveManager.layerStreams[index];
-        layerStream.Position = 0;
-        LayerSaveData layerData = (LayerSaveData)formatter.Deserialize(layerStream);
+        if (layer.regionDictionary.ContainsKey(regionPos)) {
+            return layer.regionDictionary[regionPos];
+        } else {
+            CheckForEmptyRegions();
 
-        return layerData;
+            GameObject region = new GameObject(regionPos.ToString());
+            region.name = "Region " + regionPos.ToString();
+            region.transform.parent = layer.parentReference;
+            region.transform.position = regionPos;
+            layer.regionDictionary.Add(regionPos, region);
+            worldSaveManager.OpenRegion(regionPos, layer);
+
+            return region;
+        }
+    }
+
+    private Vector3 RegionPosFromChunkPos(Vector3 chunkPos, LayerScriptableObject layer) {
+        return new Vector3((int)Mathf.Floor(chunkPos.x / (CORE.voxelResolution * CORE.regionResolution)), (int)Mathf.Floor(chunkPos.y / (CORE.voxelResolution * CORE.regionResolution)), layer.zIndex);
+    }
+
+    public void CheckForEmptyRegions() {
+        foreach (LayerScriptableObject layer in layers) {
+            for (int i = 0; i < layer.regionDictionary.Values.Count; i++) {
+                GameObject region = layer.regionDictionary.ElementAt(i).Value;
+                if (region.transform.childCount == 0) {
+                    worldSaveManager.CloseRegion(region.transform.position);
+                    layer.regionDictionary.Remove(region.transform.position);
+                    Destroy(region.gameObject);
+                    i--;
+                }
+            }
+        }
     }
 
     private void OnApplicationQuit() {
         foreach (LayerScriptableObject layer in layers) {
-            Debug.Log("Saving layer: " + layer.name);
             SaveAllChunks(layer);
         }
 

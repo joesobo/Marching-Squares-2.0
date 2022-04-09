@@ -41,13 +41,13 @@ public class VoxelChunk : MonoBehaviour {
     [ReadOnly] public bool hasEditsToSave = false;
 
     private void Awake() {
-        voxelChunkGenerator = GetComponentInParent<VoxelChunkGenerator>();
-        voxelMeshGenerator = GetComponentInParent<VoxelMeshGenerator>();
-        colliderGenerator = GetComponentInParent<ColliderGenerator>();
-        outlineDrawGenerator = GetComponentInParent<OutlineDrawGenerator>();
-        meshFilter = GetComponentInParent<MeshFilter>();
-        meshRenderer = GetComponentInParent<MeshRenderer>();
-        terrainGenerationController = GetComponentInParent<TerrainGenerationController>();
+        voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
+        voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
+        colliderGenerator = FindObjectOfType<ColliderGenerator>();
+        outlineDrawGenerator = FindObjectOfType<OutlineDrawGenerator>();
+        meshFilter = FindObjectOfType<MeshFilter>();
+        meshRenderer = FindObjectOfType<MeshRenderer>();
+        terrainGenerationController = FindObjectOfType<TerrainGenerationController>();
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
@@ -57,8 +57,9 @@ public class VoxelChunk : MonoBehaviour {
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
+        hasEditsToSave = false;
 
-        name = layer.layerName + " (" + chunkPosition.x / voxelResolution + ", " + chunkPosition.y / voxelResolution + ")";
+        name = "VoxelChunk (" + chunkPosition.x / voxelResolution + ", " + chunkPosition.y / voxelResolution + ")";
         transform.position = new Vector3(chunkPosition.x, chunkPosition.y, layer.zIndex);
         currentLayer = layer;
         FillChunk();
@@ -66,6 +67,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     public void ResetChunk() {
+        transform.parent = null;
         voxels = null;
         meshVertices = null;
         outlineVertices = null;
@@ -73,6 +75,7 @@ public class VoxelChunk : MonoBehaviour {
         xNeighbor = null;
         yNeighbor = null;
         xyNeighbor = null;
+        hasEditsToSave = false;
     }
 
     [HorizontalGroup("Split", 0.33f)]
@@ -89,7 +92,7 @@ public class VoxelChunk : MonoBehaviour {
 
     [HorizontalGroup("Split", 0.33f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.8f, 1, 0.4f)]
-    private void RefreshOultine(LayerScriptableObject layer) {
+    private void RefreshOutline(LayerScriptableObject layer) {
         outlineDrawGenerator.GenerateChunkOutlines(layer, this);
     }
 
@@ -98,7 +101,7 @@ public class VoxelChunk : MonoBehaviour {
         VoxelChunkGenerator.SetupChunkNeighbors(layer, this);
         RefreshMesh(layer);
         RefreshCollider(layer);
-        RefreshOultine(layer);
+        RefreshOutline(layer);
     }
 
     private void FillChunk() {

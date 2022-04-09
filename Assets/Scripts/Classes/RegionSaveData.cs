@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class LayerSaveData {
+public class RegionSaveData {
     public string name;
     public Dictionary<Vector2, ChunkSaveData> chunkDataDictionary = new Dictionary<Vector2, ChunkSaveData>();
 
-    public LayerSaveData(string name, IEnumerable<VoxelChunk> chunks) {
-        this.name = name;
-
+    public RegionSaveData(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             chunkDataDictionary.Add(chunk.transform.position, new ChunkSaveData(chunk));
         }
@@ -23,5 +21,9 @@ public class LayerSaveData {
         }
 
         return chunkDataList;
+    }
+
+    private void OnEnable() {
+        chunkDataDictionary.Clear();
     }
 }

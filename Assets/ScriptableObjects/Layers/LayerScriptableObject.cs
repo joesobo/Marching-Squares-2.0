@@ -23,11 +23,14 @@ public class LayerScriptableObject : SerializedScriptableObject {
     public TerrainNoiseScriptableObject terrainNoiseScriptableObject;
     // Name of chunks
     public string layerName = "Voxel Chunk";
+    // Maps region positions to their gameobjects
+    public Dictionary<Vector3, GameObject> regionDictionary = new Dictionary<Vector3, GameObject>();
 
     [HideInInspector] public Transform parentReference;
 
     private void OnEnable() {
         existingChunks.Clear();
         recycleableChunks.Clear();
+        regionDictionary.Clear();
     }
 }
