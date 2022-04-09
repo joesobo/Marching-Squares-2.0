@@ -65,8 +65,6 @@ public class InfiniteGenerator : MonoBehaviour {
 
             chunkSaveManager.SaveChunk(currentChunk, layer);
             layer.RemoveChunk(currentChunk);
-            // chunkSaveManager.RemoveChunkFromRegion(currentChunk, layer);
-            // find regionSaveData and remove chunkSave data from chunkdatadictionary
         }
 
         chunkSaveManager.CheckForEmptyRegions();

@@ -83,6 +83,7 @@ graph LR;
     ChunkSaveManager{{ChunkSaveManager}};
     SerializationManager{{SerializationManager}};
     WorldSaveManager{{WorldSaveManager}};
+    RegionSaveManager{{RegionSaveManager}};
   end
 
   Player{Player};
@@ -105,8 +106,8 @@ graph LR;
   InfiniteGenerator ==> ChunkSaveManager;
 
   VoxelChunkGenerator ==> VoxelChunk;
-  VoxelChunkGenerator ==> ChunkHelper;
   VoxelChunkGenerator ==> VoxelCore;
+  VoxelChunkGenerator ==> ChunkSaveManager;
 
   VoxelChunk ==> VoxelChunkGenerator;
   VoxelChunk ==> VoxelMeshGenerator;
@@ -168,7 +169,7 @@ graph LR;
   Editing ==> BlockTypes;
   Editing ==> StencilTypes;
 
-  ChunkSaveManager ==> WorldSaveManager;
+  ChunkSaveManager ==> RegionSaveManager;
   ChunkSaveManager ==> VoxelCore;
   ChunkSaveManager ==> SerializationManager;
 
@@ -177,4 +178,8 @@ graph LR;
 
   WorldSaveManager ==> SerializationManager;
   WorldSaveManager ==> VoxelCore;
+  WorldSaveManager ==> RegionSaveManager;
+
+  RegionSaveManager ==> SerializationManager;
+  RegionSaveManager ==> VoxelCore;
 ```
