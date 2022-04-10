@@ -126,7 +126,7 @@ public class VoxelChunk : MonoBehaviour {
     private void CreateVoxelPoint(int i, int x, int y) {
         int noiseVal = terrainGenerationController.GetTerrainNoise(currentLayer, x, y, transform.position);
 
-        voxels[i] = new Voxel(x, y, 1f, noiseVal);
+        voxels[i] = new Voxel(x, y, noiseVal);
         CreateReferencePoint(i, x, y);
         CreateLightingValue(i, x, y);
     }

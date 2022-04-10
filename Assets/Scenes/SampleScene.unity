@@ -214,7 +214,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 70601835}
-  - component: {fileID: 70601836}
   - component: {fileID: 70601837}
   - component: {fileID: 70601838}
   - component: {fileID: 70601840}
@@ -242,18 +241,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &70601836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 70601834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &70601837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,8 +1142,8 @@ GameObject:
   - component: {fileID: 1226365692}
   - component: {fileID: 1226365691}
   - component: {fileID: 1226365690}
-  - component: {fileID: 1226365689}
   - component: {fileID: 1226365688}
+  - component: {fileID: 1226365689}
   m_Layer: 0
   m_Name: Marching Squares Terrain
   m_TagString: Untagged
@@ -1179,13 +1166,13 @@ MonoBehaviour:
 --- !u!114 &1226365689
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 8262449788278709600, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}
-  m_PrefabInstance: {fileID: 8262449788645407853}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226365687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fc219dcbba90e84b86e2ecf840e0266, type: 3}
+  m_Script: {fileID: 11500000, guid: 752a65fb943d42442ba2019758438dee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1226365690
@@ -2480,5 +2467,6 @@ PrefabInstance:
       propertyPath: CoreDatas.Array.data[2]
       value: 
       objectReference: {fileID: 11400000, guid: 77076ddd3d2bc124280c597fad9b81fb, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 649959ff0d3741945bd9574ee6b36acf, type: 3}

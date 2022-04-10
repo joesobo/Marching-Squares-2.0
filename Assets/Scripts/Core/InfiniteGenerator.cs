@@ -7,6 +7,7 @@ public class InfiniteGenerator : MonoBehaviour {
     private List<LayerScriptableObject> layers;
     private CoreScriptableObject CORE;
     private ChunkSaveManager chunkSaveManager;
+    private LightingGenerator lightingGenerator;
     private int voxelResolution, chunkResolution;
 
     private GameObject player;
@@ -23,6 +24,7 @@ public class InfiniteGenerator : MonoBehaviour {
         chunkSaveManager = FindObjectOfType<ChunkSaveManager>();
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         voxelChunkGenerator = GetComponent<VoxelChunkGenerator>();
+        lightingGenerator = FindObjectOfType<LightingGenerator>();
         voxelResolution = CORE.voxelResolution;
         chunkResolution = CORE.chunkResolution;
     }
@@ -95,6 +97,9 @@ public class InfiniteGenerator : MonoBehaviour {
             GenerateChunkList(layer, FindImportantNeighbors(layer, chunksToUpdate));
 
             chunksToUpdate.Clear();
+
+            // update all chunks lighting
+            lightingGenerator.GenerateLighting(layer.existingChunks.Values);
         }
     }
 

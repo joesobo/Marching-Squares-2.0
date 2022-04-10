@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 [Serializable]
 public class Voxel {
@@ -12,16 +11,12 @@ public class Voxel {
     // The position of the voxel in the chunk
     public Vector2 position;
 
-    public Voxel(int x, int y, float size, int? state = null) {
-        position.x = (x + 0.5f) * size;
-        position.y = (y + 0.5f) * size;
+    public Voxel(float x, float y, int? state = null) {
+        position.x = x;
+        position.y = y;
 
         if (state != null) {
             this.state = (int)state;
-        }
-
-        if (state != 0) {
-            lighting = 1;
         }
     }
 }

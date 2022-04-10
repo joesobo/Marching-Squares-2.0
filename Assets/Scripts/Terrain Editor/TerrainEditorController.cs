@@ -15,6 +15,7 @@ public class TerrainEditorController : MonoBehaviour {
     private Camera cam;
     private GameObject player;
     private InfiniteGenerator infiniteGenerator;
+    private LightingGenerator lightingGenerator;
     private BoxCollider playerEditingArea;
 
     private RaycastHit hitInfo;
@@ -28,6 +29,7 @@ public class TerrainEditorController : MonoBehaviour {
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         playerEditingArea = GetComponent<BoxCollider>();
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
+        lightingGenerator = FindObjectOfType<LightingGenerator>();
 
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -93,13 +95,15 @@ public class TerrainEditorController : MonoBehaviour {
         }
     }
 
-    // TODO: add a way to save chunks on edit
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
             InfiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
             InfiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));
 
             chunksToUpdate.Clear();
+
+            // update all chunks lighting
+            lightingGenerator.GenerateLighting(currentLayer.existingChunks.Values);
         }
     }
 
