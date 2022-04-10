@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using Shapes;
+using TMPro;
 
 [SelectionBase]
 public class VoxelChunk : MonoBehaviour {
@@ -168,6 +169,9 @@ public class VoxelChunk : MonoBehaviour {
             lightingRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
             lightingRef.transform.localScale = Vector2.one;
             lightingValueTexts.Add(lightingRef);
+
+            TextMeshProUGUI lightingText = lightingRef.GetComponent<TextMeshProUGUI>();
+            lightingText.text = voxels[i].lighting.ToString();
         }
     }
 

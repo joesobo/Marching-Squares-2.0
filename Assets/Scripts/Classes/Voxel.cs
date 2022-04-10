@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 public class Voxel {
     // The index of the element type to spawn in this voxel
     public int state = 0;
+    // Lighting value between 0 and 5
+    public int lighting = 0;
 
     // The position of the voxel in the chunk
     public Vector2 position;
@@ -16,6 +18,10 @@ public class Voxel {
 
         if (state != null) {
             this.state = (int)state;
+        }
+
+        if (state != 0) {
+            lighting = 1;
         }
     }
 }
