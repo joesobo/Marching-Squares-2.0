@@ -21,6 +21,16 @@ public class LightingGenerator : MonoBehaviour {
     }
 
     public void GenerateLighting(IEnumerable<VoxelChunk> chunks) {
+        if (!CORE.useLighting) return;
+
+        Reset(chunks);
+        SetupQueue(chunks);
+
+        LightingFloodFill(chunks);
+        RemainingFill(chunks);
+    }
+
+    private void Reset(IEnumerable<VoxelChunk> chunks) {
         VoxelLightingQueue.Clear();
 
         // reset all chunks voxel lighting
@@ -33,7 +43,9 @@ public class LightingGenerator : MonoBehaviour {
                 }
             }
         }
+    }
 
+    private void SetupQueue(IEnumerable<VoxelChunk> chunks) {
         // fill up queue will all voxels of state = 0
         foreach (VoxelChunk chunk in chunks) {
             foreach (Voxel voxel in chunk.voxels) {
@@ -42,7 +54,9 @@ public class LightingGenerator : MonoBehaviour {
                 }
             }
         }
+    }
 
+    private void LightingFloodFill(IEnumerable<VoxelChunk> chunks) {
         // loop over queue while queue is not empty
         while (VoxelLightingQueue.Count > 0) {
             // get first voxel in queue
@@ -70,7 +84,9 @@ public class LightingGenerator : MonoBehaviour {
                 }
             }
         }
+    }
 
+    private void RemainingFill(IEnumerable<VoxelChunk> chunks) {
         // if any remaining voxels have lighting = -1 set to maxLightingValue
         foreach (VoxelChunk chunk in chunks) {
             foreach (Voxel voxel in chunk.voxels) {

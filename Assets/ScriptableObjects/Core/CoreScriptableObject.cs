@@ -13,4 +13,6 @@ public class CoreScriptableObject : SerializedScriptableObject {
     public bool showVoxelReferencePoints = false;
     // Whether or not to display the values of the light at each voxel
     public bool showLightingValues = false;
+    // Whether or not to generate lighting values
+    public bool useLighting = true;
 }

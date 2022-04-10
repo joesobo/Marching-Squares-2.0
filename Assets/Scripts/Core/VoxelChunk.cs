@@ -164,7 +164,7 @@ public class VoxelChunk : MonoBehaviour {
     }
 
     private void CreateLightingValue(int i, int x, int y) {
-        if (CORE.showLightingValues) {
+        if (CORE.showLightingValues && CORE.useLighting) {
             GameObject lightingRef = Instantiate(lightingValuesTextPrefab, lightingTransform, true);
             lightingRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
             lightingRef.transform.localScale = Vector2.one;
