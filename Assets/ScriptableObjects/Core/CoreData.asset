@@ -21,6 +21,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
+  regionResolution: 8
   voxelResolution: 8
   chunkResolution: 2
   showVoxelReferencePoints: 0
+  showLightingValues: 1

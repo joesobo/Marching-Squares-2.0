@@ -10,5 +10,7 @@ public class CoreScriptableObject : SerializedScriptableObject {
     // Radius of chunks around the player
     public int chunkResolution = 2;
     // Whether or not to display the points where voxels are generated
-    public bool showVoxelReferencePoints = true;
+    public bool showVoxelReferencePoints = false;
+    // Whether or not to display the values of the light at each voxel
+    public bool showLightingValues = false;
 }

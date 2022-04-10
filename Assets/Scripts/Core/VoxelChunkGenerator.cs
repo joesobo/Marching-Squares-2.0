@@ -5,6 +5,10 @@ public class VoxelChunkGenerator : MonoBehaviour {
     public GameObject voxelReferencePointsPrefab;
     // The chunk to spawn
     public GameObject voxelChunkPrefab;
+    // The element to spawn at each voxel position for displaying lighting values
+    public GameObject lightingValuesTextPrefab;
+    // Canvas to spawn lighting text values on
+    public Transform lightingTransform;
 
     private static CoreScriptableObject CORE;
     private ChunkSaveManager chunkSaveManager;
@@ -18,14 +22,14 @@ public class VoxelChunkGenerator : MonoBehaviour {
         GameObject chunkObject = Instantiate(voxelChunkPrefab, chunkPosition, Quaternion.identity);
         VoxelChunk chunk = chunkObject.GetComponent<VoxelChunk>();
         chunkObject.transform.parent = chunkSaveManager.GetChunkRegion(chunk, layer).transform;
-        chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
+        chunk.SetupChunk(layer, voxelReferencePointsPrefab, lightingValuesTextPrefab, lightingTransform, chunkPosition);
 
         layer.existingChunks.Add(chunk.GetWholePosition(), chunk);
         return chunk;
     }
 
     private VoxelChunk CreatePoolChunk(LayerScriptableObject layer, VoxelChunk chunk, Vector2 chunkPosition) {
-        chunk.SetupChunk(layer, voxelReferencePointsPrefab, chunkPosition);
+        chunk.SetupChunk(layer, voxelReferencePointsPrefab, lightingValuesTextPrefab, lightingTransform, chunkPosition);
         chunk.gameObject.transform.parent = chunkSaveManager.GetChunkRegion(chunk, layer).transform;
         chunk.ResetReferencePoints();
 

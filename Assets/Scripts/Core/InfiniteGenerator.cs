@@ -64,6 +64,7 @@ public class InfiniteGenerator : MonoBehaviour {
             VoxelChunk currentChunk = layer.existingChunks[position];
 
             chunkSaveManager.SaveChunk(currentChunk, layer);
+            currentChunk.ClearReferences();
             layer.RemoveChunk(currentChunk);
         }
 

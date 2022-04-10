@@ -29,9 +29,14 @@ public class VoxelChunk : MonoBehaviour {
     public readonly Dictionary<Vector2, List<OutlineTriangle>> triangleDictionary = new Dictionary<Vector2, List<OutlineTriangle>>();
     // Storage of chunks vertice reference points
     private List<GameObject> voxelReferencePoints;
+    // Storage of chunks vertice reference points
+    private List<GameObject> lightingValueTexts;
 
     // The element to spawn at each reference position along the chunk
     private GameObject voxelRefPointsPrefab;
+    // The element to spawn at each voxel position for displaying lighting values
+    private GameObject lightingValuesTextPrefab;
+    private Transform lightingTransform;
     // The amount of voxels in each direction of the chunk
     private int voxelResolution;
 
@@ -51,11 +56,14 @@ public class VoxelChunk : MonoBehaviour {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
     }
 
-    public void SetupChunk(LayerScriptableObject layer, GameObject voxelReferencePointsPrefab, Vector2 chunkPosition) {
+    public void SetupChunk(LayerScriptableObject layer, GameObject voxelReferencePointsPrefab, GameObject lightingValuesTextPrefab, Transform lightingTransform, Vector2 chunkPosition) {
         voxelRefPointsPrefab = voxelReferencePointsPrefab;
+        this.lightingValuesTextPrefab = lightingValuesTextPrefab;
+        this.lightingTransform = lightingTransform;
         voxelResolution = CORE.voxelResolution;
         voxels = new Voxel[voxelResolution * voxelResolution];
         voxelReferencePoints = new List<GameObject>();
+        lightingValueTexts = new List<GameObject>();
         halfSize = 0.5f * voxelResolution;
         hasEditsToSave = false;
 
@@ -119,6 +127,7 @@ public class VoxelChunk : MonoBehaviour {
 
         voxels[i] = new Voxel(x, y, 1f, noiseVal);
         CreateReferencePoint(i, x, y);
+        CreateLightingValue(i, x, y);
     }
 
     public void ResetReferencePoints() {
@@ -127,10 +136,16 @@ public class VoxelChunk : MonoBehaviour {
             Destroy(voxelRefPoint);
         }
 
+        // Remove lighting values
+        foreach (GameObject lightValueText in lightingValueTexts) {
+            Destroy(lightValueText);
+        }
+
         // Regenerate voxel reference points
         for (int i = 0, y = 0; y < voxelResolution; y++) {
             for (int x = 0; x < voxelResolution; x++, i++) {
                 CreateReferencePoint(i, x, y);
+                CreateLightingValue(i, x, y);
             }
         }
     }
@@ -138,13 +153,21 @@ public class VoxelChunk : MonoBehaviour {
     private void CreateReferencePoint(int i, int x, int y) {
         if (CORE.showVoxelReferencePoints) {
             GameObject voxelRef = Instantiate(voxelRefPointsPrefab, transform, true);
-            voxelRef.transform.parent = transform;
             voxelRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
             voxelRef.transform.localScale = Vector2.one * 0.1f;
             voxelReferencePoints.Add(voxelRef);
 
             SpriteRenderer voxelRenderer = voxelRef.GetComponent<SpriteRenderer>();
-            voxelRenderer.color = voxels[i].state == 1 ? Color.clear : Color.black;
+            voxelRenderer.color = voxels[i].state == 1 ? Color.white : Color.black;
+        }
+    }
+
+    private void CreateLightingValue(int i, int x, int y) {
+        if (CORE.showLightingValues) {
+            GameObject lightingRef = Instantiate(lightingValuesTextPrefab, lightingTransform, true);
+            lightingRef.transform.position = new Vector3((x + 0.5f), (y + 0.5f)) + transform.position;
+            lightingRef.transform.localScale = Vector2.one;
+            lightingValueTexts.Add(lightingRef);
         }
     }
 
@@ -198,5 +221,17 @@ public class VoxelChunk : MonoBehaviour {
         }
 
         return stateValues;
+    }
+
+    public void ClearReferences() {
+        // Remove voxel reference points
+        foreach (GameObject voxelRefPoint in voxelReferencePoints) {
+            Destroy(voxelRefPoint);
+        }
+
+        // Remove lighting values
+        foreach (GameObject lightValueText in lightingValueTexts) {
+            Destroy(lightValueText);
+        }
     }
 }

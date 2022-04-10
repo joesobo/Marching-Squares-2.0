@@ -23,5 +23,5 @@ MonoBehaviour:
     SerializationNodes: []
   Radius: 2
   StencilType: 1
-  EditingType: 15
+  EditingType: 0
   LayerIndex: 0
