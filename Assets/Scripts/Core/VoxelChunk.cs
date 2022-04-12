@@ -13,6 +13,7 @@ public class VoxelChunk : MonoBehaviour {
     private VoxelMeshGenerator voxelMeshGenerator;
     private ColliderGenerator colliderGenerator;
     private OutlineDrawGenerator outlineDrawGenerator;
+    private LightingGenerator lightingGenerator;
     private TerrainGenerationController terrainGenerationController;
 
     [HideInInspector] public MeshFilter meshFilter;
@@ -51,6 +52,7 @@ public class VoxelChunk : MonoBehaviour {
         voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
         colliderGenerator = FindObjectOfType<ColliderGenerator>();
         outlineDrawGenerator = FindObjectOfType<OutlineDrawGenerator>();
+        lightingGenerator = FindObjectOfType<LightingGenerator>();
         meshFilter = FindObjectOfType<MeshFilter>();
         meshRenderer = FindObjectOfType<MeshRenderer>();
         terrainGenerationController = FindObjectOfType<TerrainGenerationController>();
@@ -87,22 +89,28 @@ public class VoxelChunk : MonoBehaviour {
         hasEditsToSave = false;
     }
 
-    [HorizontalGroup("Split", 0.33f)]
+    [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Mesh", ButtonSizes.Large), GUIColor(0.4f, 0.8f, 1)]
     private void RefreshMesh(LayerScriptableObject layer) {
         voxelMeshGenerator.GenerateChunkMesh(this, layer.material);
     }
 
-    [HorizontalGroup("Split", 0.33f)]
+    [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.4f, 1, 0.8f)]
     private void RefreshCollider(LayerScriptableObject layer) {
         colliderGenerator.GenerateChunkColliders(layer, CORE, this);
     }
 
-    [HorizontalGroup("Split", 0.33f)]
+    [HorizontalGroup("Split", 0.5f)]
     [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.8f, 1, 0.4f)]
     private void RefreshOutline(LayerScriptableObject layer) {
         outlineDrawGenerator.GenerateChunkOutlines(layer, this);
+    }
+
+    [HorizontalGroup("Split", 0.5f)]
+    [Button("Refresh Collider", ButtonSizes.Large), GUIColor(0.8f, 1, 0.4f)]
+    private void RefreshLighting(LayerScriptableObject layer) {
+        lightingGenerator.GenerateChunkLighting(layer, this);
     }
 
     [Button("Refresh Whole Chunk", ButtonSizes.Large), GUIColor(0.6f, 0.4f, 0.8f)]
@@ -111,6 +119,7 @@ public class VoxelChunk : MonoBehaviour {
         RefreshMesh(layer);
         RefreshCollider(layer);
         RefreshOutline(layer);
+        RefreshLighting(layer);
     }
 
     private void FillChunk() {

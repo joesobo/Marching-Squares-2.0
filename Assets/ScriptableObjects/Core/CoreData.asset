@@ -23,6 +23,7 @@ MonoBehaviour:
     SerializationNodes: []
   regionResolution: 8
   voxelResolution: 8
-  chunkResolution: 1
+  chunkResolution: 2
   showVoxelReferencePoints: 0
   showLightingValues: 1
+  useLighting: 1
