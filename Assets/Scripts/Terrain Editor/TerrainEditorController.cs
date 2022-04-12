@@ -16,6 +16,7 @@ public class TerrainEditorController : MonoBehaviour {
     private GameObject player;
     private InfiniteGenerator infiniteGenerator;
     private LightingFiller lightingFiller;
+    private LightingGenerator lightingGenerator;
     private BoxCollider playerEditingArea;
 
     private RaycastHit hitInfo;
@@ -30,6 +31,7 @@ public class TerrainEditorController : MonoBehaviour {
         playerEditingArea = GetComponent<BoxCollider>();
         infiniteGenerator = FindObjectOfType<InfiniteGenerator>();
         lightingFiller = FindObjectOfType<LightingFiller>();
+        lightingGenerator = FindObjectOfType<LightingGenerator>();
 
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
@@ -99,6 +101,7 @@ public class TerrainEditorController : MonoBehaviour {
         if (chunksToUpdate.Count > 0) {
             // update all chunks lighting
             lightingFiller.FillChunksLighting(currentLayer.existingChunks.Values);
+            lightingGenerator.GenerateChunkLighting(currentLayer.existingChunks.Values);
 
             InfiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
             InfiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));

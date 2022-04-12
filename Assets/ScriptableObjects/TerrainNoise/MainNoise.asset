@@ -21,7 +21,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  seed: 1
   frequency: 0.1
   amplitude: 2
   range: 0.5

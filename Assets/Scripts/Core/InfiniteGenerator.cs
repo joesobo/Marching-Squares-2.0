@@ -8,6 +8,7 @@ public class InfiniteGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
     private ChunkSaveManager chunkSaveManager;
     private LightingFiller lightingFiller;
+    private LightingGenerator lightingGenerator;
     private int voxelResolution, chunkResolution;
 
     private GameObject player;
@@ -25,6 +26,7 @@ public class InfiniteGenerator : MonoBehaviour {
         player = GameObject.FindGameObjectsWithTag("Player")[0];
         voxelChunkGenerator = GetComponent<VoxelChunkGenerator>();
         lightingFiller = FindObjectOfType<LightingFiller>();
+        lightingGenerator = FindObjectOfType<LightingGenerator>();
         voxelResolution = CORE.voxelResolution;
         chunkResolution = CORE.chunkResolution;
     }
@@ -95,6 +97,7 @@ public class InfiniteGenerator : MonoBehaviour {
         if (chunksToUpdate.Count > 0) {
             // update all chunks lighting
             lightingFiller.FillChunksLighting(layer.existingChunks.Values);
+            lightingGenerator.GenerateChunkLighting(layer.existingChunks.Values);
 
             GenerateChunkList(layer, chunksToUpdate);
             GenerateChunkList(layer, FindImportantNeighbors(layer, chunksToUpdate));
