@@ -96,8 +96,8 @@ public class InfiniteGenerator : MonoBehaviour {
     private void GenerateNewChunks(LayerScriptableObject layer) {
         if (chunksToUpdate.Count > 0) {
             // update all chunks lighting
-            lightingFiller.FillChunksLighting(layer.existingChunks.Values);
-            lightingGenerator.GenerateChunkLighting(layer.existingChunks.Values);
+            lightingFiller.FillChunksLighting(layer.existingChunks.Values.ToList());
+            lightingGenerator.GenerateChunkLighting(layer.existingChunks.Values.ToList());
 
             GenerateChunkList(layer, chunksToUpdate);
             GenerateChunkList(layer, FindImportantNeighbors(layer, chunksToUpdate));

@@ -3,31 +3,38 @@ using UnityEngine;
 
 public class LightingGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
-    private WorldScriptableObject world;
 
     private int voxelResolution;
 
-    private GameObject lighting = null;
+    private GameObject lighting;
     private SpriteRenderer lightingRenderer;
-    private List<Color> colors;
+    private List<Color32> colors;
     private Texture2D texture;
 
     private int minX, maxX, minY, maxY;
     private int textureWidth, textureHeight;
+    private int oldTextureWidth, oldTextureHeight = 0;
+
+    private readonly Color32[] lightingColors = {
+        Color.clear, Color.clear,
+        new Color(0.0f, 0.0f, 0.0f, 0.4f),
+        new Color(0.0f, 0.0f, 0.0f, 0.6f),
+        new Color(0.0f, 0.0f, 0.0f, 0.75f),
+        new Color(0.0f, 0.0f, 0.0f, 0.9f)
+    };
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
-        world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
 
-        this.voxelResolution = CORE.voxelResolution;
+        voxelResolution = CORE.voxelResolution;
 
         lighting = new GameObject("Lighting");
         lightingRenderer = lighting.AddComponent<SpriteRenderer>();
 
-        colors = new List<Color>();
+        colors = new List<Color32>();
     }
 
-    public void GenerateChunkLighting(IEnumerable<VoxelChunk> chunks) {
+    public void GenerateChunkLighting(List<VoxelChunk> chunks) {
         if (!CORE.useLighting) return;
 
         // generate bounding box for all chunks
@@ -36,10 +43,13 @@ public class LightingGenerator : MonoBehaviour {
         int chunkWidth = Mathf.Abs(maxX - minX);
         int chunkHeight = Mathf.Abs(maxY - minY);
 
-        // create new texture
         textureWidth = chunkWidth * voxelResolution;
         textureHeight = chunkHeight * voxelResolution;
-        CreateTexture();
+
+        // create new texture if sizing has changed
+        if (textureWidth != oldTextureWidth || textureHeight != oldTextureHeight) {
+            CreateTexture();
+        }
 
         // fill texture with nothing
         ResetTexture();
@@ -49,12 +59,14 @@ public class LightingGenerator : MonoBehaviour {
 
         // set texture to lighting colors
         SetTexture();
+
+        oldTextureWidth = textureWidth;
+        oldTextureHeight = textureHeight;
     }
 
     // Sets the texture to color array and attaches it to the sprite renderer
     private void SetTexture() {
-        //SetPixels32 is faster than SetPixel
-        texture.SetPixels(colors.ToArray());
+        texture.SetPixels32(colors.ToArray());
         texture.Apply();
 
         // attach the texture to the chunk as a child
@@ -65,7 +77,7 @@ public class LightingGenerator : MonoBehaviour {
         lightingRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, textureWidth, textureHeight), new Vector2(0.5f, 0.5f), 1f);
     }
 
-    // Filles color array from lighting values relative to texture coords
+    // Fills color array from lighting values relative to texture coords
     private void ColorFromLightValues(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             // chunk position in terms of chunks
@@ -81,8 +93,8 @@ public class LightingGenerator : MonoBehaviour {
                 int voxelY = (int)voxel.position.y;
 
                 // get texture index from chunk and voxel position relative to texture coords
-                int voxelIndexOffset = (voxelY * textureWidth) + voxelX;
-                int chunkPosIndex = (int)textureChunkY * textureWidth * voxelResolution + (int)textureChunkX * voxelResolution;
+                int voxelIndexOffset = voxelY * textureWidth + voxelX;
+                int chunkPosIndex = textureChunkY * textureWidth * voxelResolution + textureChunkX * voxelResolution;
 
                 int index = chunkPosIndex + voxelIndexOffset;
                 ColorLightingAtIndex(lightingValue, index);
@@ -92,19 +104,7 @@ public class LightingGenerator : MonoBehaviour {
 
     // Sets the correct lighting color at a given index
     private void ColorLightingAtIndex(int lightingValue, int index) {
-        if (lightingValue == 0) {
-            colors[index] = Color.clear;
-        } else if (lightingValue == 1) {
-            colors[index] = Color.clear;
-        } else if (lightingValue == 2) {
-            colors[index] = new Color(0.0f, 0.0f, 0.0f, 0.4f);
-        } else if (lightingValue == 3) {
-            colors[index] = new Color(0.0f, 0.0f, 0.0f, 0.6f);
-        } else if (lightingValue == 4) {
-            colors[index] = new Color(0.0f, 0.0f, 0.0f, 0.75f);
-        } else {
-            colors[index] = new Color(0.0f, 0.0f, 0.0f, 0.9f);
-        }
+        colors[index] = lightingColors[lightingValue];
     }
 
     // Creates a new texture

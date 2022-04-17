@@ -9,7 +9,6 @@ public class VoxelChunk : MonoBehaviour {
     [HideInInspector] public LayerScriptableObject currentLayer;
     private CoreScriptableObject CORE;
 
-    private VoxelChunkGenerator voxelChunkGenerator;
     private VoxelMeshGenerator voxelMeshGenerator;
     private ColliderGenerator colliderGenerator;
     private OutlineDrawGenerator outlineDrawGenerator;
@@ -23,9 +22,9 @@ public class VoxelChunk : MonoBehaviour {
     // Storage of chunks voxels
     public Voxel[] voxels;
     // Storage of chunks mesh vertices
-    public Vector3[] meshVertices = null;
+    public Vector3[] meshVertices;
     // Storage of chunks outline vertices
-    public Vector3[] outlineVertices = null;
+    public Vector3[] outlineVertices;
     // Storage of relationship between triangles and outline vertices
     public readonly Dictionary<Vector2, List<OutlineTriangle>> triangleDictionary = new Dictionary<Vector2, List<OutlineTriangle>>();
     // Storage of chunks vertice reference points
@@ -47,7 +46,6 @@ public class VoxelChunk : MonoBehaviour {
     [ReadOnly] public bool hasEditsToSave = false;
 
     private void Awake() {
-        voxelChunkGenerator = FindObjectOfType<VoxelChunkGenerator>();
         voxelMeshGenerator = FindObjectOfType<VoxelMeshGenerator>();
         colliderGenerator = FindObjectOfType<ColliderGenerator>();
         outlineDrawGenerator = FindObjectOfType<OutlineDrawGenerator>();
