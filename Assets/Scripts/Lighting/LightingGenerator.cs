@@ -8,25 +8,25 @@ public class LightingGenerator : MonoBehaviour {
     private int voxelResolution;
 
     private GameObject lighting = null;
+    private SpriteRenderer lightingRenderer;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
 
         this.voxelResolution = CORE.voxelResolution;
+
+        lighting = new GameObject("Lighting");
+        lightingRenderer = lighting.AddComponent<SpriteRenderer>();
     }
 
     public void GenerateChunkLighting(IEnumerable<VoxelChunk> chunks) {
         if (!CORE.useLighting) return;
 
-        if (lighting != null) {
-            Destroy(lighting);
-        }
-
-        int minX = 0;
-        int maxX = 0;
-        int minY = 0;
-        int maxY = 0;
+        int minX = int.MaxValue;
+        int maxX = int.MinValue;
+        int minY = int.MaxValue;
+        int maxY = int.MinValue;
 
         // get chunks bounds
         foreach (VoxelChunk chunk in chunks) {
@@ -48,8 +48,8 @@ public class LightingGenerator : MonoBehaviour {
         maxY += 1;
 
         // generate bounding box for all chunks
-        int chunkWidth = (Mathf.Abs(minX) + Mathf.Abs(maxX));
-        int chunkHeight = (Mathf.Abs(minY) + Mathf.Abs(maxY));
+        int chunkWidth = Mathf.Abs(maxX - minX);
+        int chunkHeight = Mathf.Abs(maxY - minY);
 
         int width = chunkWidth * voxelResolution;
         int height = chunkHeight * voxelResolution;
@@ -65,26 +65,26 @@ public class LightingGenerator : MonoBehaviour {
         // fill texture with nothing
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                colors.Add(Color.black);
+                colors.Add(Color.clear);
             }
         }
 
         // fill texture with lighting values
         foreach (VoxelChunk chunk in chunks) {
+            // chunk position in terms of chunks
             Vector2 chunkPos = chunk.transform.position / voxelResolution;
 
-            int chunkX = (int)Mathf.Abs(Mathf.Abs(chunkPos.x) + (chunkPos.x > 0 ? (chunkWidth / 2) : -(chunkWidth / 2)));
-            int chunkY = (int)Mathf.Abs(Mathf.Abs(chunkPos.y) + (chunkPos.y > 0 ? (chunkHeight / 2) : -(chunkHeight / 2)));
-            Vector2 textureChunkPos = new Vector2(chunkX, chunkY);
+            // repositioned chunks so they are relative to texture coords
+            int textureChunkX = (int)chunkPos.x - minX;
+            int textureChunkY = (int)chunkPos.y - minY;
 
             foreach (Voxel voxel in chunk.voxels) {
-                Vector2 texturePos = (textureChunkPos * voxelResolution) + voxel.position;
-
-                int x = (int)voxel.position.x;
-                int y = (int)voxel.position.y;
-
-                int index = ((int)textureChunkPos.y * width * voxelResolution) + ((int)textureChunkPos.x * voxelResolution) + (y * width) + x;
                 int lightingValue = voxel.lighting;
+                int voxelX = (int)voxel.position.x;
+                int voxelY = (int)voxel.position.y;
+
+                // get texture index from chunk and voxel position relative to texture coords
+                int index = ((int)textureChunkY * width * voxelResolution) + ((int)textureChunkX * voxelResolution) + (voxelY * width) + voxelX;
 
                 if (lightingValue == 0) {
                     colors[index] = Color.clear;
@@ -102,14 +102,15 @@ public class LightingGenerator : MonoBehaviour {
             }
         }
 
+        //SetPixels32 is faster than SetPixel
         texture.SetPixels(colors.ToArray());
         texture.Apply();
 
         // attach the texture to the chunk as a child
-        lighting = new GameObject("Lighting");
+        Vector2 lightingOffset = new Vector2((minX * voxelResolution) + (width / 2), (minY * voxelResolution) + (height / 2));
         lighting.transform.parent = transform;
+        lighting.transform.position = lightingOffset;
 
-        SpriteRenderer lightingRenderer = lighting.AddComponent<SpriteRenderer>();
         lightingRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(0.5f, 0.5f), 1f);
     }
 }
