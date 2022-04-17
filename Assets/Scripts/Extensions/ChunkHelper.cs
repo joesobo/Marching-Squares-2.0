@@ -33,12 +33,12 @@ public static class ChunkHelper {
 
     public static Vector2 GetVoxelPosition(Vector3 point, int voxelResolution) {
         Vector2 voxelPos = GetVoxelWorldPosition(point, voxelResolution);
-        return new Vector2(voxelPos.x - 0.5f, voxelPos.y - 0.5f);
+        return new Vector2(voxelPos.x, voxelPos.y);
     }
 
     public static Vector2 GetVoxelWorldPosition(Vector3 point, int voxelResolution) {
         Vector2Int chunkWorldOffset = GetChunkWorldPosition(point, voxelResolution);
-        return new Vector2((Mathf.Floor(point.x) - chunkWorldOffset.x) + 0.5f, (Mathf.Floor(point.y) - chunkWorldOffset.y) + 0.5f);
+        return new Vector2(Mathf.Floor(point.x) - chunkWorldOffset.x, Mathf.Floor(point.y) - chunkWorldOffset.y);
     }
 
     public static int GetVoxelIndex(Vector3 point, int voxelResolution) {
