@@ -126,7 +126,10 @@ public class VoxelChunk : MonoBehaviour {
 
         voxels[i] = new Voxel(x, y, noiseVal);
         CreateReferencePoint(i, x, y);
-        CreateLightingValue(i, x, y);
+
+        if (currentLayer.zIndex == 1) {
+            CreateLightingValue(i, x, y);
+        }
     }
 
     public void ResetReferencePoints() {

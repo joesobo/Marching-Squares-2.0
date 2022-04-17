@@ -6,6 +6,8 @@ using static ChunkHelper;
 public class InfiniteGenerator : MonoBehaviour {
     private List<LayerScriptableObject> layers;
     private CoreScriptableObject CORE;
+
+
     private ChunkSaveManager chunkSaveManager;
     private LightingFiller lightingFiller;
     private LightingGenerator lightingGenerator;
@@ -18,6 +20,8 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private bool startGeneration;
     private readonly List<VoxelChunk> chunksToUpdate = new List<VoxelChunk>();
+    // used to tell if we need to update the lighting
+    private bool didUpdate = false;
 
     private void Awake() {
         layers = FindObjectOfType<VoxelCore>().GetAllLayerScriptableObjects();
@@ -50,6 +54,13 @@ public class InfiniteGenerator : MonoBehaviour {
             GetInBoundsChunks(layer);
 
             GenerateNewChunks(layer);
+        }
+
+        if (didUpdate) {
+            // update all chunks lighting
+            lightingFiller.FillChunksLighting();
+            lightingGenerator.GenerateChunkLighting();
+            didUpdate = false;
         }
     }
 
@@ -95,10 +106,7 @@ public class InfiniteGenerator : MonoBehaviour {
 
     private void GenerateNewChunks(LayerScriptableObject layer) {
         if (chunksToUpdate.Count > 0) {
-            // update all chunks lighting
-            lightingFiller.FillChunksLighting(layer.existingChunks.Values.ToList());
-            lightingGenerator.GenerateChunkLighting(layer.existingChunks.Values.ToList());
-
+            didUpdate = true;
             GenerateChunkList(layer, chunksToUpdate);
             GenerateChunkList(layer, FindImportantNeighbors(layer, chunksToUpdate));
 

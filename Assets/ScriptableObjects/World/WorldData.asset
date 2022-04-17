@@ -21,8 +21,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  worldName: TestWorld
-  seed: 17
+  worldName: MainWorld
+  seed: 4
   layers:
   - {fileID: 11400000, guid: c849beea46019e0438f203e10c98aed6, type: 2}
   - {fileID: 11400000, guid: 3018f9e53d980cd45a3d14aa09a14120, type: 2}

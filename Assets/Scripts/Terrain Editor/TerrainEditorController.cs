@@ -100,14 +100,14 @@ public class TerrainEditorController : MonoBehaviour {
 
     private void UpdateChunks() {
         if (chunksToUpdate.Count > 0) {
-            // update all chunks lighting
-            lightingFiller.FillChunksLighting(currentLayer.existingChunks.Values.ToList());
-            lightingGenerator.GenerateChunkLighting(currentLayer.existingChunks.Values.ToList());
-
             InfiniteGenerator.GenerateChunkList(currentLayer, chunksToUpdate);
             InfiniteGenerator.GenerateChunkList(currentLayer, infiniteGenerator.FindImportantNeighbors(currentLayer, chunksToUpdate));
 
             chunksToUpdate.Clear();
+
+            // update all chunks lighting
+            lightingFiller.FillChunksLighting();
+            lightingGenerator.GenerateChunkLighting();
         }
     }
 

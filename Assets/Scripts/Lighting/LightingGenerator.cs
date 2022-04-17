@@ -1,8 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LightingGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
+    private WorldScriptableObject world;
+    private LayerScriptableObject topLayer = null;
+    private int topIndex = -1;
 
     private int voxelResolution;
 
@@ -25,6 +29,7 @@ public class LightingGenerator : MonoBehaviour {
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
+        world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
 
         voxelResolution = CORE.voxelResolution;
 
@@ -32,10 +37,19 @@ public class LightingGenerator : MonoBehaviour {
         lightingRenderer = lighting.AddComponent<SpriteRenderer>();
 
         colors = new List<Color32>();
+
+        for (int i = 0; i < world.layers.Count; i++) {
+            if (topLayer == null || world.layers[i].zIndex < topLayer.zIndex) {
+                topLayer = world.layers[i];
+                topIndex = i;
+            }
+        }
     }
 
-    public void GenerateChunkLighting(List<VoxelChunk> chunks) {
+    public void GenerateChunkLighting() {
         if (!CORE.useLighting) return;
+
+        List<VoxelChunk> chunks = topLayer.existingChunks.Values.ToList();
 
         // generate bounding box for all chunks
         FindChunkBounds(chunks);
@@ -70,7 +84,7 @@ public class LightingGenerator : MonoBehaviour {
         texture.Apply();
 
         // attach the texture to the chunk as a child
-        Vector2 lightingOffset = new Vector2((minX * voxelResolution) + (textureWidth / 2), (minY * voxelResolution) + (textureHeight / 2));
+        Vector3 lightingOffset = new Vector3((minX * voxelResolution) + (textureWidth / 2), (minY * voxelResolution) + (textureHeight / 2), -5);
         lighting.transform.parent = transform;
         lighting.transform.position = lightingOffset;
 
@@ -81,7 +95,7 @@ public class LightingGenerator : MonoBehaviour {
     private void ColorFromLightValues(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             // chunk position in terms of chunks
-            Vector2 chunkPos = chunk.transform.position / voxelResolution;
+            Vector2Int chunkPos = new Vector2Int((int)chunk.transform.position.x / voxelResolution, (int)chunk.transform.position.y / voxelResolution);
 
             // repositioned chunks so they are relative to texture coords
             int textureChunkX = (int)chunkPos.x - minX;

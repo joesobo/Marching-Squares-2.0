@@ -21,6 +21,8 @@ public static class TerrainEditorGizmos {
         Gizmos.color = Color.blue;
         Vector2Int chunkPos = ChunkHelper.GetChunkWorldPosition(mousePos, voxelResolution);
         Vector2 voxelLocalPosition = ChunkHelper.GetVoxelWorldPosition(mousePos, voxelResolution);
+        voxelLocalPosition.x += 0.5f;
+        voxelLocalPosition.y += 0.5f;
         Vector2 voxelPosition = voxelLocalPosition + chunkPos;
         int radius = editingScriptableObject.Radius;
         Stencil stencil = editingScriptableObject.StencilType;

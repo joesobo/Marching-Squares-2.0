@@ -1,60 +1,76 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LightingFiller : MonoBehaviour {
     private CoreScriptableObject CORE;
     private WorldScriptableObject world;
-    private LayerScriptableObject layer;
+    private LayerScriptableObject topLayer = null;
+    private int topIndex = -1;
 
     private const int MAXLIGHTINGVALUE = 5;
-    private readonly Queue<Tuple<Voxel, VoxelChunk>> VoxelLightingQueue = new Queue<Tuple<Voxel, VoxelChunk>>();
+    private readonly Queue<Tuple<Voxel, VoxelChunk>> voxelLightingQueue = new Queue<Tuple<Voxel, VoxelChunk>>();
 
     private int voxelResolution;
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
-        layer = world.layers[0];
+
+        for (int i = 0; i < world.layers.Count; i++) {
+            if (topLayer == null || world.layers[i].zIndex < topLayer.zIndex) {
+                topLayer = world.layers[i];
+                topIndex = i;
+            }
+        }
 
         voxelResolution = CORE.voxelResolution;
     }
 
     // TODO: Make this work with multiple layers
     // Fills all chunks voxels with lighting values
-    public void FillChunksLighting(List<VoxelChunk> chunks) {
+    public void FillChunksLighting() {
         if (!CORE.useLighting) return;
 
+        List<VoxelChunk> chunks = topLayer.existingChunks.Values.ToList();
+
         ResetChunkLightValues(chunks);
-        SetupQueue(chunks);
 
         LightingFloodFill();
+
         RemainingFill(chunks);
     }
 
     // Resets all chunks voxels light values
     private void ResetChunkLightValues(IEnumerable<VoxelChunk> chunks) {
-        VoxelLightingQueue.Clear();
+        voxelLightingQueue.Clear();
 
         // reset all chunks voxel lighting
         foreach (VoxelChunk chunk in chunks) {
+            Vector2Int chunkPos = new Vector2Int((int)chunk.transform.position.x, (int)chunk.transform.position.y);
+
             foreach (Voxel voxel in chunk.voxels) {
                 voxel.lighting = -1;
 
-                if (voxel.state == 0) {
-                    voxel.lighting = 0;
-                }
-            }
-        }
-    }
+                int currentIndex = topIndex;
+                Voxel currentVoxel = voxel;
 
-    // Sets up the queue with all voxels that need to be filled
-    private void SetupQueue(IEnumerable<VoxelChunk> chunks) {
-        // fill up queue will all voxels of state = 0
-        foreach (VoxelChunk chunk in chunks) {
-            foreach (Voxel voxel in chunk.voxels) {
-                if (voxel.lighting == 0) {
-                    VoxelLightingQueue.Enqueue(new Tuple<Voxel, VoxelChunk>(voxel, chunk));
+                while (currentVoxel.state == 0 && currentIndex > 0) {
+                    // search the layer below
+                    currentIndex--;
+                    LayerScriptableObject layer = world.layers[currentIndex];
+
+                    if (layer.existingChunks.ContainsKey(chunkPos)) {
+                        VoxelChunk backgroundChunk = layer.existingChunks[chunkPos];
+                        Voxel backgroundVoxel = backgroundChunk.voxels[(int)voxel.position.x + ((int)voxel.position.y * voxelResolution)];
+                        currentVoxel = backgroundVoxel;
+                    }
+                }
+
+                if (currentVoxel.state == 0 && currentIndex == 0) {
+                    voxel.lighting = 0;
+                    voxelLightingQueue.Enqueue(new Tuple<Voxel, VoxelChunk>(voxel, chunk));
                 }
             }
         }
@@ -63,9 +79,9 @@ public class LightingFiller : MonoBehaviour {
     // Flood fills the voxels in the queue, all the way up to MAXLIGHTINGVALUE
     private void LightingFloodFill() {
         // loop over queue while queue is not empty
-        while (VoxelLightingQueue.Count > 0) {
+        while (voxelLightingQueue.Count > 0) {
             // get first voxel in queue
-            (Voxel voxel, VoxelChunk chunk) = VoxelLightingQueue.Dequeue();
+            (Voxel voxel, VoxelChunk chunk) = voxelLightingQueue.Dequeue();
 
             if (voxel.lighting < MAXLIGHTINGVALUE) {
                 // get all voxels around voxel
@@ -78,7 +94,7 @@ public class LightingFiller : MonoBehaviour {
                         checkVoxel.lighting = voxel.lighting + 1;
 
                         // add voxel to queue
-                        VoxelLightingQueue.Enqueue(new Tuple<Voxel, VoxelChunk>(checkVoxel, checkChunk));
+                        voxelLightingQueue.Enqueue(new Tuple<Voxel, VoxelChunk>(checkVoxel, checkChunk));
                     }
                 }
             }
@@ -150,8 +166,8 @@ public class LightingFiller : MonoBehaviour {
     }
 
     private void LookForChunkWithVoxel(int voxelIndex, Vector2Int checkChunkPosition, ICollection<Tuple<Voxel, VoxelChunk>> checkPointsAroundVoxel) {
-        if (layer.existingChunks.ContainsKey(checkChunkPosition)) {
-            VoxelChunk checkChunk = layer.existingChunks[checkChunkPosition];
+        if (topLayer.existingChunks.ContainsKey(checkChunkPosition)) {
+            VoxelChunk checkChunk = topLayer.existingChunks[checkChunkPosition];
             Voxel checkVoxel = checkChunk.voxels[voxelIndex];
 
             checkPointsAroundVoxel.Add(new Tuple<Voxel, VoxelChunk>(checkVoxel, checkChunk));
