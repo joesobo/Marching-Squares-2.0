@@ -116,15 +116,16 @@ public class VoxelChunk : MonoBehaviour {
 
         for (int i = 0, y = 0; y < voxelResolution; y++) {
             for (int x = 0; x < voxelResolution; x++, i++) {
+                int noiseVal = terrainGenerationController.GetTerrainNoise(currentLayer, x, y, transform.position);
+
+                voxels[i] = new Voxel(x, y, noiseVal);
+
                 CreateVoxelPoint(i, x, y);
             }
         }
     }
 
     private void CreateVoxelPoint(int i, int x, int y) {
-        int noiseVal = terrainGenerationController.GetTerrainNoise(currentLayer, x, y, transform.position);
-
-        voxels[i] = new Voxel(x, y, noiseVal);
         CreateReferencePoint(i, x, y);
 
         if (currentLayer.zIndex == 1) {
@@ -235,8 +236,8 @@ public class VoxelChunk : MonoBehaviour {
         }
 
         // Remove lighting values
-        foreach (GameObject lightValueText in lightingValueTexts) {
-            Destroy(lightValueText);
+        foreach (Transform child in lightingTransform.transform) {
+            Destroy(child.gameObject);
         }
     }
 }

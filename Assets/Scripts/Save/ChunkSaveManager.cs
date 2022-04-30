@@ -58,8 +58,8 @@ public class ChunkSaveManager : MonoBehaviour {
 
             chunk.transform.position = chunkData.position;
             for (int i = 0; i < chunk.voxels.Length; i++) {
-                chunk.voxels[i].position = chunkData.voxelPositions[i];
-                chunk.voxels[i].state = chunkData.voxelStates[i];
+                Vector2 pos = chunkData.voxelPositions[i];
+                chunk.voxels[i] = new Voxel(pos.x, pos.y, chunkData.voxelStates[i]);
             }
         }
     }
@@ -73,7 +73,7 @@ public class ChunkSaveManager : MonoBehaviour {
 
         CheckForEmptyRegions();
 
-        GameObject region = new GameObject(regionPos.ToString()) {name = "Region " + regionPos};
+        GameObject region = new GameObject(regionPos.ToString()) { name = "Region " + regionPos };
         region.transform.parent = layer.parentReference;
         region.transform.position = regionPos;
         layer.regionDictionary.Add(regionPos, region);
@@ -90,7 +90,7 @@ public class ChunkSaveManager : MonoBehaviour {
         foreach (LayerScriptableObject layer in layers) {
             for (int i = 0; i < layer.regionDictionary.Values.Count; i++) {
                 GameObject region = layer.regionDictionary.ElementAt(i).Value;
-                
+
                 if (region.transform.childCount == 0) {
                     Vector3 position = region.transform.position;
                     regionSaveManager.CloseRegion(position);

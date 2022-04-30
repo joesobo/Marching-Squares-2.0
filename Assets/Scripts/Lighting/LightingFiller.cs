@@ -28,7 +28,6 @@ public class LightingFiller : MonoBehaviour {
         voxelResolution = CORE.voxelResolution;
     }
 
-    // TODO: Make this work with multiple layers
     // Fills all chunks voxels with lighting values
     public void FillChunksLighting() {
         if (!CORE.useLighting) return;
@@ -56,7 +55,7 @@ public class LightingFiller : MonoBehaviour {
                 int currentIndex = topIndex;
                 Voxel currentVoxel = voxel;
 
-                while (currentVoxel.state == 0 && currentIndex > 0) {
+                while (currentVoxel.state == 0 && currentIndex > 0 && !currentVoxel.isLuminous) {
                     // search the layer below
                     currentIndex--;
                     LayerScriptableObject layer = world.layers[currentIndex];
@@ -68,7 +67,7 @@ public class LightingFiller : MonoBehaviour {
                     }
                 }
 
-                if (currentVoxel.state == 0 && currentIndex == 0) {
+                if (currentVoxel.isLuminous || (currentVoxel.state == 0 && currentIndex == 0)) {
                     voxel.lighting = 0;
                     voxelLightingQueue.Enqueue(new Tuple<Voxel, VoxelChunk>(voxel, chunk));
                 }

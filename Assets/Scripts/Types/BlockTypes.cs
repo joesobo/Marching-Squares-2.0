@@ -19,4 +19,5 @@ public enum BlockType {
     Red,
     Yellow,
     Gray,
+    Glow,
 }

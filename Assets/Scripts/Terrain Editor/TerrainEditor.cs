@@ -21,6 +21,10 @@ public class TerrainEditor : MonoBehaviour {
     public void EditVoxels(IEnumerable<Voxel> voxels) {
         foreach (Voxel voxel in voxels) {
             voxel.state = (int)terrainEditingSO.EditingType;
+
+            if (voxel.state == (int)BlockType.Glow) {
+                voxel.isLuminous = true;
+            }
         }
     }
 
