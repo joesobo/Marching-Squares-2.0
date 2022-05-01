@@ -6,14 +6,23 @@ public class LightingGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
     private WorldScriptableObject world;
     private LayerScriptableObject topLayer = null;
-    private int topIndex = -1;
+    private Camera cam;
 
     private int voxelResolution;
 
     private GameObject lighting;
-    private SpriteRenderer lightingRenderer;
+    private MeshRenderer lightingRenderer;
     private List<Color32> colors;
     private Texture2D texture;
+    private Texture2D dynamicTexture;
+
+    private Texture2D scaledTexture;
+    public List<Transform> dynamicLights = new List<Transform>();
+    private List<Vector3> dynamicLightsPositions = new List<Vector3>();
+
+    public int textureScaling = 1;
+    public int radius = 2;
+    Color32[] saveColors;
 
     private int minX, maxX, minY, maxY;
     private int textureWidth, textureHeight;
@@ -30,20 +39,82 @@ public class LightingGenerator : MonoBehaviour {
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
+        cam = Camera.main;
 
         voxelResolution = CORE.voxelResolution;
 
-        lighting = new GameObject("Lighting");
-        lightingRenderer = lighting.AddComponent<SpriteRenderer>();
+        lighting = transform.GetChild(0).gameObject;
+        lightingRenderer = lighting.GetComponent<MeshRenderer>();
 
         colors = new List<Color32>();
 
         for (int i = 0; i < world.layers.Count; i++) {
             if (topLayer == null || world.layers[i].zIndex < topLayer.zIndex) {
                 topLayer = world.layers[i];
-                topIndex = i;
             }
         }
+
+        foreach (Transform dynamicLight in dynamicLights) {
+            dynamicLightsPositions.Add(Vector3.zero);
+        }
+    }
+
+    // TODO: refactor out dynamic and static lighting
+    private void Update() {
+        if (DynamicLightHasUpdates()) {
+            Graphics.CopyTexture(scaledTexture, dynamicTexture);
+            Color32[] currentColors = dynamicTexture.GetPixels32();
+
+            for (int index = 0; index < dynamicLights.Count(); index++) {
+                Transform dynamicLight = dynamicLights[index];
+                dynamicLightsPositions[index] = dynamicLight.position;
+
+                // repositioned light pos so they are relative to texture coords
+                float voxelMinY = minY * voxelResolution;
+                float voxelMaxY = maxY * voxelResolution;
+                float voxelMinX = minX * voxelResolution;
+                float voxelMaxX = maxX * voxelResolution;
+
+                Vector2 distance = (Vector2)dynamicLight.position - new Vector2(voxelMinX, voxelMinY);
+                Vector2 size = new Vector2(voxelMaxX - voxelMinX, voxelMaxY - voxelMinY);
+                Vector2 scale = new Vector2(oldTextureWidth, oldTextureHeight) * textureScaling / size;
+                Vector2 texCoords = distance * scale;
+
+                float radiusSqr = radius * radius;
+
+                for (int i = -radius; i <= radius; i++) {
+                    for (int j = -radius; j <= radius; j++) {
+                        Vector2 pos = new Vector2(i, j) + texCoords;
+                        float fallofDist = Vector2.Distance(pos, texCoords);
+                        float distSqr = fallofDist * fallofDist;
+
+                        if (distSqr < radiusSqr) {
+
+                            int textureIndex = ((int)texCoords.x + i) + (((int)texCoords.y + j) * textureWidth * textureScaling);
+
+                            if (textureIndex >= 0 && textureIndex < currentColors.Length) {
+                                currentColors[textureIndex] = Color.clear;
+                            }
+                        }
+                    }
+                }
+            }
+
+            dynamicTexture.SetPixels32(currentColors);
+            dynamicTexture.Apply();
+
+            lightingRenderer.material.SetTexture("ShadowTexture", dynamicTexture);
+        }
+    }
+
+    private bool DynamicLightHasUpdates() {
+        for (int index = 0; index < dynamicLights.Count(); index++) {
+            Transform dynamicLight = dynamicLights[index];
+            if (dynamicLight.position != dynamicLightsPositions[index]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void GenerateChunkLighting() {
@@ -62,7 +133,8 @@ public class LightingGenerator : MonoBehaviour {
 
         // create new texture if sizing has changed
         if (textureWidth != oldTextureWidth || textureHeight != oldTextureHeight) {
-            CreateTexture();
+            texture = CreateTexture(textureWidth, textureHeight);
+            dynamicTexture = CreateTexture(textureWidth * textureScaling, textureHeight * textureScaling);
         }
 
         // fill texture with nothing
@@ -87,8 +159,32 @@ public class LightingGenerator : MonoBehaviour {
         Vector3 lightingOffset = new Vector3((minX * voxelResolution) + (textureWidth / 2), (minY * voxelResolution) + (textureHeight / 2), -5);
         lighting.transform.parent = transform;
         lighting.transform.position = lightingOffset;
+        lighting.transform.localScale = new Vector3(textureWidth / 2, textureHeight / 2, 1);
 
-        lightingRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, textureWidth, textureHeight), new Vector2(0.5f, 0.5f), 1f);
+        scaledTexture = ScaleTexture(texture, textureWidth * textureScaling, textureHeight * textureScaling);
+
+        lightingRenderer.material.SetTexture("ShadowTexture", scaledTexture);
+
+        saveColors = texture.GetPixels32();
+    }
+
+    // TODO: see if we can get rid of this completely
+    private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight) {
+        Texture2D result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false) {
+            filterMode = FilterMode.Trilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        List<Color32> resultColors = new List<Color32>();
+        float incX = (1.0f / (float)targetWidth);
+        float incY = (1.0f / (float)targetHeight);
+        for (int i = 0; i < result.height; ++i) {
+            for (int j = 0; j < result.width; ++j) {
+                resultColors.Add(source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height));
+            }
+        }
+        result.SetPixels32(resultColors.ToArray());
+        result.Apply();
+        return result;
     }
 
     // Fills color array from lighting values relative to texture coords
@@ -122,8 +218,8 @@ public class LightingGenerator : MonoBehaviour {
     }
 
     // Creates a new texture
-    private void CreateTexture() {
-        texture = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false) {
+    private Texture2D CreateTexture(int width, int height) {
+        return new Texture2D(width, height, TextureFormat.RGBA32, false) {
             filterMode = FilterMode.Trilinear,
             wrapMode = TextureWrapMode.Clamp
         };
