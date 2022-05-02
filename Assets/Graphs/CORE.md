@@ -59,6 +59,7 @@ graph LR;
     Vector2Extension{{Vector2Extension}};
     Vector2SerializationSurrogate{{Vector2SerializationSurrogate}};
     Vector3SerializationSurrogate{{Vector3SerializationSurrogate}};
+    TextureScaler{{TextureScaler}};
   end
 
   %% Terrain Editor
@@ -86,6 +87,15 @@ graph LR;
     RegionSaveManager{{RegionSaveManager}};
   end
 
+  %% Lighting System
+  subgraph LightingSystem
+    DynamicLighting{{DynamicLighting}};
+    LightingFiller{{LightingFiller}};
+    LightingGenerator{{LightingGenerator}};
+    LightingHelper{{LightingHelper}};
+    StaticLighting{{StaticLighting}};
+  end
+
   Player{Player};
 
   %% Core Connections
@@ -104,6 +114,8 @@ graph LR;
   InfiniteGenerator ==> Player;
   InfiniteGenerator ==> ChunkHelper;
   InfiniteGenerator ==> ChunkSaveManager;
+  InfiniteGenerator ==> LightingFiller;
+  InfiniteGenerator ==> LightingGenerator;
 
   VoxelChunkGenerator ==> VoxelChunk;
   VoxelChunkGenerator ==> VoxelCore;
@@ -149,6 +161,8 @@ graph LR;
   TerrainEditorController ==> TerrainEditorGizmos;
   TerrainEditorController ==> ChunkHelper;
   TerrainEditorController ==> TerrainEditor;
+  TerrainEditorController ==> LightingFiller;
+  TerrainEditorController ==> LightingGenerator;
 
   TerrainEditorGizmos ==> ChunkHelper;
   TerrainEditorGizmos ==> StencilTypes;
@@ -184,4 +198,17 @@ graph LR;
   RegionSaveManager ==> SerializationManager;
   RegionSaveManager ==> VoxelCore;
   RegionSaveManager ==> WorldSaveManager;
+
+  DynamicLighting ==> VoxelCore;
+  DynamicLighting ==> LightingHelper;
+
+  StaticLighting ==> VoxelCore;
+  StaticLighting ==> LightingHelper;
+
+  LightingGenerator ==> VoxelCore;
+  LightingGenerator ==> StaticLighting;
+  LightingGenerator ==> DynamicLighting;
+  LightingGenerator ==> TextureScaler;
+
+  LightingFiller ==> VoxelCore;
 ```
