@@ -7,11 +7,9 @@ public class StaticLighting : MonoBehaviour {
 
     private int voxelResolution;
     private int minX, maxX, minY, maxY;
-    private int textureWidth, textureHeight;
+    private int currentTextureWidth, currentTextureHeight = 0;
 
-    private int oldTextureWidth, oldTextureHeight = 0;
-
-    private List<Color32> staticColors = new List<Color32>();
+    private readonly List<Color32> staticColors = new List<Color32>();
 
     private Texture2D staticTexture;
 
@@ -42,17 +40,15 @@ public class StaticLighting : MonoBehaviour {
         return staticTexture;
     }
 
-    public void SetupChunkInfo(int minX, int maxX, int minY, int maxY, int textureWidth, int textureHeight) {
+    public void SetupChunkInfo(int minX, int minY, int textureWidth, int textureHeight) {
         this.minX = minX;
-        this.maxX = maxX;
         this.minY = minY;
-        this.maxY = maxY;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
 
         // create new texture if sizing has changed
-        if (textureWidth != oldTextureWidth || textureHeight != oldTextureHeight) {
+        if (currentTextureWidth != textureWidth || currentTextureHeight != textureHeight) {
             staticTexture = CreateTexture(textureWidth, textureHeight);
+            currentTextureWidth = textureWidth;
+            currentTextureHeight = textureHeight;
         }
     }
 
@@ -60,8 +56,8 @@ public class StaticLighting : MonoBehaviour {
     private void ResetTexture() {
         staticColors.Clear();
 
-        for (int x = 0; x < textureWidth; x++) {
-            for (int y = 0; y < textureHeight; y++) {
+        for (int x = 0; x < currentTextureWidth; x++) {
+            for (int y = 0; y < currentTextureHeight; y++) {
                 staticColors.Add(Color.clear);
             }
         }
@@ -71,11 +67,12 @@ public class StaticLighting : MonoBehaviour {
     private void ColorFromLightValues(IEnumerable<VoxelChunk> chunks) {
         foreach (VoxelChunk chunk in chunks) {
             // chunk position in terms of chunks
-            Vector2Int chunkPos = new Vector2Int((int)chunk.transform.position.x / voxelResolution, (int)chunk.transform.position.y / voxelResolution);
+            Vector3 chunkWorldPos = chunk.transform.position;
+            Vector2Int chunkPos = new Vector2Int((int)chunkWorldPos.x / voxelResolution, (int)chunkWorldPos.y / voxelResolution);
 
             // repositioned chunks so they are relative to texture coords
-            int textureChunkX = (int)chunkPos.x - minX;
-            int textureChunkY = (int)chunkPos.y - minY;
+            int textureChunkX = chunkPos.x - minX;
+            int textureChunkY = chunkPos.y - minY;
 
             foreach (Voxel voxel in chunk.voxels) {
                 int lightingValue = voxel.lighting;
@@ -83,18 +80,12 @@ public class StaticLighting : MonoBehaviour {
                 int voxelY = (int)voxel.position.y;
 
                 // get texture index from chunk and voxel position relative to texture coords
-                int voxelIndexOffset = voxelY * textureWidth + voxelX;
-                int chunkPosIndex = textureChunkY * textureWidth * voxelResolution + textureChunkX * voxelResolution;
+                int voxelIndexOffset = voxelY * currentTextureWidth + voxelX;
+                int chunkPosIndex = textureChunkY * currentTextureWidth * voxelResolution + textureChunkX * voxelResolution;
                 int index = chunkPosIndex + voxelIndexOffset;
 
                 staticColors[index] = lightingColors[lightingValue];
             }
         }
-    }
-
-    // Sets the texture to color array and attaches it to the sprite renderer
-    private void SetTexture() {
-        staticTexture.SetPixels32(staticColors.ToArray());
-        staticTexture.Apply();
     }
 }

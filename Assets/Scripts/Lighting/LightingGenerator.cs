@@ -5,8 +5,7 @@ using UnityEngine;
 public class LightingGenerator : MonoBehaviour {
     private CoreScriptableObject CORE;
     private WorldScriptableObject world;
-    private LayerScriptableObject topLayer = null;
-    private Camera cam;
+    private LayerScriptableObject topLayer;
 
     private int voxelResolution;
 
@@ -24,13 +23,13 @@ public class LightingGenerator : MonoBehaviour {
 
     private int minX, maxX, minY, maxY;
     private int textureWidth, textureHeight;
+    private static readonly int ShadowTexture = Shader.PropertyToID("ShadowTexture");
 
     private void Awake() {
         CORE = FindObjectOfType<VoxelCore>().GetCoreScriptableObject();
         world = FindObjectOfType<VoxelCore>().GetWorldScriptableObject();
         staticLighting = FindObjectOfType<StaticLighting>();
         dynamicLighting = FindObjectOfType<DynamicLighting>();
-        cam = Camera.main;
 
         voxelResolution = CORE.voxelResolution;
 
@@ -39,20 +38,17 @@ public class LightingGenerator : MonoBehaviour {
         lighting = transform.GetChild(0).gameObject;
         lightingRenderer = lighting.GetComponent<MeshRenderer>();
 
-        for (int i = 0; i < world.layers.Count; i++) {
-            if (topLayer == null || world.layers[i].zIndex < topLayer.zIndex) {
-                topLayer = world.layers[i];
-            }
+        foreach (LayerScriptableObject t in world.layers.Where(t => topLayer == null || t.zIndex < topLayer.zIndex)) {
+            topLayer = t;
         }
     }
 
     private void Update() {
-        if (scaledTexture) {
-            texture = dynamicLighting.GenerateDynamicLighting(scaledTexture);
-
-            if (texture) {
-                lightingRenderer.material.SetTexture("ShadowTexture", texture);
-            }
+        if (!scaledTexture) return;
+        
+        texture = dynamicLighting.GenerateDynamicLighting(scaledTexture);
+        if (texture) {
+            lightingRenderer.material.SetTexture(ShadowTexture, texture);
         }
     }
 
@@ -69,7 +65,7 @@ public class LightingGenerator : MonoBehaviour {
         textureWidth = chunkWidth * voxelResolution;
         textureHeight = chunkHeight * voxelResolution;
 
-        staticLighting.SetupChunkInfo(minX, maxX, minY, maxY, textureWidth, textureHeight);
+        staticLighting.SetupChunkInfo(minX, minY, textureWidth, textureHeight);
         dynamicLighting.SetupChunkInfo(minX, maxX, minY, maxY, textureWidth, textureHeight);
 
         // attach the texture to the chunk as a child
@@ -80,7 +76,7 @@ public class LightingGenerator : MonoBehaviour {
 
         scaledTexture = TextureScaler.scaled(staticLighting.GenerateStaticLighting(chunks), textureWidth * textureScaling, textureHeight * textureScaling);
         scaledTexture.Apply();
-        lightingRenderer.material.SetTexture("ShadowTexture", scaledTexture);
+        lightingRenderer.material.SetTexture(ShadowTexture, scaledTexture);
     }
 
     // Finds min and max of all chunks in the world

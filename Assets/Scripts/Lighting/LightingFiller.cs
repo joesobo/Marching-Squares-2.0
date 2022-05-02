@@ -6,7 +6,7 @@ using UnityEngine;
 public class LightingFiller : MonoBehaviour {
     private CoreScriptableObject CORE;
     private WorldScriptableObject world;
-    private LayerScriptableObject topLayer = null;
+    private LayerScriptableObject topLayer;
     private int topIndex = -1;
 
     private const int MAXLIGHTINGVALUE = 5;
@@ -47,7 +47,8 @@ public class LightingFiller : MonoBehaviour {
 
         // reset all chunks voxel lighting
         foreach (VoxelChunk chunk in chunks) {
-            Vector2Int chunkPos = new Vector2Int((int)chunk.transform.position.x, (int)chunk.transform.position.y);
+            Vector3 position = chunk.transform.position;
+            Vector2Int chunkPos = new Vector2Int((int)position.x, (int)position.y);
 
             foreach (Voxel voxel in chunk.voxels) {
                 voxel.lighting = -1;

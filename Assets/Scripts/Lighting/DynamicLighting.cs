@@ -9,15 +9,16 @@ public class DynamicLighting : MonoBehaviour {
     private int minX, maxX, minY, maxY;
 
     private int textureScaling;
-    private int textureWidth, textureHeight;
-    private int oldTextureWidth, oldTextureHeight = 0;
+    private int currentTextureWidth, currentTextureHeight = 0;
 
     public int falloffRate = 100;
     public int radius = 2;
     private float radiusSqr;
 
+    private Color32[] currentColors;
+
     public List<Transform> dynamicLights = new List<Transform>();
-    private List<Vector3> dynamicLightsPositions = new List<Vector3>();
+    private readonly List<Vector3> dynamicLightsPositions = new List<Vector3>();
 
     private Texture2D dynamicTexture;
 
@@ -26,7 +27,7 @@ public class DynamicLighting : MonoBehaviour {
         voxelResolution = CORE.voxelResolution;
         radiusSqr = radius * radius;
 
-        foreach (Transform dynamicLight in dynamicLights) {
+        for (int i = 0; i < dynamicLights.Count; i++) {
             dynamicLightsPositions.Add(Vector3.zero);
         }
     }
@@ -40,12 +41,12 @@ public class DynamicLighting : MonoBehaviour {
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
 
         // create new texture if sizing has changed
-        if (textureWidth != oldTextureWidth || textureHeight != oldTextureHeight) {
+        if (currentTextureWidth != textureWidth || currentTextureHeight != textureHeight) {
             dynamicTexture = CreateTexture(textureWidth * textureScaling, textureHeight * textureScaling);
+            currentTextureWidth = textureWidth;
+            currentTextureHeight = textureHeight;
         }
     }
 
@@ -54,9 +55,9 @@ public class DynamicLighting : MonoBehaviour {
             return null;
         }
 
-        Color32[] currentColors = scaledTexture.GetPixels32();
+        currentColors = scaledTexture.GetPixels32();
 
-        for (int index = 0; index < dynamicLights.Count(); index++) {
+        for (int index = 0; index < dynamicLights.Count; index++) {
             Transform dynamicLight = dynamicLights[index];
             dynamicLightsPositions[index] = dynamicLight.position;
 
@@ -72,43 +73,46 @@ public class DynamicLighting : MonoBehaviour {
                 continue;
             }
 
-
             // get the position of the light relative to the texture
             Vector2 distance = (Vector2)dynamicLight.position - new Vector2(voxelMinX, voxelMinY);
             Vector2 size = new Vector2(voxelMaxX - voxelMinX, voxelMaxY - voxelMinY);
-            Vector2 scale = new Vector2(textureWidth, textureHeight) * textureScaling / size;
+            Vector2 scale = new Vector2(currentTextureWidth, currentTextureHeight) * textureScaling / size;
             Vector2 texCoords = distance * scale;
 
             // modify points in radius around the light entity
-            for (int i = -radius; i <= radius; i++) {
-                for (int j = -radius; j <= radius; j++) {
-                    Vector2 pos = new Vector2(i, j) + texCoords;
-                    float falloffDist = Vector2.Distance(pos, texCoords);
-                    float distSqr = falloffDist * falloffDist;
-
-                    if (distSqr < radiusSqr) {
-                        int textureIndex = ((int)texCoords.x + i) + (((int)texCoords.y + j) * textureWidth * textureScaling);
-
-                        if (textureIndex >= 0 && textureIndex < currentColors.Length) {
-                            float alpha = 1f - (1f / (distSqr / falloffRate));
-
-                            if (alpha > 0.9f) {
-                                alpha = 0.9f;
-                            }
-
-                            if (currentColors[textureIndex].a > alpha * 255) {
-                                currentColors[textureIndex] = new Color(0, 0, 0, alpha);
-                            }
-                        }
-                    }
-                }
-            }
+            ModifyInRadius(texCoords);
         }
 
         dynamicTexture.SetPixels32(currentColors);
         dynamicTexture.Apply();
 
         return dynamicTexture;
+    }
+
+    private void ModifyInRadius(Vector2 editPoint) {
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                Vector2 pos = new Vector2(i, j) + editPoint;
+                float falloffDist = Vector2.Distance(pos, editPoint);
+                float distSqr = falloffDist * falloffDist;
+
+                if (distSqr < radiusSqr) {
+                    int textureIndex = ((int)editPoint.x + i) + (((int)editPoint.y + j) * currentTextureWidth * textureScaling);
+
+                    if (textureIndex >= 0 && textureIndex < currentColors.Length) {
+                        float alpha = 1f - (1f / (distSqr / falloffRate));
+
+                        if (alpha > 0.9f) {
+                            alpha = 0.9f;
+                        }
+
+                        if (currentColors[textureIndex].a > alpha * 255) {
+                            currentColors[textureIndex] = new Color(0, 0, 0, alpha);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private bool DynamicLightHasUpdates() {
