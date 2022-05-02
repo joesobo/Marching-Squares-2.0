@@ -44,7 +44,6 @@ public class InfiniteGenerator : MonoBehaviour {
 
     public void StartGeneration() {
         startGeneration = true;
-        UpdateAroundPlayer();
     }
 
     private void UpdateAroundPlayer() {
